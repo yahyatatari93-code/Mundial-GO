@@ -225,7 +225,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <input class="inp" id="l-p" type="password" placeholder="••••••••" autocomplete="current-password"/>
       <button class="btn gold" onclick="doLogin()"><i class="ti ti-login"></i> دخول</button>
       <div class="err" id="l-err"></div>
-      <div class="hint">للتجربة: admin / admin2026 &nbsp;·&nbsp; ahmed / 1234</div>
+      <div class="hint">حسابات الإدارة: Red_Army أو yahya (الرمز: 1234)</div>
     </div>
 
     <!-- REGISTER -->
@@ -316,11 +316,11 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   <div id="pg-admin" class="pg"><div class="pi">
     <div class="sec"><i class="ti ti-users"></i> المستخدمون</div>
     <div id="adm-users"></div>
-    <div class="sec"><i class="ti ti-plus"></i> إضافة مباراة</div>
+    <div class="sec"><i class="ti ti-plus"></i> إضافة مباراة (الأدوار الإقصائية وغيرها)</div>
     <div class="af">
       <div class="fg"><input id="at1" type="text" placeholder="الفريق الأول"/><input id="at2" type="text" placeholder="الفريق الثاني"/></div>
       <div class="fg"><input id="adate" type="text" placeholder="2026-06-11"/><input id="atime" type="text" placeholder="19:00 (UTC)"/></div>
-      <div class="fg"><input id="agrp" type="text" placeholder="المجموعة"/><select id="astg"><option value="group">مجموعات</option><option value="r32">دور 32</option><option value="r16">دور 16</option><option value="qf">ربع النهائي</option><option value="sf">نصف النهائي</option><option value="final">النهائي</option></select></div>
+      <div class="fg"><input id="agrp" type="text" placeholder="المجموعة (اختياري)"/><select id="astg"><option value="group">مجموعات</option><option value="r32">دور 32</option><option value="r16">دور 16</option><option value="qf">ربع النهائي</option><option value="sf">نصف النهائي</option><option value="final">النهائي</option></select></div>
       <button class="btn blue" onclick="addMatch()"><i class="ti ti-plus"></i> إضافة المباراة</button>
     </div>
     <div class="sec"><i class="ti ti-edit"></i> إدخال النتائج الحقيقية</div>
@@ -344,7 +344,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
     <div class="mteams-d"><div class="mtd"><span class="m-fl" id="mfl1"></span><div class="m-nm" id="mtn1"></div><div id="mtt1"></div></div><div class="m-vs">مقابل</div><div class="mtd"><span class="m-fl" id="mfl2"></span><div class="m-nm" id="mtn2"></div><div id="mtt2"></div></div></div>
     <div id="lkMsg" class="lock-msg" style="display:none"><i class="ti ti-lock"></i> مغلق للتوقع — أقل من ساعة على الانطلاق</div>
     <div id="predForm">
-      <div class="plbl" id="m-main-lbl">توقع النتيجة:</div>
+      <div class="plbl" id="m-main-lbl">توقع النتيجة (تشمل الوقت الإضافي):</div>
       <div class="srow"><span class="stl" id="stl1"></span><input class="sinp" id="sc1" type="number" min="0" max="20" value="0" oninput="upPrev()"/><span class="sdsh">—</span><input class="sinp" id="sc2" type="number" min="0" max="20" value="0" oninput="upPrev()"/><span class="stl" id="stl2"></span></div>
       <div class="kobox" id="kobox">
         <div class="plbl">في حال التعادل — الفائز بضربات الجزاء:</div>
@@ -377,7 +377,7 @@ const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
 // ══════════════════════════════════════════
-//  STATE
+//  STATE & STORAGE (PERSISTENT LOGIN)
 // ══════════════════════════════════════════
 let token   = localStorage.getItem('wc_token') || null;
 let me      = JSON.parse(localStorage.getItem('wc_me') || 'null');
@@ -389,17 +389,13 @@ let curMid  = null;
 let mflt    = 'all';
 let pollT   = null;
 
-// ══════════════════════════════════════════
-//  API HELPER
-// ══════════════════════════════════════════
-
-// ══ DEMO MODE ══════════════════════════════════════════════
-const DEMO_USERS = [
-  {uid:'admin',username:'admin',isAdmin:true,_pw:'admin2026'},
-  {uid:'u1',username:'ahmed',isAdmin:false,_pw:'1234'},
-  {uid:'u2',username:'sara',isAdmin:false,_pw:'1234'},
+// حفظ البيانات في المحاكي فقط لتجنب ضياعها عند إعادة تحميل الصفحة
+let DEMO_USERS = JSON.parse(localStorage.getItem('demo_users')) || [
+  {uid:'admin1',username:'red_army',isAdmin:true,_pw:'1234'},
+  {uid:'admin2',username:'yahya',isAdmin:true,_pw:'1234'},
+  {uid:'u1',username:'ahmed',isAdmin:false,_pw:'1234'}
 ];
-const DEMO_MATCHES = [
+let DEMO_MATCHES = JSON.parse(localStorage.getItem('demo_matches')) || [
   {id:'a1',t1:'المكسيك',t2:'جنوب أفريقيا',grp:'أ',stg:'group',dt:'2026-06-11T19:00:00Z',venue:'مكسيكو سيتي',res:null},
   {id:'a2',t1:'كوريا الجنوبية',t2:'التشيك',grp:'أ',stg:'group',dt:'2026-06-12T02:00:00Z',venue:'غوادالاخارا',res:null},
   {id:'b1',t1:'كندا',t2:'البوسنة',grp:'ب',stg:'group',dt:'2026-06-12T19:00:00Z',venue:'تورنتو',res:null},
@@ -411,9 +407,33 @@ const DEMO_MATCHES = [
   {id:'k1',t1:'البرتغال',t2:'الكونغو',grp:'ك',stg:'group',dt:'2026-06-17T19:00:00Z',venue:'هيوستن',res:null},
   {id:'l1',t1:'إنكلترا',t2:'كرواتيا',grp:'ل',stg:'group',dt:'2026-06-17T22:00:00Z',venue:'دالاس',res:null},
 ];
-let _demoPreds = {}, _demoLeagues = [{id:'lg1',name:'تحدي الأصدقاء',code:'FRIEND',owner:'admin',members:['admin','u1']}];
-const _BOARD = [{uid:'u1',username:'ahmed',isAdmin:false,pts:12,predCount:8},{uid:'admin',username:'admin',isAdmin:true,pts:9,predCount:6},{uid:'u2',username:'sara',isAdmin:false,pts:4,predCount:3}];
+let _demoPreds = JSON.parse(localStorage.getItem('demo_preds')) || {}; 
+let _demoLeagues = JSON.parse(localStorage.getItem('demo_leagues')) || [{id:'lg1',name:'تحدي الأصدقاء',code:'FRIEND',owner:'admin1',members:['admin1','u1']}];
 
+function _saveDemo() {
+  localStorage.setItem('demo_users', JSON.stringify(DEMO_USERS));
+  localStorage.setItem('demo_matches', JSON.stringify(DEMO_MATCHES));
+  localStorage.setItem('demo_preds', JSON.stringify(_demoPreds));
+  localStorage.setItem('demo_leagues', JSON.stringify(_demoLeagues));
+}
+
+function _buildBoard() {
+  return DEMO_USERS.map(u => {
+    let pts = 0, predCount = 0;
+    Object.values(_demoPreds).forEach(p => {
+      if (p.uid === u.uid) {
+        predCount++;
+        const m = DEMO_MATCHES.find(mx => mx.id === p.matchId);
+        if (m && m.res) pts += calcPts(m, p);
+      }
+    });
+    return { uid: u.uid, username: u.username, isAdmin: u.isAdmin, pts, predCount };
+  }).sort((a, b) => b.pts - a.pts);
+}
+
+// ══════════════════════════════════════════
+//  API HELPER (محاكاة الطلبات)
+// ══════════════════════════════════════════
 async function api(method, path, body) {
   setSyncDot('busy');
   await new Promise(r=>setTimeout(r,200));
@@ -423,46 +443,61 @@ async function api(method, path, body) {
   if (u === 'auth') {
     const a = q.get('action');
     if (a === 'login') {
-      const usr = DEMO_USERS.find(x=>x.username===body.username?.toLowerCase());
+      const usr = DEMO_USERS.find(x=>x.username.toLowerCase()===body.username?.toLowerCase());
       if (!usr || usr._pw !== body.password) throw new Error('اسم المستخدم أو كلمة المرور خاطئة');
-      const {_pw,...safe}=usr; return {token:'demo',user:safe};
+      const {_pw,...safe}=usr; return {token:'demo_'+usr.uid,user:safe};
     }
     if (a === 'register') {
       if (!/^[a-zA-Z0-9_]{3,20}$/.test(body.username||'')) throw new Error('اسم المستخدم: 3-20 حرف إنجليزي أو رقم أو _');
       if ((body.password||'').length < 4) throw new Error('كلمة المرور 4 أحرف على الأقل');
-      if (DEMO_USERS.find(x=>x.username===body.username.toLowerCase())) throw new Error('اسم المستخدم مستخدم بالفعل');
-      const nu={uid:'u_'+Date.now(),username:body.username.toLowerCase(),isAdmin:false,_pw:body.password};
-      DEMO_USERS.push(nu); _BOARD.push({uid:nu.uid,username:nu.username,isAdmin:false,pts:0,predCount:0});
-      const {_pw,...safe}=nu; return {token:'demo',user:safe};
+      if (DEMO_USERS.find(x=>x.username.toLowerCase()===body.username.toLowerCase())) throw new Error('اسم المستخدم مستخدم بالفعل');
+      const nu={uid:'u_'+Date.now(),username:body.username,isAdmin:false,_pw:body.password};
+      DEMO_USERS.push(nu); _saveDemo();
+      const {_pw,...safe}=nu; return {token:'demo_'+nu.uid,user:safe};
     }
-    if (a === 'me') { const u2=DEMO_USERS.find(x=>x.uid===me?.uid); if(!u2)throw new Error('غير مصرح'); const {_pw,...s}=u2;return s; }
-    if (a === 'change-password') return {ok:true};
+    if (a === 'me') { 
+      const u2=DEMO_USERS.find(x=>x.uid===me?.uid); 
+      if(!u2)throw new Error('الجلسة انتهت'); 
+      const {_pw,...s}=u2; return s; 
+    }
+    if (a === 'change-password') {
+      const u2=DEMO_USERS.find(x=>x.uid===me?.uid); 
+      if(u2) { u2._pw = body.newPassword; _saveDemo(); }
+      return {ok:true};
+    }
   }
   if (u === 'matches') {
     if (method==='GET') return DEMO_MATCHES;
-    if (method==='POST') { const m={...body,id:'m'+Date.now(),res:null}; DEMO_MATCHES.push(m); return m; }
-    if (method==='PUT') { const id=q.get('id'); const i=DEMO_MATCHES.findIndex(x=>x.id===id); if(i>=0)DEMO_MATCHES[i].res=body.res||null; return DEMO_MATCHES[i]; }
-    if (method==='DELETE') { const id=q.get('id'); DEMO_MATCHES.splice(DEMO_MATCHES.findIndex(x=>x.id===id),1); return {ok:true}; }
+    if (method==='POST') { const m={...body,id:'m'+Date.now(),res:null}; DEMO_MATCHES.push(m); _saveDemo(); return m; }
+    if (method==='PUT') { const id=q.get('id'); const i=DEMO_MATCHES.findIndex(x=>x.id===id); if(i>=0)DEMO_MATCHES[i].res=body.res||null; _saveDemo(); return DEMO_MATCHES[i]; }
+    if (method==='DELETE') { const id=q.get('id'); DEMO_MATCHES.splice(DEMO_MATCHES.findIndex(x=>x.id===id),1); _saveDemo(); return {ok:true}; }
   }
   if (u === 'predictions') {
-    if (method==='GET') return _demoPreds;
-    if (method==='POST') { _demoPreds[body.matchId]=body; return {ok:true,pred:body}; }
+    if (method==='GET') {
+      const myP = {};
+      Object.values(_demoPreds).filter(p=>p.uid===me?.uid).forEach(p => myP[p.matchId] = p);
+      return myP;
+    }
+    if (method==='POST') { 
+      _demoPreds[body.matchId + '_' + me.uid] = {...body, uid: me.uid}; 
+      _saveDemo();
+      return {ok:true,pred:body}; 
+    }
   }
-  if (u === 'leaderboard') return _BOARD;
+  if (u === 'leaderboard') return _buildBoard();
   if (u === 'leagues') {
     const a=q.get('action');
     if (method==='GET') return _demoLeagues.filter(l=>l.members.includes(me?.uid));
-    if (a==='create') { const lg={id:'lg'+Date.now(),name:body.name,code:Math.random().toString(36).slice(2,8).toUpperCase(),owner:me?.uid,members:[me?.uid]}; _demoLeagues.push(lg); return lg; }
-    if (a==='join') { const lg=_demoLeagues.find(l=>l.code===body.code?.toUpperCase()); if(!lg)throw new Error('كود غير صحيح'); if(lg.members.includes(me?.uid))throw new Error('أنت منضم بالفعل'); lg.members.push(me?.uid); return lg; }
-    if (a==='leave') { const lg=_demoLeagues.find(l=>l.id===body.leagueId); if(lg)lg.members=lg.members.filter(m=>m!==me?.uid); return {ok:true}; }
+    if (a==='create') { const lg={id:'lg'+Date.now(),name:body.name,code:Math.random().toString(36).slice(2,8).toUpperCase(),owner:me?.uid,members:[me?.uid]}; _demoLeagues.push(lg); _saveDemo(); return lg; }
+    if (a==='join') { const lg=_demoLeagues.find(l=>l.code===body.code?.toUpperCase()); if(!lg)throw new Error('كود غير صحيح'); if(lg.members.includes(me?.uid))throw new Error('أنت منضم بالفعل'); lg.members.push(me?.uid); _saveDemo(); return lg; }
+    if (a==='leave') { const lg=_demoLeagues.find(l=>l.id===body.leagueId); if(lg)lg.members=lg.members.filter(m=>m!==me?.uid); _saveDemo(); return {ok:true}; }
   }
   if (u === 'users') {
     if (method==='GET') return DEMO_USERS.map(({_pw,...u2})=>u2);
-    if (method==='PUT') { const u2=DEMO_USERS.find(x=>x.uid===body.uid); if(u2)u2.isAdmin=!!body.isAdmin; return {ok:true}; }
+    if (method==='PUT') { const u2=DEMO_USERS.find(x=>x.uid===body.uid); if(u2)u2.isAdmin=!!body.isAdmin; _saveDemo(); return {ok:true}; }
   }
   return {};
 }
-// ══ END DEMO ════════════════════════════════════════════════
 
 // ══════════════════════════════════════════
 //  INIT
@@ -471,6 +506,7 @@ async function api(method, path, body) {
   updCD(); setInterval(updCD, 1000);
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 
+  // فحص تسجيل الدخول المحفوظ
   if (token && me) {
     try {
       const fresh = await api('GET', 'auth?action=me');
@@ -478,10 +514,7 @@ async function api(method, path, body) {
       localStorage.setItem('wc_me', JSON.stringify(me));
       await enterApp();
     } catch {
-      token = null; me = null;
-      localStorage.removeItem('wc_token');
-      localStorage.removeItem('wc_me');
-      showAuth();
+      doLogout();
     }
   } else {
     showAuth();
@@ -663,13 +696,12 @@ function pDesc(m, pred) {
 let _homeDay = null;
 function activeTournamentDay() {
   const toDay = ts => new Date(ts).toLocaleDateString('en-CA',{timeZone:TZ});
-  const days = [...new Set(matches.filter(m=>m.dt).map(m=>toDay(new Date(m.dt).getTime())))].sort();
+  const today = toDay(Date.now());
+  const days  = [...new Set(matches.filter(m=>m.dt).map(m=>toDay(new Date(m.dt).getTime())))].sort();
   if (!days.length) return null;
-  // إيجاد أول يوم يحتوي على مباراة لم تنتهِ بعد (بلا نتيجة)
-  const unfinishedDay = days.find(d => matches.some(m => m.dt && toDay(new Date(m.dt).getTime()) === d && !m.res));
-  if (unfinishedDay) return unfinishedDay;
-  // إذا انتهت جميع مباريات البطولة، عرض اليوم الأخير
-  return days[days.length-1];
+  if (days.includes(today)) return today;
+  if (today < days[0]) return days[0];
+  return days.find(d=>d>=today&&matches.some(m=>m.dt&&toDay(new Date(m.dt).getTime())===d&&!m.res)) || days[days.length-1];
 }
 
 function rHome() {
@@ -717,6 +749,9 @@ function rHome() {
 function flt(f,btn){mflt=f;document.querySelectorAll('.fbr .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rMatches();}
 function rMatches() {
   let ms=[...matches];
+  // ترتيب المباريات الافتراضي (حسب التاريخ تصاعدياً)
+  ms.sort((a,b) => new Date(a.dt).getTime() - new Date(b.dt).getTime());
+  
   if(mflt==='group')ms=ms.filter(m=>m.stg==='group');
   if(mflt==='ko')ms=ms.filter(m=>KO.includes(m.stg));
   if(mflt==='predicted')ms=ms.filter(m=>myPreds[m.id]);
@@ -983,7 +1018,7 @@ async function rAdmin(){
   }catch{}
   document.getElementById('admlist').innerHTML=matches.map(m=>
     `<div class="arow">
-      <div style="font-size:12px;font-weight:600;color:var(--text)">${gf(m.t1)} ${m.t1} <span style="color:var(--t3)">vs</span> ${m.t2} ${gf(m.t2)} <span style="font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px">${SLBL[m.stg]} · ${m.grp?'ج'+m.grp:''}</span></div>
+      <div style="font-size:12px;font-weight:600;color:var(--text)">${gf(m.t1)} ${m.t1} <span style="color:var(--t3)">vs</span> ${m.t2} ${gf(m.t2)} <span style="font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px">${SLBL[m.stg]} · ج${m.grp||''}</span></div>
       <div style="font-size:9px;color:var(--t3);margin-top:2px">${fmtDT(m.dt)}${isLocked(m)?' 🔒':''}</div>
       ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr">✓ ${m.res.s1}–${m.res.s2}${m.res.penW?` (P: ${m.res.ps1!=null?m.res.ps1:'-'}–${m.res.ps2!=null?m.res.ps2:'-'})`:''}</div>`:''}
       <div class="ri">
