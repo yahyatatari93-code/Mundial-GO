@@ -15,15 +15,11 @@
 html,body{height:100%;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--text);direction:rtl}
 #app{display:flex;flex-direction:column;height:100%;max-width:430px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden}
 input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-system,monospace}
-
-/* LOADER */
 #loader{position:absolute;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 #loader.hide{display:none}
 .spin{width:38px;height:38px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin-lbl{font-size:13px;color:var(--t3)}
-
-/* AUTH */
 #auth{position:absolute;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;overflow-y:auto}
 #auth.hide{display:none}
 .a-logo{text-align:center;margin-bottom:26px}
@@ -38,16 +34,12 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .lbl{font-size:11px;color:var(--t2);margin-bottom:5px;display:block;font-weight:500}
 .inp{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;color:var(--text);font-size:14px;padding:11px 13px;outline:none;margin-bottom:12px;transition:.15s}
 .inp:focus{border-color:var(--blue);background:rgba(74,158,255,.06)}
-.inp::placeholder{color:rgba(255,255,255,.2)}
 .inp.ltr{direction:ltr;text-align:right}
 .btn{width:100%;border:none;border-radius:10px;font-size:14px;font-weight:600;padding:13px;cursor:pointer;transition:.2s;margin-bottom:6px}
 .btn.gold{background:var(--gold2);color:#0D1520}.btn.gold:active{background:var(--gold)}
 .btn.blue{background:var(--blue);color:#fff}.btn.blue:active{background:#3A8EEF}
 .btn.outline{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5)}
 .err{font-size:11px;color:var(--red);text-align:center;min-height:16px;margin-top:4px}
-.hint{font-size:10px;color:rgba(255,255,255,.2);text-align:center;margin-top:10px;line-height:1.7}
-
-/* TOPBAR */
 .topbar{background:linear-gradient(180deg,#1B2B5E,#0D1520);padding:52px 18px 14px;flex-shrink:0}
 .tb{display:flex;align-items:center;gap:10px}
 .tb-ico{width:36px;height:36px;background:var(--gold2);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
@@ -58,8 +50,6 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .sdot{width:7px;height:7px;border-radius:50%;background:var(--green)}
 .sdot.off{background:var(--red)}.sdot.busy{background:var(--gold);animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* COUNTDOWN */
 .cd{background:rgba(212,160,23,.06);border-bottom:1px solid rgba(212,160,23,.12);padding:7px 18px;display:flex;align-items:center;gap:9px;flex-shrink:0}
 .cd-l{color:var(--gold);font-size:10px;font-weight:500;white-space:nowrap}
 .cd-b{display:flex;align-items:center;gap:3px}
@@ -67,25 +57,17 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .cd-n{font-size:13px;font-weight:700;color:var(--gold);display:block;font-variant-numeric:tabular-nums}
 .cd-u{font-size:8px;color:var(--t3);display:block}
 .cd-sep{color:rgba(212,160,23,.4);font-size:12px}
-
-/* NAV */
 .nav{display:flex;background:#0A1015;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;padding:4px 0 max(env(safe-area-inset-bottom,0px),4px)}
 .nt{flex:1;padding:5px 3px 3px;text-align:center;font-size:9px;color:var(--t3);cursor:pointer;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;transition:.15s}
 .nt i{font-size:21px}.nt.on{color:var(--blue)}
-
-/* PAGES */
 .pages{flex:1;overflow:hidden;position:relative}
 .pg{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.pg.on{display:block}
 .pi{padding:12px 14px 90px}
-
-/* STAT CARDS */
 .sg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
 .sc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 10px;text-align:center}
 .sc-n{font-size:22px;font-weight:700;color:var(--gold)}.sc-l{font-size:10px;color:var(--t3);margin-top:2px}
 .sec{font-size:10px;font-weight:600;color:var(--t2);margin:13px 0 7px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.5px}
 .sec i{font-size:13px;color:var(--blue)}
-
-/* MATCH CARD */
 .mc{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:11px 12px;margin-bottom:7px;cursor:pointer;position:relative;overflow:hidden;transition:transform .1s}
 .mc:active{transform:scale(.98)}.mc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:rgba(255,255,255,.07)}
 .mc.hp::before{background:var(--gold)}.mc.live::before{background:var(--green)}
@@ -107,20 +89,14 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .mpred{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:3px}.mpred.y{color:var(--gold)}
 .chip{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:500;direction:ltr}
 .chip.e{background:rgba(46,204,113,.15);color:var(--green)}.chip.w{background:rgba(255,255,255,.05);color:var(--t3)}
-
-/* FILTERS */
 .fbr{display:flex;gap:6px;overflow-x:auto;padding-bottom:3px;margin-bottom:10px}
 .fbr::-webkit-scrollbar{display:none}
 .fb{font-size:11px;padding:5px 11px;border-radius:20px;border:1px solid rgba(255,255,255,.1);cursor:pointer;background:transparent;color:var(--t2);white-space:nowrap;flex-shrink:0}
 .fb.on{background:var(--blue);color:#fff;border-color:var(--blue)}
-
-/* GROUP HEADERS */
 .gh{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px 11px 0 0;padding:8px 12px;margin-top:9px;display:flex;align-items:center;justify-content:space-between}
 .gh:first-child{margin-top:0}.gn{font-size:11px;font-weight:600;color:var(--gold)}.gt{font-size:8px;color:var(--t3);font-family:monospace}
 .gb{border:1px solid var(--border);border-top:none;border-radius:0 0 11px 11px;overflow:hidden;margin-bottom:3px}
 .gb .mc{border-radius:0;border:none;border-bottom:1px solid var(--border);margin:0}.gb .mc:last-child{border-bottom:none}.gb .mc::before{display:none}
-
-/* LEADERBOARD */
 .lb-r{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;margin-bottom:6px;background:var(--card);border:1px solid var(--border)}
 .lb-r.me{background:rgba(74,158,255,.08);border-color:rgba(74,158,255,.25)}.lb-r.t1{background:rgba(212,160,23,.08);border-color:rgba(212,160,23,.25)}
 .lbr{font-size:14px;font-weight:600;width:26px;color:var(--t3);text-align:center}
@@ -128,8 +104,6 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .lbav{width:32px;height:32px;border-radius:50%;background:#2D3F7A;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
 .lbn{flex:1;font-size:13px;font-weight:600;color:var(--text)}.lbn small{font-size:10px;color:var(--t3);font-weight:400;display:block}
 .lbp{font-size:15px;color:var(--gold);font-weight:700;direction:ltr}
-
-/* LEAGUES */
 .lcard{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
 .lcard:active{transform:scale(.98)}.lcard.own{border-left:3px solid var(--gold);border-radius:0 13px 13px 0}
 .lcod{font-family:monospace;font-size:13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.6);padding:3px 9px;border-radius:6px;letter-spacing:3px}
@@ -143,21 +117,15 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .joinrow .inp{flex:1;margin:0;text-transform:uppercase;font-family:monospace;letter-spacing:3px}
 .jbtn{background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:14px;padding:11px 18px;cursor:pointer}
 .box{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:13px;margin-bottom:11px}
-
-/* RULES */
 .rb{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:9px}
 .rb h3{font-size:12px;font-weight:600;margin-bottom:8px;color:var(--text)}
 .rr{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px solid var(--border);color:var(--t2)}.rr:last-child{border:none}
 .rpts{font-weight:700;color:var(--gold);background:rgba(212,160,23,.1);padding:2px 8px;border-radius:4px;font-size:10px}
-
-/* PROFILE */
 .pcard{background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px}
 .pav{width:56px;height:56px;border-radius:50%;background:var(--gold2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#0D1520;margin:0 auto 10px}
 .pnm{font-size:17px;font-weight:700;color:var(--text)}.psb{font-size:11px;color:var(--t3);margin-top:3px}
 .pst{display:flex;justify-content:center;gap:22px;margin-top:14px}
 .ps-n{font-size:19px;font-weight:700;color:var(--gold)}.ps-l{font-size:9px;color:var(--t3);margin-top:2px}
-
-/* ADMIN */
 .af{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px;margin-bottom:10px}
 .fg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px}
 .fg input,.fg select{font-size:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--text);padding:8px 10px;outline:none}
@@ -167,8 +135,6 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .ri input[type=number]{width:46px;text-align:center;font-size:15px;font-weight:600;padding:5px;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:var(--text);outline:none;direction:ltr}
 .sbtn{background:var(--green);border:none;border-radius:8px;color:#0D1520;font-size:11px;padding:6px 12px;cursor:pointer;font-weight:600}
 .dbtn{background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--t3);font-size:11px;padding:6px 10px;cursor:pointer}
-
-/* MODAL */
 .modal-bg{display:none;position:absolute;inset:0;background:rgba(0,0,0,.72);align-items:flex-end;z-index:50}
 .modal-bg.open{display:flex}
 .modal{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-height:92%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,16px)}
@@ -216,8 +182,6 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <div class="a-tab on" onclick="swAuth('login')">تسجيل الدخول</div>
       <div class="a-tab" onclick="swAuth('register')">حساب جديد</div>
     </div>
-
-    <!-- LOGIN -->
     <div class="fw on" id="fw-login">
       <label class="lbl">اسم المستخدم</label>
       <input class="inp ltr" id="l-u" type="text" placeholder="username" autocomplete="username"/>
@@ -225,10 +189,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <input class="inp" id="l-p" type="password" placeholder="••••••••" autocomplete="current-password"/>
       <button class="btn gold" onclick="doLogin()"><i class="ti ti-login"></i> دخول</button>
       <div class="err" id="l-err"></div>
-      <div class="hint">حسابات الإدارة: Red_Army أو yahya (الرمز: 1234)</div>
     </div>
-
-    <!-- REGISTER -->
     <div class="fw" id="fw-reg">
       <label class="lbl">اسم المستخدم <span style="color:var(--t3);font-weight:400">(a-z / 0-9 / _ فقط)</span></label>
       <input class="inp ltr" id="r-u" type="text" placeholder="ahmed_99" autocomplete="username"/>
@@ -250,9 +211,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 </div>
 <div class="cd"><span class="cd-l"><i class="ti ti-alarm"></i> انطلاق البطولة بعد:</span><div class="cd-b" id="cdb"></div></div>
 <div class="pages">
-  <div id="pg-home" class="pg on"><div class="pi">
-    <div class="sg" id="hst"></div><div id="hm"></div>
-  </div></div>
+  <div id="pg-home" class="pg on"><div class="pi"><div class="sg" id="hst"></div><div id="hm"></div></div></div>
   <div id="pg-matches" class="pg"><div class="pi">
     <div class="fbr">
       <button class="fb on" onclick="flt('all',this)">الكل</button>
@@ -267,7 +226,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   <div id="pg-leagues" class="pg"><div class="pi">
     <div id="lglist">
       <div class="sec"><i class="ti ti-plus-circle"></i> إنشاء دوري</div>
-      <div class="box"><input class="inp" id="lgnm" type="text" placeholder="اسم الدوري..."/><button class="btn gold" onclick="createLg()"><i class="ti ti-plus"></i> إنشاء والحصول على الكود</button></div>
+      <div class="box"><input class="inp" id="lgnm" type="text" placeholder="اسم الدوري..."/><button class="btn gold" onclick="createLg()"><i class="ti ti-plus"></i> إنشاء</button></div>
       <div class="sec"><i class="ti ti-door-enter"></i> انضمام بكود</div>
       <div class="joinrow"><input class="inp" id="jcode" type="text" placeholder="XXXXXX" maxlength="6" style="text-transform:uppercase;font-family:monospace;letter-spacing:3px"/><button class="jbtn" onclick="joinLg()"><i class="ti ti-arrow-right"></i></button></div>
       <div class="sec"><i class="ti ti-list"></i> دورياتي</div>
@@ -305,26 +264,19 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   <div id="pg-profile" class="pg"><div class="pi">
     <div class="pcard"><div class="pav" id="pav"></div><div class="pnm" id="pnm"></div><div class="psb" id="psb"></div><div class="pst" id="pst"></div></div>
     <div class="sec">تغيير كلمة المرور</div>
-    <div class="box">
-      <label class="lbl">كلمة المرور الجديدة</label>
-      <input class="inp" id="pw-new" type="password" placeholder="4 أحرف على الأقل"/>
-      <button class="btn blue" onclick="chpw()">تحديث</button>
-      <div class="err" id="pw-err"></div>
-    </div>
+    <div class="box"><label class="lbl">كلمة المرور الجديدة</label><input class="inp" id="pw-new" type="password" placeholder="4 أحرف على الأقل"/><button class="btn blue" onclick="chpw()">تحديث</button><div class="err" id="pw-err"></div></div>
     <div id="logout-w"></div>
   </div></div>
   <div id="pg-admin" class="pg"><div class="pi">
-    <div class="sec"><i class="ti ti-users"></i> المستخدمون</div>
-    <div id="adm-users"></div>
-    <div class="sec"><i class="ti ti-plus"></i> إضافة مباراة (الأدوار الإقصائية وغيرها)</div>
+    <div class="sec"><i class="ti ti-users"></i> المستخدمون</div><div id="adm-users"></div>
+    <div class="sec"><i class="ti ti-plus"></i> إضافة مباراة</div>
     <div class="af">
       <div class="fg"><input id="at1" type="text" placeholder="الفريق الأول"/><input id="at2" type="text" placeholder="الفريق الثاني"/></div>
       <div class="fg"><input id="adate" type="text" placeholder="2026-06-11"/><input id="atime" type="text" placeholder="19:00 (UTC)"/></div>
       <div class="fg"><input id="agrp" type="text" placeholder="المجموعة (اختياري)"/><select id="astg"><option value="group">مجموعات</option><option value="r32">دور 32</option><option value="r16">دور 16</option><option value="qf">ربع النهائي</option><option value="sf">نصف النهائي</option><option value="final">النهائي</option></select></div>
       <button class="btn blue" onclick="addMatch()"><i class="ti ti-plus"></i> إضافة المباراة</button>
     </div>
-    <div class="sec"><i class="ti ti-edit"></i> إدخال النتائج الحقيقية</div>
-    <div id="admlist"></div>
+    <div class="sec"><i class="ti ti-edit"></i> إدخال النتائج الحقيقية</div><div id="admlist"></div>
   </div></div>
 </div>
 <div class="nav">
@@ -344,7 +296,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
     <div class="mteams-d"><div class="mtd"><span class="m-fl" id="mfl1"></span><div class="m-nm" id="mtn1"></div><div id="mtt1"></div></div><div class="m-vs">مقابل</div><div class="mtd"><span class="m-fl" id="mfl2"></span><div class="m-nm" id="mtn2"></div><div id="mtt2"></div></div></div>
     <div id="lkMsg" class="lock-msg" style="display:none"><i class="ti ti-lock"></i> مغلق للتوقع — أقل من ساعة على الانطلاق</div>
     <div id="predForm">
-      <div class="plbl" id="m-main-lbl">توقع النتيجة (تشمل الوقت الإضافي):</div>
+      <div class="plbl" id="m-main-lbl">توقع النتيجة:</div>
       <div class="srow"><span class="stl" id="stl1"></span><input class="sinp" id="sc1" type="number" min="0" max="20" value="0" oninput="upPrev()"/><span class="sdsh">—</span><input class="sinp" id="sc2" type="number" min="0" max="20" value="0" oninput="upPrev()"/><span class="stl" id="stl2"></span></div>
       <div class="kobox" id="kobox">
         <div class="plbl">في حال التعادل — الفائز بضربات الجزاء:</div>
@@ -365,10 +317,8 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 </div>
 </div>
 <div class="toast-el" id="tst"></div>
+
 <script>
-// ══════════════════════════════════════════
-//  CONSTANTS
-// ══════════════════════════════════════════
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
@@ -376,159 +326,45 @@ const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كو
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
-// ══════════════════════════════════════════
-//  STATE & STORAGE (PERSISTENT LOGIN)
-// ══════════════════════════════════════════
-let token   = localStorage.getItem('wc_token') || null;
-let me      = JSON.parse(localStorage.getItem('wc_me') || 'null');
-let matches = [];
-let myPreds = {};
-let board   = [];
-let leagues = [];
-let curMid  = null;
-let mflt    = 'all';
-let pollT   = null;
+let token = localStorage.getItem('wc_token') || null;
+let me = JSON.parse(localStorage.getItem('wc_me') || 'null');
+let matches = [], myPreds = {}, board = [], leagues = [], curMid = null, mflt = 'all', pollT = null;
 
-// حفظ البيانات في المحاكي فقط لتجنب ضياعها عند إعادة تحميل الصفحة
-let DEMO_USERS = JSON.parse(localStorage.getItem('demo_users')) || [
-  {uid:'admin1',username:'red_army',isAdmin:true,_pw:'1234'},
-  {uid:'admin2',username:'yahya',isAdmin:true,_pw:'1234'},
-  {uid:'u1',username:'ahmed',isAdmin:false,_pw:'1234'}
-];
-let DEMO_MATCHES = JSON.parse(localStorage.getItem('demo_matches')) || [
-  {id:'a1',t1:'المكسيك',t2:'جنوب أفريقيا',grp:'أ',stg:'group',dt:'2026-06-11T19:00:00Z',venue:'مكسيكو سيتي',res:null},
-  {id:'a2',t1:'كوريا الجنوبية',t2:'التشيك',grp:'أ',stg:'group',dt:'2026-06-12T02:00:00Z',venue:'غوادالاخارا',res:null},
-  {id:'b1',t1:'كندا',t2:'البوسنة',grp:'ب',stg:'group',dt:'2026-06-12T19:00:00Z',venue:'تورنتو',res:null},
-  {id:'c1',t1:'البرازيل',t2:'المغرب',grp:'ج',stg:'group',dt:'2026-06-13T23:00:00Z',venue:'نيوجيرسي',res:null},
-  {id:'e1',t1:'ألمانيا',t2:'كوراساو',grp:'هـ',stg:'group',dt:'2026-06-14T18:00:00Z',venue:'هيوستن',res:null},
-  {id:'f1',t1:'هولندا',t2:'اليابان',grp:'و',stg:'group',dt:'2026-06-14T21:00:00Z',venue:'دالاس',res:null},
-  {id:'g1',t1:'إسبانيا',t2:'الرأس الأخضر',grp:'ز',stg:'group',dt:'2026-06-15T17:00:00Z',venue:'أتلانتا',res:null},
-  {id:'j1',t1:'الأرجنتين',t2:'الجزائر',grp:'ي',stg:'group',dt:'2026-06-17T03:00:00Z',venue:'كانساس سيتي',res:null},
-  {id:'k1',t1:'البرتغال',t2:'الكونغو',grp:'ك',stg:'group',dt:'2026-06-17T19:00:00Z',venue:'هيوستن',res:null},
-  {id:'l1',t1:'إنكلترا',t2:'كرواتيا',grp:'ل',stg:'group',dt:'2026-06-17T22:00:00Z',venue:'دالاس',res:null},
-];
-let _demoPreds = JSON.parse(localStorage.getItem('demo_preds')) || {}; 
-let _demoLeagues = JSON.parse(localStorage.getItem('demo_leagues')) || [{id:'lg1',name:'تحدي الأصدقاء',code:'FRIEND',owner:'admin1',members:['admin1','u1']}];
-
-function _saveDemo() {
-  localStorage.setItem('demo_users', JSON.stringify(DEMO_USERS));
-  localStorage.setItem('demo_matches', JSON.stringify(DEMO_MATCHES));
-  localStorage.setItem('demo_preds', JSON.stringify(_demoPreds));
-  localStorage.setItem('demo_leagues', JSON.stringify(_demoLeagues));
-}
-
-function _buildBoard() {
-  return DEMO_USERS.map(u => {
-    let pts = 0, predCount = 0;
-    Object.values(_demoPreds).forEach(p => {
-      if (p.uid === u.uid) {
-        predCount++;
-        const m = DEMO_MATCHES.find(mx => mx.id === p.matchId);
-        if (m && m.res) pts += calcPts(m, p);
-      }
-    });
-    return { uid: u.uid, username: u.username, isAdmin: u.isAdmin, pts, predCount };
-  }).sort((a, b) => b.pts - a.pts);
-}
-
-// ══════════════════════════════════════════
-//  API HELPER (محاكاة الطلبات)
-// ══════════════════════════════════════════
 async function api(method, path, body) {
   setSyncDot('busy');
-  await new Promise(r=>setTimeout(r,200));
-  setSyncDot('on');
-  const u = path.split('?')[0], q = new URLSearchParams(path.split('?')[1]||'');
-
-  if (u === 'auth') {
-    const a = q.get('action');
-    if (a === 'login') {
-      const usr = DEMO_USERS.find(x=>x.username.toLowerCase()===body.username?.toLowerCase());
-      if (!usr || usr._pw !== body.password) throw new Error('اسم المستخدم أو كلمة المرور خاطئة');
-      const {_pw,...safe}=usr; return {token:'demo_'+usr.uid,user:safe};
-    }
-    if (a === 'register') {
-      if (!/^[a-zA-Z0-9_]{3,20}$/.test(body.username||'')) throw new Error('اسم المستخدم: 3-20 حرف إنجليزي أو رقم أو _');
-      if ((body.password||'').length < 4) throw new Error('كلمة المرور 4 أحرف على الأقل');
-      if (DEMO_USERS.find(x=>x.username.toLowerCase()===body.username.toLowerCase())) throw new Error('اسم المستخدم مستخدم بالفعل');
-      const nu={uid:'u_'+Date.now(),username:body.username,isAdmin:false,_pw:body.password};
-      DEMO_USERS.push(nu); _saveDemo();
-      const {_pw,...safe}=nu; return {token:'demo_'+nu.uid,user:safe};
-    }
-    if (a === 'me') { 
-      const u2=DEMO_USERS.find(x=>x.uid===me?.uid); 
-      if(!u2)throw new Error('الجلسة انتهت'); 
-      const {_pw,...s}=u2; return s; 
-    }
-    if (a === 'change-password') {
-      const u2=DEMO_USERS.find(x=>x.uid===me?.uid); 
-      if(u2) { u2._pw = body.newPassword; _saveDemo(); }
-      return {ok:true};
-    }
+  const hdrs = { 'Content-Type': 'application/json' };
+  if (token) hdrs['Authorization'] = `Bearer ${token}`;
+  
+  const [route, qry] = path.split('?');
+  const url = `/api?route=${route}${qry ? '&'+qry : ''}`;
+  
+  try {
+    const res = await fetch(url, { method, headers: hdrs, body: body ? JSON.stringify(body) : undefined });
+    let data; try { data = await res.json(); } catch(e) { throw new Error('خطأ في استجابة الخادم'); }
+    setSyncDot('on');
+    if (!res.ok) throw new Error(data.error || 'حدث خطأ غير معروف');
+    return data;
+  } catch (err) {
+    setSyncDot('off');
+    throw err;
   }
-  if (u === 'matches') {
-    if (method==='GET') return DEMO_MATCHES;
-    if (method==='POST') { const m={...body,id:'m'+Date.now(),res:null}; DEMO_MATCHES.push(m); _saveDemo(); return m; }
-    if (method==='PUT') { const id=q.get('id'); const i=DEMO_MATCHES.findIndex(x=>x.id===id); if(i>=0)DEMO_MATCHES[i].res=body.res||null; _saveDemo(); return DEMO_MATCHES[i]; }
-    if (method==='DELETE') { const id=q.get('id'); DEMO_MATCHES.splice(DEMO_MATCHES.findIndex(x=>x.id===id),1); _saveDemo(); return {ok:true}; }
-  }
-  if (u === 'predictions') {
-    if (method==='GET') {
-      const myP = {};
-      Object.values(_demoPreds).filter(p=>p.uid===me?.uid).forEach(p => myP[p.matchId] = p);
-      return myP;
-    }
-    if (method==='POST') { 
-      _demoPreds[body.matchId + '_' + me.uid] = {...body, uid: me.uid}; 
-      _saveDemo();
-      return {ok:true,pred:body}; 
-    }
-  }
-  if (u === 'leaderboard') return _buildBoard();
-  if (u === 'leagues') {
-    const a=q.get('action');
-    if (method==='GET') return _demoLeagues.filter(l=>l.members.includes(me?.uid));
-    if (a==='create') { const lg={id:'lg'+Date.now(),name:body.name,code:Math.random().toString(36).slice(2,8).toUpperCase(),owner:me?.uid,members:[me?.uid]}; _demoLeagues.push(lg); _saveDemo(); return lg; }
-    if (a==='join') { const lg=_demoLeagues.find(l=>l.code===body.code?.toUpperCase()); if(!lg)throw new Error('كود غير صحيح'); if(lg.members.includes(me?.uid))throw new Error('أنت منضم بالفعل'); lg.members.push(me?.uid); _saveDemo(); return lg; }
-    if (a==='leave') { const lg=_demoLeagues.find(l=>l.id===body.leagueId); if(lg)lg.members=lg.members.filter(m=>m!==me?.uid); _saveDemo(); return {ok:true}; }
-  }
-  if (u === 'users') {
-    if (method==='GET') return DEMO_USERS.map(({_pw,...u2})=>u2);
-    if (method==='PUT') { const u2=DEMO_USERS.find(x=>x.uid===body.uid); if(u2)u2.isAdmin=!!body.isAdmin; _saveDemo(); return {ok:true}; }
-  }
-  return {};
 }
 
-// ══════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════
 (async () => {
   updCD(); setInterval(updCD, 1000);
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
-
-  // فحص تسجيل الدخول المحفوظ
   if (token && me) {
     try {
       const fresh = await api('GET', 'auth?action=me');
-      me = fresh;
-      localStorage.setItem('wc_me', JSON.stringify(me));
+      me = fresh; localStorage.setItem('wc_me', JSON.stringify(me));
       await enterApp();
-    } catch {
-      doLogout();
-    }
-  } else {
-    showAuth();
-  }
+    } catch { doLogout(); }
+  } else { showAuth(); }
 })();
 
-// ══════════════════════════════════════════
-//  AUTH
-// ══════════════════════════════════════════
 function showLoader(msg) { document.getElementById('spin-lbl').textContent = msg || 'جاري التحميل...'; document.getElementById('loader').classList.remove('hide'); }
 function hideLoader() { document.getElementById('loader').classList.add('hide'); }
-function showAuth()   { hideLoader(); document.getElementById('auth').classList.remove('hide'); }
-function hideAuth()   { document.getElementById('auth').classList.add('hide'); }
-
+function showAuth() { hideLoader(); document.getElementById('auth').classList.remove('hide'); }
+function hideAuth() { document.getElementById('auth').classList.add('hide'); }
 function swAuth(t) {
   document.querySelectorAll('.a-tab').forEach((el, i) => el.classList.toggle('on', i === (t==='login'?0:1)));
   document.getElementById('fw-login').classList.toggle('on', t==='login');
@@ -538,15 +374,13 @@ function swAuth(t) {
 async function doLogin() {
   const username = document.getElementById('l-u').value.trim();
   const password = document.getElementById('l-p').value;
-  const err = document.getElementById('l-err');
-  err.textContent = '';
+  const err = document.getElementById('l-err'); err.textContent = '';
   if (!username || !password) { err.textContent = 'أدخل اسم المستخدم وكلمة المرور'; return; }
   try {
     showLoader('جاري تسجيل الدخول...');
     const data = await api('POST', 'auth?action=login', { username, password });
     token = data.token; me = data.user;
-    localStorage.setItem('wc_token', token);
-    localStorage.setItem('wc_me', JSON.stringify(me));
+    localStorage.setItem('wc_token', token); localStorage.setItem('wc_me', JSON.stringify(me));
     await enterApp();
   } catch (e) { hideLoader(); showAuth(); err.textContent = e.message; }
 }
@@ -554,17 +388,13 @@ async function doLogin() {
 async function doRegister() {
   const username = document.getElementById('r-u').value.trim();
   const password = document.getElementById('r-p').value;
-  const err = document.getElementById('r-err');
-  err.textContent = '';
+  const err = document.getElementById('r-err'); err.textContent = '';
   if (!username || !password) { err.textContent = 'أدخل اسم المستخدم وكلمة المرور'; return; }
-  if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { err.textContent = 'اسم المستخدم: 3-20 حرف إنجليزي أو رقم أو _'; return; }
-  if (password.length < 4) { err.textContent = 'كلمة المرور 4 أحرف على الأقل'; return; }
   try {
     showLoader('جاري إنشاء الحساب...');
     const data = await api('POST', 'auth?action=register', { username, password });
     token = data.token; me = data.user;
-    localStorage.setItem('wc_token', token);
-    localStorage.setItem('wc_me', JSON.stringify(me));
+    localStorage.setItem('wc_token', token); localStorage.setItem('wc_me', JSON.stringify(me));
     await enterApp();
   } catch (e) { hideLoader(); showAuth(); err.textContent = e.message; }
 }
@@ -576,7 +406,6 @@ function doLogout() {
   matches = []; myPreds = {}; board = []; leagues = [];
   document.getElementById('auth').classList.remove('hide');
   document.getElementById('l-u').value = ''; document.getElementById('l-p').value = '';
-  document.getElementById('l-err').textContent = '';
   swAuth('login'); setSyncDot('off');
 }
 
@@ -584,19 +413,13 @@ async function enterApp() {
   showLoader('جاري تحميل البيانات...');
   try {
     [matches, myPreds, board, leagues] = await Promise.all([
-      api('GET', 'matches'),
-      api('GET', 'predictions'),
-      api('GET', 'leaderboard'),
-      api('GET', 'leagues'),
+      api('GET', 'matches'), api('GET', 'predictions'), api('GET', 'leaderboard'), api('GET', 'leagues')
     ]);
-  } catch (e) {
-    if (e.message.includes('مصرح') || e.message.includes('جلسة')) { doLogout(); return; }
-  }
+  } catch (e) { doLogout(); return; }
   hideLoader(); hideAuth();
   document.getElementById('tpts').textContent = getTotalPts() + ' نقطة';
   document.getElementById('admtab').style.display = me?.isAdmin ? 'flex' : 'none';
-  startPoll();
-  goTab('home', document.querySelector('.nt'));
+  startPoll(); goTab('home', document.querySelector('.nt'));
 }
 
 function startPoll() {
@@ -604,7 +427,7 @@ function startPoll() {
   pollT = setTimeout(async () => {
     try { [matches, board] = await Promise.all([api('GET','matches'), api('GET','leaderboard')]); refreshActive(); } catch {}
     startPoll();
-  }, 30000);
+  }, 45000);
 }
 
 function refreshActive() {
@@ -612,29 +435,21 @@ function refreshActive() {
   if (t==='home') rHome(); else if (t==='matches') rMatches(); else if (t==='lb') rLb();
 }
 
-// ══════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════
 const gf = t => FL[t] || '🌍';
 const isB = t => BIG.includes(t);
 const isLocked = m => m.dt ? Date.now() >= new Date(m.dt).getTime() - 3600000 : false;
 const getDayKey = dt => new Date(dt).toLocaleDateString('en-CA', { timeZone: TZ });
 const fmtTime = dt => dt ? new Date(dt).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:TZ, hour12:false }) : '';
 const fmtDT = dt => {
-  if (!dt) return '';
-  const d = new Date(dt);
+  if (!dt) return ''; const d = new Date(dt);
   return d.toLocaleDateString('ar-SY',{weekday:'short',month:'short',day:'numeric',timeZone:TZ}) + ' · ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:TZ,hour12:false});
 };
 const getDayHeader = dk => { const d=new Date(dk+'T12:00:00'); return DAYS[d.getDay()]+' '+d.getDate()+' '+d.toLocaleDateString('ar-SY',{month:'long'}); };
 const getTotalPts = () => matches.reduce((s,m)=>{ const p=myPreds[m.id]; return s+(p&&m.res?calcPts(m,p):0); }, 0);
 const getMyRank = () => { const i=board.findIndex(u=>u.uid===me?.uid); return i>=0?i+1:board.length+1; };
-
 function setSyncDot(s) { const d=document.getElementById('sdot'); d.className='sdot'+(s==='on'?'':s==='off'?' off':' busy'); }
 function toast(msg) { const t=document.getElementById('tst'); t.textContent=msg; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2600); }
 
-// ══════════════════════════════════════════
-//  COUNTDOWN
-// ══════════════════════════════════════════
 function updCD() {
   const diff = new Date('2026-06-11T19:00:00Z').getTime() - Date.now();
   if (diff <= 0) { document.querySelector('.cd').style.display='none'; return; }
@@ -646,9 +461,6 @@ function updCD() {
     `<div class="cd-box"><span class="cd-n">${String(s).padStart(2,'0')}</span><span class="cd-u">ثانية</span></div>`;
 }
 
-// ══════════════════════════════════════════
-//  NAV
-// ══════════════════════════════════════════
 function goTab(t, btn) {
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nt').forEach(n=>n.classList.remove('on'));
@@ -658,9 +470,6 @@ function goTab(t, btn) {
   fn[t]?.();
 }
 
-// ══════════════════════════════════════════
-//  POINTS CALC (29 tests verified)
-// ══════════════════════════════════════════
 function calcPts(m, pred) {
   if (!m.res || !pred) return 0;
   const s1=+pred.s1, s2=+pred.s2, r1=+m.res.s1, r2=+m.res.s2;
@@ -690,18 +499,14 @@ function pDesc(m, pred) {
   const sr=s1+s2; return s1===0&&s2===0?'تعادل 0-0':sr>=5?'مباراة هجومية':s1===s2?'توقع التعادل':'توقع الفوز';
 }
 
-// ══════════════════════════════════════════
-//  HOME
-// ══════════════════════════════════════════
 let _homeDay = null;
 function activeTournamentDay() {
   const toDay = ts => new Date(ts).toLocaleDateString('en-CA',{timeZone:TZ});
-  const today = toDay(Date.now());
-  const days  = [...new Set(matches.filter(m=>m.dt).map(m=>toDay(new Date(m.dt).getTime())))].sort();
+  const days = [...new Set(matches.filter(m=>m.dt).map(m=>toDay(new Date(m.dt).getTime())))].sort();
   if (!days.length) return null;
-  if (days.includes(today)) return today;
-  if (today < days[0]) return days[0];
-  return days.find(d=>d>=today&&matches.some(m=>m.dt&&toDay(new Date(m.dt).getTime())===d&&!m.res)) || days[days.length-1];
+  const unfinishedDay = days.find(d => matches.some(m => m.dt && toDay(new Date(m.dt).getTime()) === d && !m.res));
+  if (unfinishedDay) return unfinishedDay;
+  return days[days.length-1];
 }
 
 function rHome() {
@@ -715,13 +520,13 @@ function rHome() {
     <div class="sc"><div class="sc-n">${matches.length-pc}</div><div class="sc-l">متبقية</div></div>`;
   
   const activeDay = activeTournamentDay(); _homeDay = activeDay;
-  const dayMs  = activeDay ? matches.filter(m=>m.dt&&getDayKey(m.dt)===activeDay) : [];
-  const _dl    = activeDay ? new Date(activeDay+'T12:00:00') : null;
+  const dayMs = activeDay ? matches.filter(m=>m.dt&&getDayKey(m.dt)===activeDay) : [];
+  const _dl = activeDay ? new Date(activeDay+'T12:00:00') : null;
   const dayLbl = _dl ? `${DAYS[_dl.getDay()]} ${_dl.getDate()} ${_dl.toLocaleDateString('ar-SY',{month:'long'})}` : '';
   const done=dayMs.filter(m=>m.res).length, total=dayMs.length, pct=total?Math.round(done/total*100):0;
   const now=Date.now();
-  const live    = dayMs.filter(m=>{const ko=new Date(m.dt).getTime();return now>=ko&&now<=ko+105*60*1000&&!m.res;});
-  const locked  = dayMs.filter(m=>!m.res&&isLocked(m)&&!live.find(l=>l.id===m.id));
+  const live = dayMs.filter(m=>{const ko=new Date(m.dt).getTime();return now>=ko&&now<=ko+105*60*1000&&!m.res;});
+  const locked = dayMs.filter(m=>!m.res&&isLocked(m)&&!live.find(l=>l.id===m.id));
   const upcoming= dayMs.filter(m=>new Date(m.dt).getTime()>now&&!m.res);
   const finished= dayMs.filter(m=>m.res);
   const allDone = total>0&&done===total;
@@ -737,21 +542,14 @@ function rHome() {
   if(locked.length)  html+='<div class="sec" style="color:rgba(231,76,60,.8)"><i class="ti ti-lock"></i> مغلقة للتوقع</div>'+locked.map(mcHTML).join('');
   if(upcoming.length)html+='<div class="sec"><i class="ti ti-clock"></i> قادمة اليوم</div>'+upcoming.map(mcHTML).join('');
   if(finished.length)html+='<div class="sec"><i class="ti ti-check"></i> انتهت</div>'+finished.map(mcHTML).join('');
-  if(!dayMs.length)  html+='<div class="empty">لا توجد مباريات لهذا اليوم</div>';
+  if(!dayMs.length)  html+='<div class="empty">لا توجد مباريات بعد. تواصل مع المشرف لإضافة المباريات.</div>';
   document.getElementById('hm').innerHTML = html;
   clearTimeout(window._hrt);
   if(allDone) window._hrt=setTimeout(()=>{if(activeTournamentDay()!==_homeDay)rHome();else window._hrt=setTimeout(rHome,30000);},30000);
 }
 
-// ══════════════════════════════════════════
-//  MATCHES
-// ══════════════════════════════════════════
-function flt(f,btn){mflt=f;document.querySelectorAll('.fbr .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rMatches();}
 function rMatches() {
   let ms=[...matches];
-  // ترتيب المباريات الافتراضي (حسب التاريخ تصاعدياً)
-  ms.sort((a,b) => new Date(a.dt).getTime() - new Date(b.dt).getTime());
-  
   if(mflt==='group')ms=ms.filter(m=>m.stg==='group');
   if(mflt==='ko')ms=ms.filter(m=>KO.includes(m.stg));
   if(mflt==='predicted')ms=ms.filter(m=>myPreds[m.id]);
@@ -787,7 +585,6 @@ function mcHTML(m) {
     <div class="mtags">
       <span class="tag ${KO.includes(m.stg)?'tk':'tg'}">${KO.includes(m.stg)?SLBL[m.stg]:'ج '+m.grp}</span>
       <span class="tag td"><i class="ti ti-clock" style="font-size:9px"></i> ${fmtTime(m.dt)}</span>
-      ${m.venue?`<span class="tag td"><i class="ti ti-map-pin" style="font-size:9px"></i> ${m.venue}</span>`:''}
       ${m.res?`<span class="tag tdone"><i class="ti ti-check" style="font-size:9px"></i> انتهت</span>`:''}
       ${live?`<span class="tag tlive">● مباشر</span>`:''}
       ${locked&&!m.res?`<span class="tag tlock"><i class="ti ti-lock" style="font-size:9px"></i> مغلق</span>`:''}
@@ -804,13 +601,9 @@ function mcHTML(m) {
   </div>`;
 }
 
-// ══════════════════════════════════════════
-//  PREDICTION MODAL
-// ══════════════════════════════════════════
 function openM(id) {
   const m=matches.find(x=>x.id===id); if(!m) return;
-  curMid=id;
-  const isKo = KO.includes(m.stg);
+  curMid=id; const isKo = KO.includes(m.stg);
   document.getElementById('mtitle').textContent=`${m.t1} vs ${m.t2}`;
   ['mfl1','mfl2'].forEach((el,i)=>document.getElementById(el).textContent=gf(i?m.t2:m.t1));
   document.getElementById('mtn1').textContent=m.t1; document.getElementById('mtn2').textContent=m.t2;
@@ -818,16 +611,12 @@ function openM(id) {
   document.getElementById('mtt2').innerHTML=isB(m.t2)?'<span class="m-tp">★ فريق كبير</span>':'';
   document.getElementById('stl1').textContent=m.t1; document.getElementById('stl2').textContent=m.t2;
   document.getElementById('pt1o').textContent=m.t1; document.getElementById('pt2o').textContent=m.t2;
-  
-  // تحديث النص في حال كانت المباراة إقصائية لتوضيح أن النتيجة شاملة للوقت الإضافي
   document.getElementById('m-main-lbl').textContent = isKo ? 'توقع النتيجة (بعد الوقت الإضافي إن وجد):' : 'توقع النتيجة:';
-
   const locked=isLocked(m)||!!m.res;
   document.getElementById('lkMsg').style.display=locked?'block':'none';
   document.getElementById('predForm').style.display=locked?'none':'block';
   const ex=myPreds[id];
   document.getElementById('sc1').value=ex?ex.s1:0; document.getElementById('sc2').value=ex?ex.s2:0;
-  
   document.getElementById('kobox').style.display=isKo?'block':'none';
   if(isKo){document.getElementById('penw').value=ex?.penW||'';document.getElementById('ps1').value=ex?.ps1??'';document.getElementById('ps2').value=ex?.ps2??'';upPS();}
   document.getElementById('mwrap').classList.add('open');
@@ -841,8 +630,7 @@ function upPrev(){
   const penW=document.getElementById('penw').value, ps1v=document.getElementById('ps1').value, ps2v=document.getElementById('ps2').value;
   const fp={s1,s2,penW,ps1:ps1v!==''?+ps1v:null,ps2:ps2v!==''?+ps2v:null};
   const pts=calcPts({...m,res:{s1,s2,penW,ps1:fp.ps1,ps2:fp.ps2}},fp);
-  document.getElementById('ppn').textContent=pts+' نقطة';
-  document.getElementById('ppd').textContent=pDesc(m,fp);
+  document.getElementById('ppn').textContent=pts+' نقطة'; document.getElementById('ppd').textContent=pDesc(m,fp);
 }
 async function savePred(){
   const m=matches.find(x=>x.id===curMid); if(!m) return;
@@ -852,19 +640,13 @@ async function savePred(){
   try {
     await api('POST','predictions',{matchId:curMid,s1,s2,penW:penW||null,ps1:ps1v!==''?+ps1v:null,ps2:ps2v!==''?+ps2v:null});
     myPreds[curMid]={s1,s2,penW:penW||null,ps1:ps1v!==''?+ps1v:null,ps2:ps2v!==''?+ps2v:null};
-    closeM(); rMatches(); rHome();
-    document.getElementById('tpts').textContent=getTotalPts()+' نقطة';
-    toast('تم حفظ التوقع ✓');
+    closeM(); rMatches(); rHome(); document.getElementById('tpts').textContent=getTotalPts()+' نقطة'; toast('تم حفظ التوقع ✓');
   } catch(e){toast('خطأ: '+e.message);}
 }
 
-// ══════════════════════════════════════════
-//  LEADERBOARD
-// ══════════════════════════════════════════
 async function rLb() {
   try { board=await api('GET','leaderboard'); } catch {}
-  const myUid=me?.uid, rks=['🥇','🥈','🥉'];
-  const myLeagues=leagues;
+  const myUid=me?.uid, rks=['🥇','🥈','🥉']; const myLeagues=leagues;
   let html='<div class="sec"><i class="ti ti-world"></i> الترتيب العام</div>';
   html+=board.map((u,i)=>
     `<div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
@@ -883,65 +665,36 @@ async function rLb() {
           <div><div style="font-size:13px;font-weight:600;color:var(--text)">${lg.name}</div><div style="font-size:11px;color:var(--t3);margin-top:2px"><i class="ti ti-users" style="font-size:11px"></i> ${lg.members.length} عضو</div></div>
           <div style="text-align:right"><div style="font-size:18px;font-weight:700;color:var(--gold)">#${myPos}</div><div style="font-size:10px;color:var(--t3)">ترتيبي</div></div>
         </div>
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-          <div class="lcod">${lg.code}</div>
-          <div style="font-size:11px;color:var(--blue)">تفاصيل <i class="ti ti-chevron-left" style="font-size:12px"></i></div>
-        </div>
       </div>`;
     }).join('');
-  } else {
-    html+=`<div class="sec" style="margin-top:18px"><i class="ti ti-users"></i> دورياتي</div>
-    <div style="background:var(--card);border:1px dashed rgba(255,255,255,.12);border-radius:13px;padding:20px;text-align:center;color:var(--t3);font-size:12px">
-      <div style="font-size:26px;margin-bottom:8px">🏆</div>لم تنضم إلى أي دوري بعد
-    </div>`;
-  }
+  } else { html+=`<div class="sec" style="margin-top:18px"><i class="ti ti-users"></i> دورياتي</div><div class="empty">لم تنضم إلى أي دوري بعد</div>`; }
   document.getElementById('glb').innerHTML=html;
 }
 function showLbLg(lgId) {
   const lg=leagues.find(l=>l.id===lgId); if(!lg) return;
-  const myUid=me?.uid, isOwn=lg.owner===myUid;
-  const lgBoard=board.filter(u=>lg.members.includes(u.uid)).sort((a,b)=>b.pts-a.pts);
-  const myPos=lgBoard.findIndex(u=>u.uid===myUid)+1;
-  const rks=['🥇','🥈','🥉'];
-  const ov=document.createElement('div');
-  ov.id='lb-lg-ov'; ov.style.cssText='position:absolute;inset:0;background:var(--bg);z-index:40;overflow-y:auto;-webkit-overflow-scrolling:touch';
-  ov.innerHTML=`<div style="padding:14px 14px 90px">
-    <button class="bkbtn" onclick="document.getElementById('lb-lg-ov').remove()"><i class="ti ti-arrow-left"></i> الترتيب</button>
-    <div style="font-size:17px;font-weight:700;margin-bottom:4px">${lg.name}</div>
-    <div style="font-size:11px;color:var(--t3);margin-bottom:14px">${lg.members.length} عضو · ترتيبي: <span style="color:var(--gold);font-weight:700">#${myPos}</span></div>
-    <div class="codebox"><span class="codebig">${lg.code}</span><div class="codelbl">أرسل هذا الكود لأصدقائك للانضمام</div><button class="copybtn" onclick="navigator.clipboard.writeText('${lg.code}').then(()=>toast('تم النسخ ✓'))"><i class="ti ti-copy"></i> نسخ الكود</button></div>
-    <div class="sec"><i class="ti ti-medal"></i> ترتيب الدوري</div>
+  const myUid=me?.uid, lgBoard=board.filter(u=>lg.members.includes(u.uid)).sort((a,b)=>b.pts-a.pts);
+  const myPos=lgBoard.findIndex(u=>u.uid===myUid)+1, rks=['🥇','🥈','🥉'];
+  const ov=document.createElement('div'); ov.id='lb-lg-ov'; ov.style.cssText='position:absolute;inset:0;background:var(--bg);z-index:40;overflow-y:auto;';
+  ov.innerHTML=`<div style="padding:14px 14px 90px"><button class="bkbtn" onclick="document.getElementById('lb-lg-ov').remove()"><i class="ti ti-arrow-left"></i> الترتيب</button><div style="font-size:17px;font-weight:700;margin-bottom:4px">${lg.name}</div><div class="sec"><i class="ti ti-medal"></i> ترتيب الدوري</div>
     ${lgBoard.map((u,i)=>`<div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
       <div class="lbr ${i===0?'g':i===1?'s':i===2?'b':''}">${rks[i]||`#${i+1}`}</div>
       <div class="lbav" style="${i===0?'background:var(--gold2);color:#0D1520':''}">${(u.username||'?').charAt(0).toUpperCase()}</div>
       <div class="lbn">${u.username}${u.uid===myUid?' <span style="font-size:9px;color:var(--blue)">(أنت)</span>':''}<small>${u.predCount} توقع</small></div>
       <div style="text-align:right"><div class="lbp">${u.pts}</div><div style="font-size:10px;color:var(--t3)">نقطة</div></div>
     </div>`).join('')}
-    ${!isOwn?`<button class="btn outline" style="margin-top:14px" onclick="leaveLgFromLb('${lgId}')">مغادرة الدوري</button>`:''}
   </div>`;
   document.getElementById('pg-lb').querySelector('.pi').appendChild(ov);
 }
-async function leaveLgFromLb(id){await doLeaveLg(id);document.getElementById('lb-lg-ov')?.remove();rLb();}
 
-// ══════════════════════════════════════════
-//  LEAGUES
-// ══════════════════════════════════════════
 async function createLg(){
-  const name=document.getElementById('lgnm').value.trim();
-  if(!name){toast('أدخل اسم الدوري');return;}
-  try{const lg=await api('POST','leagues?action=create',{name});leagues.push(lg);document.getElementById('lgnm').value='';rLeagues();toast('الكود: '+lg.code);}
-  catch(e){toast(e.message);}
+  const name=document.getElementById('lgnm').value.trim(); if(!name)return toast('أدخل اسم الدوري');
+  try{const lg=await api('POST','leagues?action=create',{name}); leagues.push(lg); document.getElementById('lgnm').value=''; rLeagues(); toast('الكود: '+lg.code);}catch(e){toast(e.message);}
 }
 async function joinLg(){
-  const code=document.getElementById('jcode').value.trim().toUpperCase();
-  if(!code){toast('أدخل الكود');return;}
-  try{const lg=await api('POST','leagues?action=join',{code});if(!leagues.find(l=>l.id===lg.id))leagues.push(lg);else leagues=leagues.map(l=>l.id===lg.id?lg:l);document.getElementById('jcode').value='';rLeagues();toast('انضممت ✓');}
-  catch(e){toast(e.message);}
+  const code=document.getElementById('jcode').value.trim().toUpperCase(); if(!code)return toast('أدخل الكود');
+  try{const lg=await api('POST','leagues?action=join',{code}); if(!leagues.find(l=>l.id===lg.id))leagues.push(lg); else leagues=leagues.map(l=>l.id===lg.id?lg:l); document.getElementById('jcode').value=''; rLeagues(); toast('انضممت ✓');}catch(e){toast(e.message);}
 }
-async function doLeaveLg(id){
-  try{await api('POST','leagues?action=leave',{leagueId:id});leagues=leagues.filter(l=>l.id!==id);rLeagues();toast('غادرت الدوري');}
-  catch(e){toast(e.message);}
-}
+async function doLeaveLg(id){ try{await api('POST','leagues?action=leave',{leagueId:id}); leagues=leagues.filter(l=>l.id!==id); rLeagues(); toast('غادرت الدوري');}catch(e){toast(e.message);} }
 function rLeagues(){
   const myUid=me?.uid;
   document.getElementById('mylgs').innerHTML=leagues.length?leagues.map(lg=>
@@ -954,57 +707,31 @@ function rLeagues(){
 }
 function showLg(lgId){
   const lg=leagues.find(l=>l.id===lgId); if(!lg) return;
-  document.getElementById('lglist').style.display='none';
-  const myUid=me?.uid, isOwn=lg.owner===myUid;
-  const lgBoard=board.filter(u=>lg.members.includes(u.uid)).sort((a,b)=>b.pts-a.pts);
-  const myPos=lgBoard.findIndex(u=>u.uid===myUid)+1;
-  const rks=['🥇','🥈','🥉'];
+  document.getElementById('lglist').style.display='none'; const myUid=me?.uid, isOwn=lg.owner===myUid;
   document.getElementById('lgdet').style.display='';
   document.getElementById('lgdet').innerHTML=`<div style="padding-bottom:80px">
-    <button class="bkbtn" onclick="backLg()"><i class="ti ti-arrow-left"></i> الدوريات</button>
+    <button class="bkbtn" onclick="document.getElementById('lgdet').style.display='none';document.getElementById('lglist').style.display='';"><i class="ti ti-arrow-left"></i> الدوريات</button>
     <div style="font-size:17px;font-weight:700;margin-bottom:4px">${lg.name}</div>
-    <div style="font-size:11px;color:var(--t3);margin-bottom:14px">ترتيبي: <span style="color:var(--gold);font-weight:700">#${myPos}</span></div>
-    <div class="codebox"><span class="codebig">${lg.code}</span><div class="codelbl">أرسل هذا الكود لأصدقائك للانضمام</div><button class="copybtn" onclick="navigator.clipboard.writeText('${lg.code}').then(()=>toast('تم النسخ ✓'))"><i class="ti ti-copy"></i> نسخ الكود</button></div>
-    <div class="sec"><i class="ti ti-medal"></i> ترتيب الدوري</div>
-    ${lgBoard.map((u,i)=>`<div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
-      <div class="lbr ${i===0?'g':i===1?'s':i===2?'b':''}">${rks[i]||`#${i+1}`}</div>
-      <div class="lbav" style="${i===0?'background:var(--gold2);color:#0D1520':''}">${(u.username||'?').charAt(0).toUpperCase()}</div>
-      <div class="lbn">${u.username}${u.uid===myUid?' <span style="font-size:9px;color:var(--blue)">(أنت)</span>':''}<small>${u.predCount} توقع</small></div>
-      <div style="text-align:right"><div class="lbp">${u.pts}</div><div style="font-size:10px;color:var(--t3)">نقطة</div></div>
-    </div>`).join('')}
-    ${!isOwn?`<button class="btn outline" style="margin-top:14px" onclick="doLeaveLg('${lgId}');backLg()">مغادرة الدوري</button>`:''}
+    <div class="codebox"><span class="codebig">${lg.code}</span><div class="codelbl">أرسل الكود للأصدقاء للانضمام</div><button class="copybtn" onclick="navigator.clipboard.writeText('${lg.code}').then(()=>toast('تم النسخ ✓'))">نسخ الكود</button></div>
+    ${!isOwn?`<button class="btn outline" onclick="doLeaveLg('${lgId}');document.getElementById('lgdet').style.display='none';document.getElementById('lglist').style.display='';">مغادرة الدوري</button>`:''}
   </div>`;
 }
-function backLg(){document.getElementById('lgdet').style.display='none';document.getElementById('lglist').style.display='';}
-function copyCd(c){navigator.clipboard.writeText(c).then(()=>toast('تم النسخ ✓')).catch(()=>toast('الكود: '+c));}
 
-// ══════════════════════════════════════════
-//  PROFILE
-// ══════════════════════════════════════════
 function rProf(){
   if(!me) return;
   document.getElementById('pav').textContent=(me.username||'?').charAt(0).toUpperCase();
-  document.getElementById('pnm').textContent=me.username;
-  document.getElementById('psb').textContent='@'+me.username+(me.isAdmin?' · مشرف':'');
-  const pts=getTotalPts(), pc=Object.keys(myPreds).length;
-  document.getElementById('pst').innerHTML=
-    `<div><div class="ps-n">${pts}</div><div class="ps-l">نقاط</div></div>`+
-    `<div><div class="ps-n">${pc}</div><div class="ps-l">توقع</div></div>`+
-    `<div><div class="ps-n">#${getMyRank()}</div><div class="ps-l">ترتيب</div></div>`;
-  document.getElementById('logout-w').innerHTML=
-    '<button class="btn outline" style="margin-top:12px" onclick="doLogout()"><i class="ti ti-logout"></i> تسجيل الخروج</button>';
+  document.getElementById('pnm').textContent=me.username; document.getElementById('psb').textContent='@'+me.username+(me.isAdmin?' · مشرف':'');
+  document.getElementById('pst').innerHTML=`<div><div class="ps-n">${getTotalPts()}</div><div class="ps-l">نقاط</div></div><div><div class="ps-n">${Object.keys(myPreds).length}</div><div class="ps-l">توقع</div></div><div><div class="ps-n">#${getMyRank()}</div><div class="ps-l">ترتيب</div></div>`;
+  document.getElementById('logout-w').innerHTML='<button class="btn outline" style="margin-top:12px" onclick="doLogout()"><i class="ti ti-logout"></i> تسجيل الخروج</button>';
 }
 async function chpw(){
-  const newPassword=document.getElementById('pw-new').value;
-  const err=document.getElementById('pw-err');
-  if(newPassword.length<4){err.textContent='4 أحرف على الأقل';return;}
-  try{await api('POST','auth?action=change-password',{newPassword});err.style.color='var(--green)';err.textContent='تم التحديث ✓';document.getElementById('pw-new').value='';setTimeout(()=>{err.textContent='';err.style.color='';},3000);}
-  catch(e){err.textContent=e.message;}
+  const np=document.getElementById('pw-new').value, err=document.getElementById('pw-err');
+  if(np.length<4){err.textContent='4 أحرف على الأقل';return;}
+  try{await api('POST','auth?action=change-password',{newPassword:np}); err.style.color='var(--green)'; err.textContent='تم التحديث ✓'; document.getElementById('pw-new').value=''; setTimeout(()=>{err.textContent='';err.style.color='';},3000);}catch(e){err.textContent=e.message;}
 }
 
-// ══════════════════════════════════════════
-//  ADMIN
-// ══════════════════════════════════════════
+function flt(f,btn){mflt=f;document.querySelectorAll('.fbr .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rMatches();}
+
 async function rAdmin(){
   try{
     const users=await api('GET','users');
@@ -1018,71 +745,28 @@ async function rAdmin(){
   }catch{}
   document.getElementById('admlist').innerHTML=matches.map(m=>
     `<div class="arow">
-      <div style="font-size:12px;font-weight:600;color:var(--text)">${gf(m.t1)} ${m.t1} <span style="color:var(--t3)">vs</span> ${m.t2} ${gf(m.t2)} <span style="font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px">${SLBL[m.stg]} · ج${m.grp||''}</span></div>
+      <div style="font-size:12px;font-weight:600;color:var(--text)">${gf(m.t1)} ${m.t1} <span style="color:var(--t3)">vs</span> ${m.t2} ${gf(m.t2)} <span style="font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px">${SLBL[m.stg]} · ${m.grp?'ج'+m.grp:''}</span></div>
       <div style="font-size:9px;color:var(--t3);margin-top:2px">${fmtDT(m.dt)}${isLocked(m)?' 🔒':''}</div>
       ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr">✓ ${m.res.s1}–${m.res.s2}${m.res.penW?` (P: ${m.res.ps1!=null?m.res.ps1:'-'}–${m.res.ps2!=null?m.res.ps2:'-'})`:''}</div>`:''}
-      <div class="ri">
-        <input type="number" min="0" max="20" id="r1-${m.id}" value="${m.res?m.res.s1:''}"/>
-        <span style="color:var(--t3)">–</span>
-        <input type="number" min="0" max="20" id="r2-${m.id}" value="${m.res?m.res.s2:''}"/>
-      </div>
-      ${KO.includes(m.stg) ? `
-      <div class="ri" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); display:flex; gap:6px; align-items:center;">
-        <select id="r-penw-${m.id}" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); padding:5px; border-radius:6px; font-size:11px; outline:none; flex:1;">
-          <option value="">-- بدون ضربات جزاء --</option>
-          <option value="t1" ${m.res&&m.res.penW==='t1'?'selected':''}>فوز ${m.t1}</option>
-          <option value="t2" ${m.res&&m.res.penW==='t2'?'selected':''}>فوز ${m.t2}</option>
-        </select>
-        <div style="display:flex; gap:3px; align-items:center;">
-          <input type="number" id="r-ps1-${m.id}" value="${m.res&&m.res.ps1!=null?m.res.ps1:''}" placeholder="${m.t1}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/>
-          <span style="color:var(--t3)">-</span>
-          <input type="number" id="r-ps2-${m.id}" value="${m.res&&m.res.ps2!=null?m.res.ps2:''}" placeholder="${m.t2}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/>
-        </div>
-      </div>
-      ` : ''}
-      <div class="ri" style="margin-top:8px">
-        <button class="sbtn" onclick="setR('${m.id}')">تسجيل النتيجة</button>
-        ${m.res?`<button class="dbtn" onclick="clrR('${m.id}')">إلغاء</button>`:''}
-        <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash" style="font-size:12px"></i></button>
-      </div>
+      <div class="ri"><input type="number" min="0" max="20" id="r1-${m.id}" value="${m.res?m.res.s1:''}"/> <span style="color:var(--t3)">–</span> <input type="number" min="0" max="20" id="r2-${m.id}" value="${m.res?m.res.s2:''}"/></div>
+      ${KO.includes(m.stg) ? `<div class="ri" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); display:flex; gap:6px; align-items:center;"><select id="r-penw-${m.id}" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); padding:5px; border-radius:6px; font-size:11px; outline:none; flex:1;"><option value="">-- بدون ضربات جزاء --</option><option value="t1" ${m.res&&m.res.penW==='t1'?'selected':''}>فوز ${m.t1}</option><option value="t2" ${m.res&&m.res.penW==='t2'?'selected':''}>فوز ${m.t2}</option></select><div style="display:flex; gap:3px; align-items:center;"><input type="number" id="r-ps1-${m.id}" value="${m.res&&m.res.ps1!=null?m.res.ps1:''}" placeholder="${m.t1}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/><span style="color:var(--t3)">-</span><input type="number" id="r-ps2-${m.id}" value="${m.res&&m.res.ps2!=null?m.res.ps2:''}" placeholder="${m.t2}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/></div></div>` : ''}
+      <div class="ri" style="margin-top:8px"><button class="sbtn" onclick="setR('${m.id}')">تسجيل النتيجة</button> ${m.res?`<button class="dbtn" onclick="clrR('${m.id}')">إلغاء</button>`:''} <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash" style="font-size:12px"></i></button></div>
     </div>`).join('');
 }
-async function toggleAdmin(uid,isAdmin){
-  try{await api('PUT','users',{uid,isAdmin});await rAdmin();toast(isAdmin?'تم ترقية المستخدم ✓':'تم إزالة صلاحية المشرف');}
-  catch(e){toast(e.message);}
-}
 async function setR(id){
-  const m = matches.find(x=>x.id===id);
-  const s1=document.getElementById('r1-'+id)?.value, s2=document.getElementById('r2-'+id)?.value;
+  const m = matches.find(x=>x.id===id); const s1=document.getElementById('r1-'+id)?.value, s2=document.getElementById('r2-'+id)?.value;
   if(s1===''||s2===''){toast('أدخل النتيجة الأساسية');return;}
   let penW=null, ps1=null, ps2=null;
-  if (KO.includes(m.stg)) {
-    penW = document.getElementById('r-penw-'+id)?.value || null;
-    const _ps1 = document.getElementById('r-ps1-'+id)?.value;
-    const _ps2 = document.getElementById('r-ps2-'+id)?.value;
-    ps1 = _ps1!=='' ? +_ps1 : null;
-    ps2 = _ps2!=='' ? +_ps2 : null;
-  }
-  try{const upd=await api('PUT','matches?id='+id,{res:{s1:+s1,s2:+s2, penW, ps1, ps2}}); matches=matches.map(m=>m.id===id?upd:m);rAdmin();rHome();toast('تم تسجيل النتيجة ✓');}
-  catch(e){toast(e.message);}
+  if (KO.includes(m.stg)) { penW=document.getElementById('r-penw-'+id)?.value||null; const _ps1=document.getElementById('r-ps1-'+id)?.value; const _ps2=document.getElementById('r-ps2-'+id)?.value; ps1=_ps1!==''?+_ps1:null; ps2=_ps2!==''?+_ps2:null; }
+  try{const upd=await api('PUT','matches?id='+id,{res:{s1:+s1,s2:+s2, penW, ps1, ps2}}); matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم تسجيل النتيجة ✓');}catch(e){toast(e.message);}
 }
-async function clrR(id){
-  try{const upd=await api('PUT','matches?id='+id,{res:null});matches=matches.map(m=>m.id===id?upd:m);rAdmin();rHome();toast('تم إلغاء النتيجة');}
-  catch(e){toast(e.message);}
-}
-async function delM(id){
-  try{await api('DELETE','matches?id='+id);matches=matches.filter(m=>m.id!==id);rAdmin();rMatches();toast('حُذفت المباراة');}
-  catch(e){toast(e.message);}
-}
+async function clrR(id){ try{const upd=await api('PUT','matches?id='+id,{res:null});matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم إلغاء النتيجة');}catch(e){toast(e.message);} }
+async function delM(id){ try{await api('DELETE','matches?id='+id);matches=matches.filter(m=>m.id!==id); rAdmin(); rMatches(); toast('حُذفت المباراة');}catch(e){toast(e.message);} }
 async function addMatch(){
-  const t1=document.getElementById('at1').value.trim(),t2=document.getElementById('at2').value.trim();
-  if(!t1||!t2){toast('أدخل اسمي الفريقين');return;}
-  const d=document.getElementById('adate').value.trim(),ti=document.getElementById('atime').value.trim();
-  let dt=null; try{if(d&&ti)dt=new Date(`${d}T${ti}:00Z`).toISOString();}catch{}
-  try{const m=await api('POST','matches',{t1,t2,grp:document.getElementById('agrp').value.trim(),stg:document.getElementById('astg').value,dt,venue:''});matches.push(m);['at1','at2','adate','atime','agrp'].forEach(i=>document.getElementById(i).value='');rAdmin();toast('تمت الإضافة ✓');}
-  catch(e){toast(e.message);}
+  const t1=document.getElementById('at1').value.trim(),t2=document.getElementById('at2').value.trim(); if(!t1||!t2)return toast('أدخل اسمي الفريقين');
+  const d=document.getElementById('adate').value.trim(),ti=document.getElementById('atime').value.trim(); let dt=null; try{if(d&&ti)dt=new Date(`${d}T${ti}:00Z`).toISOString();}catch{}
+  try{const m=await api('POST','matches',{t1,t2,grp:document.getElementById('agrp').value.trim(),stg:document.getElementById('astg').value,dt,venue:''}); matches.push(m); ['at1','at2','adate','atime','agrp'].forEach(i=>document.getElementById(i).value=''); rAdmin(); rMatches(); toast('تمت الإضافة ✓');}catch(e){toast(e.message);}
 }
-
 </script>
 </body>
 </html>
