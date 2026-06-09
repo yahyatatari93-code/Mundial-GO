@@ -6,6 +6,9 @@ const ADMINS = ['red_army', 'yahya'];
 const BIG_TEAMS = ['البرازيل', 'الأرجنتين', 'إنكلترا', 'ألمانيا', 'إسبانيا', 'البرتغال', 'هولندا', 'فرنسا', 'بلجيكا'];
 const KO_STAGES = ['r32', 'r16', 'qf', 'sf', 'final'];
 
+// الموعد الصارم لقفل التوقعات الكبرى: لحظة انطلاق مباراة الافتتاح
+const BONUS_LOCK_TIME = new Date('2026-06-11T19:00:00Z').getTime();
+
 const OFFICIAL_SCHEDULE = [
     { id: "m1", t1: "المكسيك", t2: "جنوب أفريقيا", grp: "1", stg: "group", dt: "2026-06-11T19:00:00Z", res: null },
     { id: "m2", t1: "كوريا الجنوبية", t2: "التشيك", grp: "1", stg: "group", dt: "2026-06-12T02:00:00Z", res: null },
@@ -55,7 +58,7 @@ const OFFICIAL_SCHEDULE = [
     { id: "m45", t1: "البرتغال", t2: "أوزبكستان", grp: "2", stg: "group", dt: "2026-06-23T17:00:00Z", res: null },
     { id: "m46", t1: "إنكلترا", t2: "غانا", grp: "2", stg: "group", dt: "2026-06-23T20:00:00Z", res: null },
     { id: "m47", t1: "بنما", t2: "كرواتيا", grp: "2", stg: "group", dt: "2026-06-23T23:00:00Z", res: null },
-    { id: "m48", t1: "كولومبيا", t2: "الالكونغو", grp: "2", stg: "group", dt: "2026-06-24T02:00:00Z", res: null },
+    { id: "m48", t1: "كولومبيا", t2: "الكونغو", grp: "2", stg: "group", dt: "2026-06-24T02:00:00Z", res: null },
     { id: "m49", t1: "سويسرا", t2: "كندا", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
     { id: "m50", t1: "البوسنة", t2: "قطر", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
 
@@ -63,12 +66,12 @@ const OFFICIAL_SCHEDULE = [
     { id: "m52", t1: "المغرب", t2: "هايتي", grp: "3", stg: "group", dt: "2026-06-24T22:00:00Z", res: null },
     { id: "m53", t1: "التشيك", t2: "المكسيك", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: null },
     { id: "m54", t1: "جنوب أفريقيا", t2: "كوريا الجنوبية", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: null },
-    { id: "m55", t1: "الإكوادور", t2: "ألمانيا", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
+    { id: "m55", t1: "الإكوادور", t2: "أمركيا", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
     { id: "m56", t1: "كوراساو", t2: "كوت ديفوار", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
     { id: "m57", t1: "تونس", t2: "هولندا", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
     { id: "m58", t1: "اليابان", t2: "السويد", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
     { id: "m59", t1: "تركيا", t2: "الولايات المتحدة", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
-    { id: "m60", t1: "الالباراغواي", t2: "أستراليا", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
+    { id: "m60", t1: "الباراغواي", t2: "أستراليا", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
     { id: "m61", t1: "النرويج", t2: "فرنسا", grp: "3", stg: "group", dt: "2026-06-26T19:00:00Z", res: null },
     { id: "m62", t1: "السنغال", t2: "العراق", grp: "3", stg: "group", dt: "2026-06-26T19:00:00Z", res: null },
     { id: "m63", t1: "الأوروغواي", t2: "إسبانيا", grp: "3", stg: "group", dt: "2026-06-27T00:00:00Z", res: null },
@@ -135,7 +138,6 @@ module.exports = async (req, res) => {
     const action = urlObj.searchParams.get('action') || '';
     const matchIdParam = urlObj.searchParams.get('id') || '';
 
-    // نظام مصادقة حديدي ومعزول لمنع تسريب التوقعات
     let userSession = null;
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -143,8 +145,7 @@ module.exports = async (req, res) => {
             const token = authHeader.split(' ')[1];
             const decoded = jwt.verify(token, JWT_SECRET);
             if (decoded && decoded.username) {
-                const dbUser = await kv.get(`user:${decoded.username.toLowerCase().trim()}`);
-                if (dbUser) userSession = dbUser; // جلب الـ uid الحقيقي والمعزول من قاعدة البيانات مباشرة
+                userSession = await kv.get(`user:${decoded.username.toLowerCase().trim()}`);
             }
         } catch (e) {}
     }
@@ -152,63 +153,31 @@ module.exports = async (req, res) => {
     try {
         if (route === 'auth') {
             const { username, password, newPassword } = req.body || {};
-
             if (action === 'register') {
                 const cleanUser = username.trim().toLowerCase();
-                const existing = await kv.get(`user:${cleanUser}`);
-                if (existing) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
-                
+                if (await kv.get(`user:${cleanUser}`)) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
                 const uid = 'u_' + Math.random().toString(36).substr(2, 9);
                 const userObj = { uid, username: cleanUser, password, isAdmin: ADMINS.includes(cleanUser) };
-                
                 await kv.set(`user:${cleanUser}`, userObj);
                 await kv.set(`uid:${uid}`, userObj);
-                
                 let allUsers = await kv.get('all_users_list') || [];
                 allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
                 await kv.set('all_users_list', allUsers);
-
                 return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
-
             if (action === 'login') {
                 const cleanUser = username.trim().toLowerCase();
                 const userObj = await kv.get(`user:${cleanUser}`);
                 if (!userObj || userObj.password !== password) return res.status(400).json({ error: 'بيانات الدخول خاطئة' });
-                
-                if (!userObj.uid) {
-                    userObj.uid = 'u_' + Math.random().toString(36).substr(2, 9);
-                    await kv.set(`user:${cleanUser}`, userObj);
-                    await kv.set(`uid:${userObj.uid}`, userObj);
-                    let allUsers = await kv.get('all_users_list') || [];
-                    if (!allUsers.some(u => u.username === cleanUser)) {
-                        allUsers.push({ uid: userObj.uid, username: cleanUser, isAdmin: ADMINS.includes(cleanUser) });
-                        await kv.set('all_users_list', allUsers);
-                    }
-                }
                 userObj.isAdmin = ADMINS.includes(cleanUser);
                 return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
-
-            if (action === 'me') {
-                if (!userSession) return res.status(401).json({ error: 'غير مصرح' });
-                return res.status(200).json(userSession);
-            }
-
-            if (action === 'change-password') {
-                if (!userSession) return res.status(401).json({ error: 'غير مصرح' });
-                userSession.password = newPassword;
-                await kv.set(`user:${userSession.username}`, userSession);
-                return res.status(200).json({ success: true });
-            }
+            if (action === 'me') return res.status(200).json(userSession);
         }
 
         if (route === 'matches') {
             let matches = await kv.get('db_matches');
-            if (!matches || !Array.isArray(matches) || matches.length === 0) {
-                matches = OFFICIAL_SCHEDULE;
-                await kv.set('db_matches', OFFICIAL_SCHEDULE);
-            }
+            if (!matches || matches.length === 0) { matches = OFFICIAL_SCHEDULE; await kv.set('db_matches', OFFICIAL_SCHEDULE); }
             if (req.method === 'GET') return res.status(200).json(matches);
             if (req.method === 'PUT') {
                 const { res: gameRes } = req.body || {};
@@ -219,24 +188,37 @@ module.exports = async (req, res) => {
         }
 
         if (route === 'predictions') {
-            if (!userSession || !userSession.uid) return res.status(401).json({ error: 'سجل دخولك أولاً' });
-            const userPredsKey = `preds:${userSession.uid}`;
-
-            if (req.method === 'GET') return res.status(200).json(await kv.get(userPredsKey) || {});
-
+            if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
+            if (req.method === 'GET') return res.status(200).json(await kv.get(`preds:${userSession.uid}`) || {});
             if (req.method === 'POST') {
                 const { matchId, s1, s2, penW, ps1, ps2 } = req.body;
                 let matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
-                const currentMatch = matches.find(m => m.id === matchId);
+                const cm = matches.find(m => m.id === matchId);
+                if (Date.now() >= (new Date(cm.dt).getTime() - 3600000)) return res.status(400).json({ error: 'أغلق التوقع' });
+                const cp = await kv.get(`preds:${userSession.uid}`) || {};
+                cp[matchId] = { s1, s2, penW, ps1, ps2 };
+                await kv.set(`preds:${userSession.uid}`, cp);
+                return res.status(200).json({ success: true });
+            }
+        }
 
-                if (!currentMatch) return res.status(404).json({ error: 'المباراة غير موجودة' });
-                if (Date.now() >= (new Date(currentMatch.dt).getTime() - 3600000)) {
-                    return res.status(400).json({ error: 'أغلق التوقع، متبقي أقل من ساعة!' });
-                }
+        // --- مسار بونص التوقعات الكبرى للمشتركين ---
+        if (route === 'bonus') {
+            if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
+            if (req.method === 'GET') return res.status(200).json(await kv.get(`bonus:${userSession.uid}`) || {});
+            if (req.method === 'POST') {
+                if (Date.now() >= BONUS_LOCK_TIME) return res.status(400).json({ error: 'عذراً، تم إغلاق التوقعات الكبرى مع انطلاق مباراة الافتتاح!' });
+                await kv.set(`bonus:${userSession.uid}`, req.body);
+                return res.status(200).json({ success: true });
+            }
+        }
 
-                const currentPreds = await kv.get(userPredsKey) || {};
-                currentPreds[matchId] = { s1, s2, penW, ps1, ps2 };
-                await kv.set(userPredsKey, currentPreds);
+        // --- مسار النتائج الرسمية للبطولة من الإدارة ---
+        if (route === 'bonus_outcomes') {
+            if (req.method === 'GET') return res.status(200).json(await kv.get('official_outcomes') || {});
+            if (req.method === 'POST') {
+                if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
+                await kv.set('official_outcomes', req.body);
                 return res.status(200).json({ success: true });
             }
         }
@@ -244,11 +226,23 @@ module.exports = async (req, res) => {
         if (route === 'leaderboard') {
             const allUsers = await kv.get('all_users_list') || [];
             const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
+            const official = await kv.get('official_outcomes') || {};
 
             const leaderboard = await Promise.all(allUsers.map(async (u) => {
                 const preds = await kv.get(`preds:${u.uid}`) || {};
+                const bonus = await kv.get(`bonus:${u.uid}`) || {};
                 let score = 0;
+                
+                // 1. حساب نقاط المباريات العادية
                 matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
+                
+                // 2. دمج حساب نقاط البونص الكبرى تلقائياً عند اعتمادها من الأدمن
+                if (bonus.first && official.first && bonus.first === official.first) score += 10;
+                if (bonus.second && official.second && bonus.second === official.second) score += 10;
+                if (bonus.third && official.third && bonus.third === official.third) score += 8;
+                if (bonus.fourth && official.fourth && bonus.fourth === official.fourth) score += 5;
+                if (bonus.topScorer && official.topScorer && bonus.topScorer === official.topScorer) score += 5;
+
                 return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
             }));
             return res.status(200).json(leaderboard.sort((a, b) => b.pts - a.pts));
@@ -257,34 +251,21 @@ module.exports = async (req, res) => {
         if (route === 'leagues') {
             if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
             let allLeagues = await kv.get('global_leagues') || [];
-
             if (req.method === 'GET') return res.status(200).json(allLeagues.filter(l => l.members.includes(userSession.uid)));
-
-            const { name, code, leagueId } = req.body || {};
-
+            const { name, code } = req.body || {};
             if (action === 'create') {
                 const newLg = { id: 'lg_' + Date.now(), name, code: Math.random().toString(36).substr(2, 6).toUpperCase(), owner: userSession.uid, members: [userSession.uid] };
-                allLeagues.push(newLg);
-                await kv.set('global_leagues', allLeagues);
-                return res.status(200).json(newLg);
+                allLeagues.push(newLg); await kv.set('global_leagues', allLeagues); return res.status(200).json(newLg);
             }
-
             if (action === 'join') {
                 const targetLg = allLeagues.find(l => l.code === code.toUpperCase());
                 if (!targetLg) return res.status(404).json({ error: 'كود الدوري غير صحيح' });
                 if (!targetLg.members.includes(userSession.uid)) targetLg.members.push(userSession.uid);
-                await kv.set('global_leagues', allLeagues);
-                return res.status(200).json(targetLg);
+                await kv.set('global_leagues', allLeagues); return res.status(200).json(targetLg);
             }
         }
 
-        if (route === 'users') {
-            if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
-            return res.status(200).json(await kv.get('all_users_list') || []);
-        }
-
+        if (route === 'users') return res.status(200).json(await kv.get('all_users_list') || []);
         return res.status(200).json(OFFICIAL_SCHEDULE);
-    } catch (error) {
-        return res.status(500).json({ error: 'خطأ داخلي' });
-    }
+    } catch (error) { return res.status(500).json({ error: 'خطأ داخلي' }); }
 };
