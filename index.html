@@ -169,8 +169,10 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 <body>
 <div id="app">
 
+<!-- LOADER -->
 <div id="loader"><div class="spin"></div><div class="spin-lbl" id="spin-lbl">جاري التحميل...</div></div>
 
+<!-- AUTH -->
 <div id="auth">
   <div class="a-logo">
     <div class="a-trophy">🏆</div>
@@ -187,6 +189,8 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <input class="inp ltr" id="l-u" type="text" placeholder="username" autocomplete="username"/>
       <label class="lbl">كلمة المرور</label>
       <input class="inp" id="l-p" type="password" placeholder="••••••••" autocomplete="current-password"/>
+      <label class="lbl">كلمة المرور</label>
+      <input class="inp" id="l-p" type="password" placeholder="••••••••" autocomplete="current-password"/>
       <button class="btn gold" onclick="doLogin()"><i class="ti ti-login"></i> دخول</button>
       <div class="err" id="l-err"></div>
     </div>
@@ -201,6 +205,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   </div>
 </div>
 
+<!-- MAIN APP -->
 <div class="topbar">
   <div class="tb">
     <div class="tb-ico">🏆</div>
@@ -325,18 +330,23 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴%A7','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
+const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
-// قائمة كبار نجوم الهدافين لقفل الاختيارات ومنع الأخطاء الإملائية
-const TOP_SCORERS_LIST = ['كيليان مبابي', 'فينيسيوس جونيور', 'ليونيل ميسي', 'جود بلينغهام', 'هاري كين', 'إيرلينغ هالاند', 'لوتارو مارتينيز', 'كريستيانو رونالدو', 'جمال موسيالا', 'بوكايو ساكا', 'روبرت ليفاندوفسكي', 'مصطفى محمد', 'سالم الدوسري', 'حكيم زياش', 'ألفارو موراتا'];
+// قائمة نجوم الهدافين المحدثة بالكامل طبقاً لطلبك الدقيق
+const TOP_SCORERS_LIST = [
+  'كيليان مبابي', 'هاري كين', 'إيرلينغ هالاند', 'ليونيل ميسي', 'فينيسيوس جونيور', 
+  'كريستيانو رونالدو', 'برونو فيرنانديز', 'لاوتارو مارتينيز', 'محمد صلاح', 'جود بيلينغهام', 
+  'ميكيل أويارزابال', 'لامين يامال', 'بوكايو ساكا', 'رافائيل لياو', 'فلوريان فيرتز', 
+  'جوليان ألفاريز', 'رافينيا', 'ايغور تياغو', 'أنتوني جوردن', 'مايكل أوليسي', 
+  'عثمان ديمبيلي', 'داروين نونيز', 'لويس دياز'
+];
 
 let token = localStorage.getItem('wc_token') || null;
 let me = JSON.parse(localStorage.getItem('wc_me') || 'null');
 let matches = [], myPreds = {}, board = [], leagues = [], curMid = null, mflt = 'all', pollT = null;
 
-// متغيرات حفظ بونص التوقعات الكبرى
 let myBonus = {}, officialOutcomes = {};
 
 async function api(method, path, body) {
@@ -458,7 +468,6 @@ const fmtDT = dt => {
 };
 const getDayHeader = dk => { const d=new Date(dk+'T12:00:00'); return DAYS[d.getDay()]+' '+d.getDate()+' '+d.toLocaleDateString('ar-SY',{month:'long'}); };
 
-// دالة حساب النقاط الإجمالية مدمج معها حساب بونص المربع الذهبي والهداف تلقائياً
 const getTotalPts = () => {
   let s = matches.reduce((sum, m) => { const p = myPreds[m.id]; return sum + (p && m.res ? calcPts(m, p) : 0); }, 0);
   if (myBonus && officialOutcomes) {
@@ -562,7 +571,6 @@ function rHome() {
     <div class="sc"><div class="sc-n">${pc}</div><div class="sc-l">توقعاتي</div></div>
     <div class="sc"><div class="sc-n">${matches.length-pc}</div><div class="sc-l">متبقية</div></div>`;
   
-  // توليد خيارات المنتخبات واللاعبين ديناميكياً لتجنب الاختلافات الإملائية وعيوب الكتابة الحرة
   const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
   const pOpts = TOP_SCORERS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
 
@@ -624,7 +632,6 @@ function rHome() {
   if(!dayMs.length)  html+='<div class="empty">لا توجد مباريات بعد. تواصل مع المشرف لإضافة المباريات.</div>';
   document.getElementById('hm').innerHTML = html;
 
-  // ملء الخيارات المحفوظة مسبقاً للمستخدم إذا وُجدت قبل القفل
   if (!isLockedBonus && myBonus) {
     if(myBonus.first) document.getElementById('b-first').value = myBonus.first;
     if(myBonus.second) document.getElementById('b-second').value = myBonus.second;
@@ -637,7 +644,6 @@ function rHome() {
   if(allDone) window._hrt=setTimeout(()=>{if(activeTournamentDay()!==_homeDay)rHome();else window._hrt=setTimeout(rHome,30000);},30000);
 }
 
-// دالة إرسال وحفظ بونص التوقعات الكبرى
 async function saveBonus() {
   const first = document.getElementById('b-first').value;
   const second = document.getElementById('b-second').value;
@@ -865,7 +871,6 @@ async function rAdmin(){
       </div>`).join('');
   }catch{}
   
-  // بناء قسم الإدخال الرسمي للنتائج النهائية الكبرى للأدمن تلقائياً
   const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
   const pOpts = TOP_SCORERS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
   
@@ -902,7 +907,6 @@ async function rAdmin(){
     </div>`).join('');
 }
 
-// دالة الأدمن لتثبيت النتائج الرسمية الكبرى وحساب بونص المجموعات تلقائياً
 async function saveOfficialOutcomes() {
   const first = document.getElementById('adm-f-first').value;
   const second = document.getElementById('adm-f-second').value;
