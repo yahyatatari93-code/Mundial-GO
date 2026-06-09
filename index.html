@@ -84,7 +84,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .bdot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.7;flex-shrink:0}
 .vsc{text-align:center;flex-shrink:0}
 .vs-v{font-size:10px;color:var(--t3);background:rgba(255,255,255,.05);border-radius:6px;padding:3px 8px;display:inline-block;border:1px solid var(--border)}
-.vs-r{font-size:16px;font-weight:700;color:#fff;background:rgba(255,255,255,.07);border-radius:6px;padding:3px 9px;display:inline-block;direction:rtl}
+.vs-r{font-size:16px;font-weight:700;color:#fff;background:rgba(255,255,255,.07);border-radius:6px;padding:3px 9px;display:inline-block;direction:ltr}
 .mbot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
 .mpred{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:3px}.mpred.y{color:var(--gold)}
 .chip{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:500;direction:ltr}
@@ -236,7 +236,6 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   </div></div>
   <div id="pg-lb" class="pg"><div class="pi" style="position:relative"><div id="glb"></div></div></div>
   
-  <!-- صفحة القواعد بعد التحديث الجديد -->
   <div id="pg-rules" class="pg"><div class="pi">
     <div class="rb"><h3>🔵 الفرق العادية ضد بعضها</h3>
       <div class="rr"><span>توقع الفوز / التعادل</span><span class="rpts">1 نقطة</span></div>
@@ -326,7 +325,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
+const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴%A2','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴%A7','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
@@ -474,59 +473,47 @@ function goTab(t, btn) {
   fn[t]?.();
 }
 
-// دالة حساب النقاط المحدثة بالكامل طبقاً لطلبك
 function calcPts(m, pred) {
   if (!m.res || !pred) return 0;
   const s1=+pred.s1, s2=+pred.s2, r1=+m.res.s1, r2=+m.res.s2;
   const t1b=isB(m.t1), t2b=isB(m.t2); let pts=0;
   
   if (t1b && t2b) {
-    // الفرق الكبيرة ضد بعضها
     const pr=s1>s2?'w1':s1<s2?'w2':'d', ar=r1>r2?'w1':r1<r2?'w2':'d';
     if(s1===r1&&s2===r2) {
-      pts = (ar === 'd') ? 3 : 5; // التعادل الرقمي = 3، الفوز الرقمي = 5
+      pts = (ar === 'd') ? 3 : 5;
     } else if(pr===ar) {
-      pts = (ar === 'd') ? 2 : 3; // التعادل = 2، فوز أحد الفريقين = 3
+      pts = (ar === 'd') ? 2 : 3;
     }
   } else if (t1b || t2b) {
-    // فريق كبير ضد فريق عادي
     const bf=t1b;
     const bW = bf ? (r1 > r2) : (r2 > r1);
     const dr = (r1 === r2);
     const sW = bf ? (r2 > r1) : (r1 > r2);
-    
     const pbW = bf ? (s1 > s2) : (s2 > s1);
     const pd = (s1 === s2);
     const psW = bf ? (s2 > s1) : (s1 > s2);
-
     if (s1 === r1 && s2 === r2) {
-      if (bW) pts = 2; // فوز الفريق الكبير الرقمي = 2
-      if (dr) pts = 3; // التعادل الرقمي = 3
-      if (sW) pts = 6; // فوز الفريق العادي الرقمي = 6
+      if (bW) pts = 2;
+      if (dr) pts = 3;
+      if (sW) pts = 6;
     } else {
-      if (pbW && bW) pts = 1; // فوز الفريق الكبير = 1
-      if (pd && dr) pts = 2;  // التعادل = 2
-      if (psW && sW) pts = 4; // فوز الفريق العادي = 4
+      if (pbW && bW) pts = 1;
+      if (pd && dr) pts = 2;
+      if (psW && sW) pts = 4;
     }
   } else {
-    // الفرق العادية ضد بعضها
     const pr=s1>s2?'w1':s1<s2?'w2':'d', ar=r1>r2?'w1':r1<r2?'w2':'d';
     if(s1===r1&&s2===r2) {
       const sr = r1 + r2;
-      pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; // مجموع +5 أهداف أو التعادل 0-0 = 4، النتيجة الرقمية الصحيحة = 3
+      pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3;
     } else if(pr===ar) {
-      pts = 1; // توقع الفوز / التعادل = 1
+      pts = 1;
     }
   }
-  
-  // الأدوار الإقصائية (ضربات الجزاء) المحدثة بعد الحساب الأساسي
   if (KO.includes(m.stg) && m.res) {
-    if (pred.penW && m.res.penW && pred.penW === m.res.penW) {
-      pts += 1; // توقع الفائز بضربات الجزاء = 1
-    }
-    if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) {
-      pts += 5; // توقع نتيجة ضربات الجزاء الرقمية = 5
-    }
+    if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
+    if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
   }
   return pts;
 }
@@ -615,6 +602,7 @@ function rMatches() {
   }).join('');
 }
 
+// تعديل طريقة رسم البطاقة لحل مشكلة الإتجاه المعاكس نهائياً وإلغاء اختلال المتصفحات
 function mcHTML(m) {
   const pred=myPreds[m.id], locked=isLocked(m), b1=isB(m.t1), b2=isB(m.t2);
   const pts = pred&&m.res ? calcPts(m,pred) : null;
@@ -630,11 +618,13 @@ function mcHTML(m) {
     </div>
     <div class="mteams">
       <div class="mt">${b1?'<span class="bdot"></span>':''}<span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span></div>
-      <div class="vsc">${m.res?`<span class="vs-r">${m.res.s2}–${m.res.s1}</span>`:`<span class="vs-v">VS</span>`}</div>
+      <div class="vsc">
+        ${m.res?`<span class="vs-r" style="direction: ltr; display: inline-block;">${m.res.s2} - ${m.res.s1}</span>`:`<span class="vs-v">VS</span>`}
+      </div>
       <div class="mt r"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span>${b2?'<span class="bdot"></span>':''}</div>
     </div>
     <div class="mbot">
-      <div class="mpred ${pred?'y':''}">${pred?`<i class="ti ti-check" style="font-size:10px"></i> توقعي: <span dir="ltr">${pred.s2}–${pred.s1}</span>`:`<i class="ti ti-pencil" style="font-size:10px"></i> ${locked?'مغلق للتوقع':'اضغط للتوقع'}`}</div>
+      <div class="mpred ${pred?'y':''}">${pred?`<i class="ti ti-check" style="font-size:10px"></i> توقعي: <span style="direction: ltr; display: inline-block; margin-right:4px;">${pred.s2} - ${pred.s1}</span>`:`<i class="ti ti-pencil" style="font-size:10px"></i> ${locked?'مغلق للتوقع':'اضغط للتوقع'}`}</div>
       ${pts!==null?`<span class="chip e">+${pts}</span>`:pred&&!m.res?'<span class="chip w">انتظار</span>':''}
     </div>
   </div>`;
@@ -801,7 +791,7 @@ async function rAdmin(){
     `<div class="arow">
       <div style="font-size:12px;font-weight:600;color:var(--text)">${gf(m.t1)} ${m.t1} <span style="color:var(--t3)">vs</span> ${m.t2} ${gf(m.t2)} <span style="font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px">${SLBL[m.stg]} · ${m.grp?'ج'+m.grp:''}</span></div>
       <div style="font-size:9px;color:var(--t3);margin-top:2px">${fmtDT(m.dt)}${isLocked(m)?' 🔒':''}</div>
-      ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr">✓ ${m.res.s2}–${m.res.s1}${m.res.penW?` (P: ${m.res.ps1!=null?m.res.ps1:'-'}–${m.res.ps2!=null?m.res.ps2:'-'})`:''}</div>`:''}
+      ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr; font-family:monospace;">✓ ${m.res.s2} - ${m.res.s1}${m.res.penW?` (P: ${m.res.ps2!=null?m.res.ps2:'-'} - ${m.res.ps1!=null?m.res.ps1:'Explicit'})`:''}</div>`:''}
       <div class="ri"><input type="number" min="0" max="20" id="r1-${m.id}" value="${m.res?m.res.s1:''}"/> <span style="color:var(--t3)">–</span> <input type="number" min="0" max="20" id="r2-${m.id}" value="${m.res?m.res.s2:''}"/></div>
       ${KO.includes(m.stg) ? `<div class="ri" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); display:flex; gap:6px; align-items:center;"><select id="r-penw-${m.id}" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); padding:5px; border-radius:6px; font-size:11px; outline:none; flex:1;"><option value="">-- بدون ضربات جزاء --</option><option value="t1" ${m.res&&m.res.penW==='t1'?'selected':''}>فوز ${m.t1}</option><option value="t2" ${m.res&&m.res.penW==='t2'?'selected':''}>فوز ${m.t2}</option></select><div style="display:flex; gap:3px; align-items:center;"><input type="number" id="r-ps1-${m.id}" value="${m.res&&m.res.ps1!=null?m.res.ps1:''}" placeholder="${m.t1}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/><span style="color:var(--t3)">-</span><input type="number" id="r-ps2-${m.id}" value="${m.res&&m.res.ps2!=null?m.res.ps2:''}" placeholder="${m.t2}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/></div></div>` : ''}
       <div class="ri" style="margin-top:8px"><button class="sbtn" onclick="setR('${m.id}')">تسجيل النتيجة</button> ${m.res?`<button class="dbtn" onclick="clrR('${m.id}')">إلغاء</button>`:''} <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash" style="font-size:12px"></i></button></div>
