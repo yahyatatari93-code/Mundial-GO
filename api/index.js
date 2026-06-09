@@ -2,19 +2,18 @@ const { kv } = require('@vercel/kv');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'wc2026-secret-key';
-const ADMINS = ['red_army', 'yahya'];
-const BIG_TEAMS = ['البرازيل', 'الأرجنتين', 'ألمانيا', 'فرنسا', 'إسبانيا', 'إنجلترا', 'البرتغال', 'إيطاليا'];
+const ADMINS = ['red_army', 'yahya']; // الحسابات الإدارية الصارمة
 
-// الجدول الرسمي الجاهز للدور الأول (تاريخ البدء ينطلق من 11 يونيو 2026)
+// الجدول الرسمي للدور الأول مدعوماً بجميع صيغ الحقول ليتوافق مع واجهتك المستعادة
 const OFFICIAL_SCHEDULE = [
-    { id: "m1", teamA: "المكسيك", teamB: "كندا", day: 1, startTime: "2026-06-11T18:00:00Z", status: "pending" },
-    { id: "m2", teamA: "أمريكا", teamB: "غانا", day: 1, startTime: "2026-06-11T21:00:00Z", status: "pending" },
-    { id: "m3", teamA: "الأرجنتين", teamB: "المغرب", day: 2, startTime: "2026-06-12T15:00:00Z", status: "pending" },
-    { id: "m4", teamA: "فرنسا", teamB: "أستراليا", day: 2, startTime: "2026-06-12T18:00:00Z", status: "pending" },
-    { id: "m5", teamA: "البرازيل", teamB: "اليابان", day: 3, startTime: "2026-06-13T18:00:00Z", status: "pending" },
-    { id: "m6", teamA: "ألمانيا", teamB: "تونس", day: 3, startTime: "2026-06-13T21:00:00Z", status: "pending" },
-    { id: "m7", teamA: "إسبانيا", teamB: "الكاميرون", day: 4, startTime: "2026-06-14T15:00:00Z", status: "pending" },
-    { id: "m8", teamA: "إنجلترا", teamB: "السعودية", day: 4, startTime: "2026-06-14T18:00:00Z", status: "pending" }
+    { id: "m1", matchId: "m1", teamA: "المكسيك", team1: "المكسيك", teamB: "كندا", team2: "كندا", day: 1, matchDay: 1, date: "2026-06-11", time: "18:00", startTime: "2026-06-11T18:00:00Z", status: "pending", round: "first" },
+    { id: "m2", matchId: "m2", teamA: "أمريكا", team1: "أمريكا", teamB: "غانا", team2: "غانا", day: 1, matchDay: 1, date: "2026-06-11", time: "21:00", startTime: "2026-06-11T21:00:00Z", status: "pending", round: "first" },
+    { id: "m3", matchId: "m3", teamA: "الأرجنتين", team1: "الأرجنتين", teamB: "المغرب", team2: "المغرب", day: 2, matchDay: 2, date: "2026-06-12", time: "15:00", startTime: "2026-06-12T15:00:00Z", status: "pending", round: "first" },
+    { id: "m4", matchId: "m4", teamA: "فرنسا", team1: "فرنسا", teamB: "أستراليا", team2: "أستراليا", day: 2, matchDay: 2, date: "2026-06-12", time: "18:00", startTime: "2026-06-12T18:00:00Z", status: "pending", round: "first" },
+    { id: "m5", matchId: "m5", teamA: "البرازيل", team1: "البرازيل", teamB: "اليابان", team2: "اليابان", day: 3, matchDay: 3, date: "2026-06-13", time: "18:00", startTime: "2026-06-13T18:00:00Z", status: "pending", round: "first" },
+    { id: "m6", matchId: "m6", teamA: "ألمانيا", team1: "ألمانيا", teamB: "تونس", team2: "تونس", day: 3, matchDay: 3, date: "2026-06-13", time: "21:00", startTime: "2026-06-13T21:00:00Z", status: "pending", round: "first" },
+    { id: "m7", matchId: "m7", teamA: "إسبانيا", team1: "إسبانيا", teamB: "الكاميرون", team2: "الكاميرون", day: 4, matchDay: 4, date: "2026-06-14", time: "15:00", startTime: "2026-06-14T15:00:00Z", status: "pending", round: "first" },
+    { id: "m8", matchId: "m8", teamA: "إنجلترا", team1: "إنجلترا", teamB: "السعودية", team2: "السعودية", day: 4, matchDay: 4, date: "2026-06-14", time: "18:00", startTime: "2026-06-14T18:00:00Z", status: "pending", round: "first" }
 ];
 
 module.exports = async (req, res) => {
@@ -23,90 +22,64 @@ module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') return res.status(200).end();
 
-    const originalUrl = req.headers['x-matched-path'] || req.url || '';
-    const path = originalUrl.split('?')[0].toLowerCase();
-    const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-    const action = urlObj.searchParams.get('action');
-    const view = urlObj.searchParams.get('view');
-
-    let username = null;
-    const authHeader = req.headers['authorization'];
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        try {
-            const token = authHeader.split(' ')[1];
-            username = jwt.verify(token, JWT_SECRET).username;
-        } catch (e) {}
-    }
+    const reqUrl = req.url.toLowerCase();
 
     try {
-        // --- 1. قسم الحسابات ---
-        if (path.includes('auth')) {
-            const { username: user, password } = req.body || {};
+        // --- 1. قسم الحسابات وتصحيح الصلاحيات تلقائياً ---
+        if (reqUrl.includes('auth')) {
+            const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+            const action = urlObj.searchParams.get('action');
+            const { username, password } = req.body || {};
+
+            if (!username) return res.status(400).json({ error: 'اسم المستخدم مطلوب' });
+            const isAnAdmin = ADMINS.includes(username.toLowerCase());
+
             if (action === 'register') {
-                const existing = await kv.get(`user:${user}`);
+                const existing = await kv.get(`user:${username}`);
                 if (existing) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
-                const newUser = { username: user, password, isAdmin: ADMINS.includes(user.toLowerCase()) };
-                await kv.set(`user:${user}`, newUser);
-                return res.status(200).json({ token: jwt.sign({ username: user }, JWT_SECRET), user: newUser });
+                
+                const user = { username, password, isAdmin: isAnAdmin };
+                await kv.set(`user:${username}`, user);
+                return res.status(200).json({ token: jwt.sign({ username }, JWT_SECRET), user });
             }
+
             if (action === 'login') {
-                const existing = await kv.get(`user:${user}`);
-                if (!existing || existing.password !== password) return res.status(400).json({ error: 'بيانات الدخول خاطئة' });
-                return res.status(200).json({ token: jwt.sign({ username: user }, JWT_SECRET), user: existing });
+                const user = await kv.get(`user:${username}`);
+                if (!user || user.password !== password) return res.status(400).json({ error: 'بيانات الدخول خاطئة' });
+                
+                // تصحيح فوري: حتى لو كان الحساب قديماً، امنحه الإدارة الآن إذا كان في القائمة
+                user.isAdmin = isAnAdmin;
+                return res.status(200).json({ token: jwt.sign({ username }, JWT_SECRET), user });
             }
         }
 
-        // --- 2. قسم المباريات الذكي (حقن تلقائي للجدول) ---
-        if (path.includes('matches') || req.url.toLowerCase().includes('matches')) {
+        // --- 2. قسم المباريات ذو التوافقية العالية ---
+        if (reqUrl.includes('matches')) {
             let matches = await kv.get('matches');
             
-            // إذا كانت قاعدة البيانات فارغة تماماً، قم بحشو الجدول الرسمي تلقائياً فوراً
-            if (!matches || !Array.isArray(matches) || matches.length === 0) {
+            // حماية صلبة: إذا كانت البيانات قديمة أو فارغة أو ناقصة، استبدلها فوراً بالجدول الشامل الكامل
+            if (!matches || !Array.isArray(matches) || matches.length < 5) {
                 matches = OFFICIAL_SCHEDULE;
-                await kv.set('matches', OFFICIAL_SCHEDULE); 
+                await kv.set('matches', OFFICIAL_SCHEDULE);
             }
 
-            // ترتيب المباريات حسب الوقت والتاريخ
-            matches.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+            const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+            const view = urlObj.searchParams.get('view');
 
-            // أ: الرئيسية (مباريات اليوم النشط الحالي فقط)
+            // إذا طلبت الواجهة مباريات اليوم فقط (بناءً على أول مباراة لم تنتهِ)
             if (view === 'today') {
                 let activeDay = 1;
                 const currentUnfinished = matches.find(m => m.status !== 'finished');
                 if (currentUnfinished) activeDay = currentUnfinished.day;
-
-                const todayMatches = matches.filter(m => m.day === activeDay);
-                return res.status(200).json(todayMatches);
+                return res.status(200).json(matches.filter(m => m.day === activeDay));
             }
 
-            // ب: جدول المباريات الكامل
+            // الافتراضي: إرجاع الجدول كاملاً مرتباً بالتاريخ ليتناسب مع شاشات تطبيقك الأصلي
+            matches.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
             return res.status(200).json(matches);
         }
 
-        // --- 3. قسم التوقعات (قفل قبل ساعة) ---
-        if (path.includes('predictions') && req.method === 'POST') {
-            if (!username) return res.status(401).json({ error: 'يجب تسجيل الدخول أولاً' });
-
-            const { matchId, predictedWinner } = req.body;
-            const matches = await kv.get('matches') || OFFICIAL_SCHEDULE;
-            const match = matches.find(m => m.id === matchId);
-
-            if (!match) return res.status(404).json({ error: 'المباراة غير موجودة' });
-
-            // فحص قفل الساعة
-            const matchTime = new Date(match.startTime).getTime();
-            const currentTime = Date.now();
-            const oneHourInMs = 60 * 60 * 1000;
-
-            if (currentTime > (matchTime - oneHourInMs)) {
-                return res.status(400).json({ error: 'عذراً، تم إغلاق التوقع لهذه المباراة (متبقي أقل من ساعة)' });
-            }
-
-            await kv.set(`pred:${username}:${matchId}`, { matchId, predictedWinner, updatedAt: currentTime });
-            return res.status(200).json({ success: true, message: 'تم حفظ توقعك بنجاح' });
-        }
-
-        // إرجاع المباريات كحماية متكاملة للواجهة
+        // في حال استدعاء أي مسار آخر، نرجع الجدول كحماية للواجهة من الانهيار
         let fallback = await kv.get('matches') || OFFICIAL_SCHEDULE;
         return res.status(200).json(fallback);
 
