@@ -39,7 +39,7 @@ const OFFICIAL_SCHEDULE = [
     { id: "m29", t1: "الولايات المتحدة", t2: "أستراليا", grp: "2", stg: "group", dt: "2026-06-19T19:00:00Z", res: null },
     { id: "m30", t1: "إسكتلندا", t2: "المغرب", grp: "2", stg: "group", dt: "2026-06-19T22:00:00Z", res: null },
     { id: "m31", t1: "البرازيل", t2: "هايتي", grp: "2", stg: "group", dt: "2026-06-20T00:30:00Z", res: null },
-    { id: "m32", t1: "تركيا", t2: "الالباراغواي", grp: "2", stg: "group", dt: "2026-06-20T03:00:00Z", res: null },
+    { id: "m32", t1: "تركيا", t2: "الباراغواي", grp: "2", stg: "group", dt: "2026-06-20T03:00:00Z", res: null },
     { id: "m33", t1: "هولندا", t2: "السويد", grp: "2", stg: "group", dt: "2026-06-20T17:00:00Z", res: null },
     { id: "m34", t1: "ألمانيا", t2: "كوت ديفوار", grp: "2", stg: "group", dt: "2026-06-20T20:00:00Z", res: null },
     { id: "m35", t1: "الإكوادور", t2: "كوراساو", grp: "2", stg: "group", dt: "2026-06-21T00:00:00Z", res: null },
@@ -55,7 +55,7 @@ const OFFICIAL_SCHEDULE = [
     { id: "m45", t1: "البرتغال", t2: "أوزبكستان", grp: "2", stg: "group", dt: "2026-06-23T17:00:00Z", res: null },
     { id: "m46", t1: "إنكلترا", t2: "غانا", grp: "2", stg: "group", dt: "2026-06-23T20:00:00Z", res: null },
     { id: "m47", t1: "بنما", t2: "كرواتيا", grp: "2", stg: "group", dt: "2026-06-23T23:00:00Z", res: null },
-    { id: "m48", t1: "كولومبيا", t2: "الكونغو", grp: "2", stg: "group", dt: "2026-06-24T02:00:00Z", res: null },
+    { id: "m48", t1: "كولومبيا", t2: "الالكونغو", grp: "2", stg: "group", dt: "2026-06-24T02:00:00Z", res: null },
     { id: "m49", t1: "سويسرا", t2: "كندا", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
     { id: "m50", t1: "البوسنة", t2: "قطر", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
 
@@ -68,7 +68,7 @@ const OFFICIAL_SCHEDULE = [
     { id: "m57", t1: "تونس", t2: "هولندا", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
     { id: "m58", t1: "اليابان", t2: "السويد", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
     { id: "m59", t1: "تركيا", t2: "الولايات المتحدة", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
-    { id: "m60", t1: "الباراغواي", t2: "أستراليا", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
+    { id: "m60", t1: "الالباراغواي", t2: "أستراليا", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
     { id: "m61", t1: "النرويج", t2: "فرنسا", grp: "3", stg: "group", dt: "2026-06-26T19:00:00Z", res: null },
     { id: "m62", t1: "السنغال", t2: "العراق", grp: "3", stg: "group", dt: "2026-06-26T19:00:00Z", res: null },
     { id: "m63", t1: "الأوروغواي", t2: "إسبانيا", grp: "3", stg: "group", dt: "2026-06-27T00:00:00Z", res: null },
@@ -90,52 +90,36 @@ function calculatePtsServer(m, pred) {
     let pts = 0;
     
     if (t1b && t2b) {
-        // الفرق الكبيرة ضد بعضها
         const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) {
-            pts = (ar === 'd') ? 3 : 5; // التعادل الرقمي = 3، الفوز الرقمي = 5
-        } else if (pr === ar) {
-            pts = (ar === 'd') ? 2 : 3; // التعادل = 2، فوز أحد الفريقين = 3
-        }
+        if (s1 === r1 && s2 === r2) pts = (ar === 'd') ? 3 : 5;
+        else if (pr === ar) pts = (ar === 'd') ? 2 : 3;
     } else if (t1b || t2b) {
-        // فريق كبير ضد فريق عادي
         const bf = t1b;
         const bW = bf ? (r1 > r2) : (r2 > r1);
         const dr = (r1 === r2);
         const sW = bf ? (r2 > r1) : (r1 > r2);
-        
         const pbW = bf ? (s1 > s2) : (s2 > s1);
         const pd = (s1 === s2);
         const psW = bf ? (s2 > s1) : (s1 > s2);
-
         if (s1 === r1 && s2 === r2) {
-            if (bW) pts = 2; // فوز الكبير الرقمي = 2
-            if (dr) pts = 3; // التعادل الرقمي = 3
-            if (sW) pts = 6; // فوز العادي الرقمي = 6
+            if (bW) pts = 2;
+            if (dr) pts = 3;
+            if (sW) pts = 6;
         } else {
-            if (pbW && bW) pts = 1; // فوز الفريق الكبير = 1
-            if (pd && dr) pts = 2;  // التعادل = 2
-            if (psW && sW) pts = 4; // فوز الفريق العادي = 4
+            if (pbW && bW) pts = 1;
+            if (pd && dr) pts = 2;
+            if (psW && sW) pts = 4;
         }
     } else {
-        // الفرق العادية ضد بعضها
         const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
         if (s1 === r1 && s2 === r2) {
             const sr = r1 + r2;
-            pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; // مجموع +5 أهداف أو التعادل 0-0 = 4، النتيجة الرقمية الصحيحة = 3
-        } else if (pr === ar) {
-            pts = 1; // توقع الفوز / التعادل = 1
-        }
+            pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3;
+        } else if (pr === ar) pts = 1;
     }
-    
-    // إضافات الأدوار الإقصائية (ضربات الجزاء)
     if (KO_STAGES.includes(m.stg) && m.res) {
-        if (pred.penW && m.res.penW && pred.penW === m.res.penW) {
-            pts += 1; // توقع الفائز بضربات الجزاء = 1
-        }
-        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) {
-            pts += 5; // توقع نتيجة ضربات الجزاء الرقمية = 5
-        }
+        if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
+        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
     }
     return pts;
 }
@@ -151,11 +135,17 @@ module.exports = async (req, res) => {
     const action = urlObj.searchParams.get('action') || '';
     const matchIdParam = urlObj.searchParams.get('id') || '';
 
+    // نظام مصادقة حديدي ومعزول لمنع تسريب التوقعات
     let userSession = null;
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
         try {
-            userSession = jwt.verify(authHeader.split(' ')[1], JWT_SECRET);
+            const token = authHeader.split(' ')[1];
+            const decoded = jwt.verify(token, JWT_SECRET);
+            if (decoded && decoded.username) {
+                const dbUser = await kv.get(`user:${decoded.username.toLowerCase().trim()}`);
+                if (dbUser) userSession = dbUser; // جلب الـ uid الحقيقي والمعزول من قاعدة البيانات مباشرة
+            }
         } catch (e) {}
     }
 
@@ -178,7 +168,7 @@ module.exports = async (req, res) => {
                 allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
                 await kv.set('all_users_list', allUsers);
 
-                return res.status(200).json({ token: jwt.sign({ username: cleanUser, uid }, JWT_SECRET), user: userObj });
+                return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
 
             if (action === 'login') {
@@ -190,28 +180,25 @@ module.exports = async (req, res) => {
                     userObj.uid = 'u_' + Math.random().toString(36).substr(2, 9);
                     await kv.set(`user:${cleanUser}`, userObj);
                     await kv.set(`uid:${userObj.uid}`, userObj);
-                    
                     let allUsers = await kv.get('all_users_list') || [];
                     if (!allUsers.some(u => u.username === cleanUser)) {
                         allUsers.push({ uid: userObj.uid, username: cleanUser, isAdmin: ADMINS.includes(cleanUser) });
                         await kv.set('all_users_list', allUsers);
                     }
                 }
-
                 userObj.isAdmin = ADMINS.includes(cleanUser);
-                return res.status(200).json({ token: jwt.sign({ username: cleanUser, uid: userObj.uid }, JWT_SECRET), user: userObj });
+                return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
 
             if (action === 'me') {
                 if (!userSession) return res.status(401).json({ error: 'غير مصرح' });
-                return res.status(200).json(await kv.get(`user:${userSession.username}`));
+                return res.status(200).json(userSession);
             }
 
             if (action === 'change-password') {
                 if (!userSession) return res.status(401).json({ error: 'غير مصرح' });
-                const userObj = await kv.get(`user:${userSession.username}`);
-                userObj.password = newPassword;
-                await kv.set(`user:${userSession.username}`, userObj);
+                userSession.password = newPassword;
+                await kv.set(`user:${userSession.username}`, userSession);
                 return res.status(200).json({ success: true });
             }
         }
@@ -222,9 +209,7 @@ module.exports = async (req, res) => {
                 matches = OFFICIAL_SCHEDULE;
                 await kv.set('db_matches', OFFICIAL_SCHEDULE);
             }
-
             if (req.method === 'GET') return res.status(200).json(matches);
-
             if (req.method === 'PUT') {
                 const { res: gameRes } = req.body || {};
                 matches = matches.map(m => m.id === matchIdParam ? { ...m, res: gameRes } : m);
@@ -266,7 +251,6 @@ module.exports = async (req, res) => {
                 matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
                 return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
             }));
-
             return res.status(200).json(leaderboard.sort((a, b) => b.pts - a.pts));
         }
 
