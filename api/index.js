@@ -5,6 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'wc2026-secret-key';
 const ADMINS = ['red_army', 'yahya'];
 
 const OFFICIAL_SCHEDULE = [
+    // الجولة 1
     { id: "m1", matchId: "m1", teamA: "المكسيك", teamB: "جنوب أفريقيا", day: 1, time: "22:00", startTime: "2026-06-11T22:00:00Z", round: "first", status: "pending" },
     { id: "m2", matchId: "m2", teamA: "كوريا الجنوبية", teamB: "التشيك", day: 2, time: "05:00", startTime: "2026-06-12T05:00:00Z", round: "first", status: "pending" },
     { id: "m3", matchId: "m3", teamA: "كندا", teamB: "البوسنة والهرسك", day: 2, time: "22:00", startTime: "2026-06-12T22:00:00Z", round: "first", status: "pending" },
@@ -31,6 +32,8 @@ const OFFICIAL_SCHEDULE = [
     { id: "m24", matchId: "m24", teamA: "أوزبكستان", teamB: "كولومبيا", day: 8, time: "05:00", startTime: "2026-06-18T05:00:00Z", round: "first", status: "pending" },
     { id: "m25", matchId: "m25", teamA: "التشيك", teamB: "جنوب أفريقيا", day: 8, time: "19:00", startTime: "2026-06-18T19:00:00Z", round: "first", status: "pending" },
     { id: "m26", matchId: "m26", teamA: "سويسرا", teamB: "البوسنة والهرسك", day: 8, time: "22:00", startTime: "2026-06-18T22:00:00Z", round: "first", status: "pending" },
+    
+    // الجولة 2
     { id: "m27", matchId: "m27", teamA: "كندا", teamB: "قطر", day: 9, time: "01:00", startTime: "2026-06-19T01:00:00Z", round: "first", status: "pending" },
     { id: "m28", matchId: "m28", teamA: "المكسيك", teamB: "كوريا الجنوبية", day: 9, time: "04:00", startTime: "2026-06-19T04:00:00Z", round: "first", status: "pending" },
     { id: "m29", matchId: "m29", teamA: "الولايات المتحدة", teamB: "أستراليا", day: 9, time: "22:00", startTime: "2026-06-19T22:00:00Z", round: "first", status: "pending" },
@@ -52,9 +55,11 @@ const OFFICIAL_SCHEDULE = [
     { id: "m45", matchId: "m45", teamA: "البرتغال", teamB: "أوزبكستان", day: 13, time: "20:00", startTime: "2026-06-23T20:00:00Z", round: "first", status: "pending" },
     { id: "m46", matchId: "m46", teamA: "إنجلترا", teamB: "غانا", day: 13, time: "21:00", startTime: "2026-06-23T21:00:00Z", round: "first", status: "pending" },
     { id: "m47", matchId: "m47", teamA: "بنما", teamB: "كرواتيا", day: 14, time: "02:00", startTime: "2026-06-24T02:00:00Z", round: "first", status: "pending" },
-    { id: "m48", matchId: "m48", teamA: "كولومبيا", teamB: "جمهوريةbadge الكونغو الديمقراطية", day: 14, time: "05:00", startTime: "2026-06-24T05:00:00Z", round: "first", status: "pending" },
+    { id: "m48", matchId: "m48", teamA: "كولومبيا", teamB: "جمهورية الكونغو الديمقراطية", day: 14, time: "05:00", startTime: "2026-06-24T05:00:00Z", round: "first", status: "pending" },
     { id: "m49", matchId: "m49", teamA: "سويسرا", teamB: "كندا", day: 14, time: "22:00", startTime: "2026-06-24T22:00:00Z", round: "first", status: "pending" },
     { id: "m50", matchId: "m50", teamA: "البوسنة والهرسك", teamB: "قطر", day: 14, time: "22:00", startTime: "2026-06-24T22:00:00Z", round: "first", status: "pending" },
+
+    // الجولة 3
     { id: "m51", matchId: "m51", teamA: "اسكتلندا", teamB: "البرازيل", day: 15, time: "01:00", startTime: "2026-06-25T01:00:00Z", round: "first", status: "pending" },
     { id: "m52", matchId: "m52", teamA: "المغرب", teamB: "هايتي", day: 15, time: "01:00", startTime: "2026-06-25T01:00:00Z", round: "first", status: "pending" },
     { id: "m53", matchId: "m53", teamA: "التشيك", teamB: "المكسيك", day: 15, time: "04:00", startTime: "2026-06-25T04:00:00Z", round: "first", status: "pending" },
@@ -75,7 +80,7 @@ const OFFICIAL_SCHEDULE = [
     { id: "m68", matchId: "m68", teamA: "كرواتيا", teamB: "غانا", day: 18, time: "00:00", startTime: "2026-06-28T00:00:00Z", round: "first", status: "pending" },
     { id: "m69", matchId: "m69", teamA: "كولومبيا", teamB: "البرتغال", day: 18, time: "02:30", startTime: "2026-06-28T02:30:00Z", round: "first", status: "pending" },
     { id: "m70", matchId: "m70", teamA: "جمهورية الكونغو الديمقراطية", teamB: "أوزبكستان", day: 18, time: "02:30", startTime: "2026-06-28T02:30:00Z", round: "first", status: "pending" },
-    { id: "m71", matchId: "m71", teamA: "الأردنية", teamB: "الأرجنتين", day: 18, time: "05:00", startTime: "2026-06-28T05:00:00Z", round: "first", status: "pending" },
+    { id: "m71", matchId: "m71", teamA: "الأردن", teamB: "الأرجنتين", day: 18, time: "05:00", startTime: "2026-06-28T05:00:00Z", round: "first", status: "pending" },
     { id: "m72", matchId: "m72", teamA: "الجزائر", teamB: "النمسا", day: 18, time: "05:00", startTime: "2026-06-28T05:00:00Z", round: "first", status: "pending" }
 ];
 
@@ -86,10 +91,9 @@ module.exports = async (req, res) => {
     if (req.method === 'OPTIONS') return res.status(200).end();
 
     const reqUrl = req.url.toLowerCase();
-    const todayStr = new Date().toISOString().split('T')[0]; // تاريخ اليوم الفعلي لجهازك (2026-06-09)
 
     try {
-        // --- 1. قسم المصادقة والحسابات وفحص الإدارة ---
+        // --- 1. قسم المصادقة والحسابات ---
         if (reqUrl.includes('auth')) {
             const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
             const action = urlObj.searchParams.get('action');
@@ -108,46 +112,72 @@ module.exports = async (req, res) => {
             if (action === 'login') {
                 const user = await kv.get(`user:${username}`);
                 if (!user || user.password !== password) return res.status(400).json({ error: 'بيانات خاطئة' });
-                user.isAdmin = isAnAdmin; // ضمان تفعيل راية الأدمن فوراً لـ Red_Army و yahya
+                user.isAdmin = isAnAdmin;
                 return res.status(200).json({ token: jwt.sign({ username }, JWT_SECRET), user });
             }
         }
 
-        // --- 2. معالجة وتوليد مصفوفة المباريات الفائقة التوافق ---
-        // الخادم هنا يولد كل الأسماء المحتملة التي قد تبحث عنها الواجهة ديناميكياً
+        // --- 2. توليد مصفوفة المباريات الشاملة بكافة هياكل البيانات المحتملة واجهاتك ---
         const processedMatches = OFFICIAL_SCHEDULE.map(m => {
-            // خدعة التاريخ لليوم الأول لكي تظهر في شاشتك الرئيسية للتجربة قبل انطلاق البطولة الحقيقية
-            let finalDate = m.date;
-            if (m.day === 1) {
-                finalDate = todayStr; // جعل تاريخ المكسيك ضد جنوب أفريقيا يطابق تاريخ اليوم تلقائياً
-            }
+            // صياغة الحقول بكافة الأشكال (مصفوفات، كائنات مدمجة، نصوص مسطحة) منعا لاختفاء الأسماء
             return {
                 ...m,
-                date: finalDate, matchDate: finalDate, match_date: finalDate,
-                // ضخ كافة المسميات الممكنة لأسماء المنتخبات منعا لاختفائها
-                team1: m.teamA, team_1: m.teamA, homeTeam: m.teamA, home_team: m.teamA, home: m.teamA, teamA_name: m.teamA, nameA: m.teamA,
-                team2: m.teamB, team_2: m.teamB, awayTeam: m.teamB, away_team: m.teamB, away: m.teamB, teamB_name: m.teamB, nameB: m.teamB,
-                match_id: m.id, id_match: m.id
+                id: m.id, matchId: m.id, match_id: m.id,
+                date: m.date || m.startTime.split('T')[0],
+                matchDate: m.date || m.startTime.split('T')[0],
+                match_date: m.date || m.startTime.split('T')[0],
+                time: m.time, matchTime: m.time, match_time: m.time,
+                
+                // أسماء الفرق بجميع الأشكال النصية المحتملة
+                teamA: m.teamA, team1: m.teamA, team_1: m.teamA, homeTeam: m.teamA, home_team: m.teamA, home: m.teamA, teamA_name: m.teamA, nameA: m.teamA, homeName: m.teamA, home_name: m.teamA,
+                teamB: m.teamB, team2: m.teamB, team_2: m.teamB, awayTeam: m.teamB, away_team: m.teamB, away: m.teamB, teamB_name: m.teamB, nameB: m.teamB, awayName: m.teamB, away_name: m.teamB,
+                
+                // صياغة الكائنات المتداخلة (Nested Objects) إن كانت واجهتك تستخدمها
+                home: { name: m.teamA, title: m.teamA, teamA: m.teamA },
+                away: { name: m.teamB, title: m.teamB, teamB: m.teamB },
+                home_team: { name: m.teamA }, away_team: { name: m.teamB },
+                teamA_obj: { name: m.teamA }, teamB_obj: { name: m.teamB },
+                
+                // صياغة المصفوفات (Arrays) في حال كانت تقرأ عبر الفهرس [0] و [1]
+                teams: [m.teamA, m.teamB],
+                countries: [m.teamA, m.teamB]
             };
         });
 
-        // --- 3. مسار جلب المباريات المفلتر ---
+        // --- 3. قسم جلب المباريات بالتنقل التلقائي الذكي ---
         if (reqUrl.includes('matches') || reqUrl === '/api' || reqUrl === '/api/') {
             const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
             const view = urlObj.searchParams.get('view');
 
-            // إذا طلبت الواجهة مباريات اليوم النشط فقط أو تطلبه الصفحة الرئيسية تلقائياً
+            // حساب اليوم النشط بناء على توقيت الساعة الحالي
+            const currentTime = Date.now();
+            const matchDuration = 2.5 * 60 * 60 * 1000; // وقت المباراة المقدر ساعتان ونصف
+            let activeDay = 1;
+
+            // البحث التلقائي عن أول مباراة لم تنته في الجدول لمعرفة رقم يومها
+            const currentUnfinished = OFFICIAL_SCHEDULE.find(m => {
+                const matchEndTime = new Date(m.startTime).getTime() + matchDuration;
+                return currentTime < matchEndTime;
+            });
+
+            if (currentUnfinished) {
+                activeDay = currentUnfinished.day;
+            } else {
+                activeDay = 18; // في حال انتهاء المجموعات، ثبت اليوم الأخير
+            }
+
+            // أ: إذا كان الطلب من الصفحة الرئيسية (مباريات اليوم النشط تلقائياً)
             if (view === 'today' || reqUrl.includes('today')) {
-                // تصفية مباريات اليوم الأول (التي تم تعديل تاريخها لتطابق اليوم)
-                const todayMatches = processedMatches.filter(m => m.date === todayStr || m.day === 1);
+                const todayMatches = processedMatches.filter(m => m.day === activeDay);
                 return res.status(200).json(todayMatches);
             }
 
-            // الافتراضي: إرجاع الجدول بالكامل مرتباً بالتاريخ
+            // ب: إذا كان الطلب للجدول بالكامل (كل مباريات الدور الأول)
+            processedMatches.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
             return res.status(200).json(processedMatches);
         }
 
-        // --- 4. قسم التوقعات (محمي وبنفس الخواص) ---
+        // --- 4. قسم التوقعات (قفل قبل ساعة) ---
         if (reqUrl.includes('predictions') && req.method === 'POST') {
             let authUser = null;
             const authHeader = req.headers['authorization'];
@@ -159,6 +189,16 @@ module.exports = async (req, res) => {
             if (!authUser) return res.status(401).json({ error: 'سجل دخولك أولاً' });
 
             const { matchId } = req.body;
+            const match = OFFICIAL_SCHEDULE.find(m => m.id === matchId || m.matchId === matchId);
+            if (!match) return res.status(404).json({ error: 'المباراة غير موجودة' });
+
+            const matchTime = new Date(match.startTime).getTime();
+            const oneHourInMs = 60 * 60 * 1000;
+
+            if (Date.now() > (matchTime - oneHourInMs)) {
+                return res.status(400).json({ error: 'عذراً، تم إغلاق التوقعات لهذه المباراة' });
+            }
+
             await kv.set(`pred:${authUser}:${matchId}`, { ...req.body, updatedAt: Date.now() });
             return res.status(200).json({ success: true });
         }
