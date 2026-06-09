@@ -6,21 +6,34 @@ const ADMINS = ['red_army', 'yahya'];
 const BIG_TEAMS = ['البرازيل', 'الأرجنتين', 'ألمانيا', 'فرنسا', 'إسبانيا', 'إنجلترا', 'البرتغال', 'إيطاليا'];
 
 module.exports = async (req, res) => {
-    // السماح بالاتصال
+    // إعدادات السماح بالاتصال من أي مكان (CORS)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') return res.status(200).end();
 
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const path = url.pathname;
-    const action = url.searchParams.get('action');
+    // الحصول على المسار النظيف وتحويله لأحرف صغيرة
+    const path = req.url.split('?')[0].toLowerCase();
+    
+    // محاولة قراءة نوع العملية (تسجيل أو دخول) من أي مكان ممكن
+    let action = req.query.action || (req.body && req.body.action);
+    
+    // ذكاء اصطناعي مبسط لملائمة واجهتك القديمة تلقائياً:
+    if (path.includes('register') || path.includes('signup')) {
+        action = 'register';
+    } else if (path.includes('login') || path.includes('signin')) {
+        action = 'login';
+    }
 
     try {
-        // --- مسار تسجيل الدخول وإنشاء الحساب ---
-        if (path === '/api/auth' && req.method === 'POST') {
-            const { username, password } = req.body;
+        // --- قسم الحسابات (تسجيل ودخول) ---
+        if (action === 'register' || action === 'login') {
+            const { username, password } = req.body || {};
             
+            if (!username || !password) {
+                return res.status(400).json({ error: 'اسم المستخدم وكلمة المرور مطلوبان' });
+            }
+
             if (action === 'register') {
                 const existing = await kv.get(`user:${username}`);
                 if (existing) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
@@ -37,16 +50,20 @@ module.exports = async (req, res) => {
             }
         }
 
-        // --- مسار جلب المباريات ---
-        if (path === '/api/matches' && req.method === 'GET') {
+        // --- قسم المباريات ---
+        if (path.includes('matches')) {
             const matches = await kv.get('matches') || [];
             return res.status(200).json(matches);
         }
 
-        // إذا كان المسار غير معروف
-        return res.status(404).json({ error: 'المسار غير موجود' });
+        // كود فحص ذكي: إذا لم يطابق أي شيء، يخبرك الخادم ماذا استلم من واجهتك لكي نصلحه فوراً
+        return res.status(200).json({ 
+            status: "Mundial GO API هو الآن أونلاين ويعمل", 
+            receivedPath: path, 
+            receivedAction: action 
+        });
 
     } catch (error) {
-        return res.status(500).json({ error: 'خطأ داخلي في الخادم' });
+        return res.status(500).json({ error: 'خطأ في الاتصال بقاعدة البيانات' });
     }
 };
