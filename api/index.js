@@ -39,7 +39,7 @@ const OFFICIAL_SCHEDULE = [
     { id: "m29", t1: "الولايات المتحدة", t2: "أستراليا", grp: "2", stg: "group", dt: "2026-06-19T19:00:00Z", res: null },
     { id: "m30", t1: "إسكتلندا", t2: "المغرب", grp: "2", stg: "group", dt: "2026-06-19T22:00:00Z", res: null },
     { id: "m31", t1: "البرازيل", t2: "هايتي", grp: "2", stg: "group", dt: "2026-06-20T00:30:00Z", res: null },
-    { id: "m32", t1: "تركيا", t2: "الباراغواي", grp: "2", stg: "group", dt: "2026-06-20T03:00:00Z", res: null },
+    { id: "m32", t1: "تركيا", t2: "الالباراغواي", grp: "2", stg: "group", dt: "2026-06-20T03:00:00Z", res: null },
     { id: "m33", t1: "هولندا", t2: "السويد", grp: "2", stg: "group", dt: "2026-06-20T17:00:00Z", res: null },
     { id: "m34", t1: "ألمانيا", t2: "كوت ديفوار", grp: "2", stg: "group", dt: "2026-06-20T20:00:00Z", res: null },
     { id: "m35", t1: "الإكوادور", t2: "كوراساو", grp: "2", stg: "group", dt: "2026-06-21T00:00:00Z", res: null },
@@ -88,21 +88,54 @@ function calculatePtsServer(m, pred) {
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
     const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
     let pts = 0;
+    
     if (t1b && t2b) {
+        // الفرق الكبيرة ضد بعضها
         const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) pts = ar === 'd' ? 3 : 5; else if (pr === ar) pts = pr === 'd' ? 2 : 3;
+        if (s1 === r1 && s2 === r2) {
+            pts = (ar === 'd') ? 3 : 5; // التعادل الرقمي = 3، الفوز الرقمي = 5
+        } else if (pr === ar) {
+            pts = (ar === 'd') ? 2 : 3; // التعادل = 2، فوز أحد الفريقين = 3
+        }
     } else if (t1b || t2b) {
-        const bf = t1b, bW = bf ? r1 > r2 : r2 > r1, dr = r1 === r2, sW = !bW && !dr;
-        const pbW = bf ? s1 > s2 : s2 > s1, pd = s1 === s2, psW = !pbW && !pd;
-        if (s1 === r1 && s2 === r2) pts = psW ? 5 : pd ? 3 : 3;
-        else if (psW && sW) pts = 4; else if (pd && dr) pts = 2; else if (pbW && bW) pts = 1;
+        // فريق كبير ضد فريق عادي
+        const bf = t1b;
+        const bW = bf ? (r1 > r2) : (r2 > r1);
+        const dr = (r1 === r2);
+        const sW = bf ? (r2 > r1) : (r1 > r2);
+        
+        const pbW = bf ? (s1 > s2) : (s2 > s1);
+        const pd = (s1 === s2);
+        const psW = bf ? (s2 > s1) : (s1 > s2);
+
+        if (s1 === r1 && s2 === r2) {
+            if (bW) pts = 2; // فوز الكبير الرقمي = 2
+            if (dr) pts = 3; // التعادل الرقمي = 3
+            if (sW) pts = 6; // فوز العادي الرقمي = 6
+        } else {
+            if (pbW && bW) pts = 1; // فوز الفريق الكبير = 1
+            if (pd && dr) pts = 2;  // التعادل = 2
+            if (psW && sW) pts = 4; // فوز الفريق العادي = 4
+        }
     } else {
-        const sr = r1 + r2, pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 3 : 2; else if (pr === ar) pts = 1;
+        // الفرق العادية ضد بعضها
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) {
+            const sr = r1 + r2;
+            pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; // مجموع +5 أهداف أو التعادل 0-0 = 4، النتيجة الرقمية الصحيحة = 3
+        } else if (pr === ar) {
+            pts = 1; // توقع الفوز / التعادل = 1
+        }
     }
-    if (KO_STAGES.includes(m.stg) && m.res && pred.penW && m.res.penW && pred.penW === m.res.penW) {
-        pts += 1;
-        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 3;
+    
+    // إضافات الأدوار الإقصائية (ضربات الجزاء)
+    if (KO_STAGES.includes(m.stg) && m.res) {
+        if (pred.penW && m.res.penW && pred.penW === m.res.penW) {
+            pts += 1; // توقع الفائز بضربات الجزاء = 1
+        }
+        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) {
+            pts += 5; // توقع نتيجة ضربات الجزاء الرقمية = 5
+        }
     }
     return pts;
 }
@@ -127,7 +160,6 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // --- 1. المصادقة والحسابات وفحص الهجرة للحسابات القديمة ---
         if (route === 'auth') {
             const { username, password, newPassword } = req.body || {};
 
@@ -154,7 +186,6 @@ module.exports = async (req, res) => {
                 const userObj = await kv.get(`user:${cleanUser}`);
                 if (!userObj || userObj.password !== password) return res.status(400).json({ error: 'بيانات الدخول خاطئة' });
                 
-                // إصلاح فوري للمستخدمين القدامى لضمان عدم تداخل التوقعات أبداً
                 if (!userObj.uid) {
                     userObj.uid = 'u_' + Math.random().toString(36).substr(2, 9);
                     await kv.set(`user:${cleanUser}`, userObj);
@@ -173,8 +204,7 @@ module.exports = async (req, res) => {
 
             if (action === 'me') {
                 if (!userSession) return res.status(401).json({ error: 'غير مصرح' });
-                const userObj = await kv.get(`user:${userSession.username}`);
-                return res.status(200).json(userObj);
+                return res.status(200).json(await kv.get(`user:${userSession.username}`));
             }
 
             if (action === 'change-password') {
@@ -186,7 +216,6 @@ module.exports = async (req, res) => {
             }
         }
 
-        // --- 2. جلب وتحديث جدول المباريات السحابي ---
         if (route === 'matches') {
             let matches = await kv.get('db_matches');
             if (!matches || !Array.isArray(matches) || matches.length === 0) {
@@ -204,14 +233,11 @@ module.exports = async (req, res) => {
             }
         }
 
-        // --- 3. قسم حفظ وعزل توقعات المستخدمين بدقة ---
         if (route === 'predictions') {
             if (!userSession || !userSession.uid) return res.status(401).json({ error: 'سجل دخولك أولاً' });
             const userPredsKey = `preds:${userSession.uid}`;
 
-            if (req.method === 'GET') {
-                return res.status(200).json(await kv.get(userPredsKey) || {});
-            }
+            if (req.method === 'GET') return res.status(200).json(await kv.get(userPredsKey) || {});
 
             if (req.method === 'POST') {
                 const { matchId, s1, s2, penW, ps1, ps2 } = req.body;
@@ -230,7 +256,6 @@ module.exports = async (req, res) => {
             }
         }
 
-        // --- 4. حساب لوحة صدارة المتصدرين تلقائياً ---
         if (route === 'leaderboard') {
             const allUsers = await kv.get('all_users_list') || [];
             const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
@@ -245,14 +270,11 @@ module.exports = async (req, res) => {
             return res.status(200).json(leaderboard.sort((a, b) => b.pts - a.pts));
         }
 
-        // --- 5. نظام الدوريات الخاصة التفاعلي الكامل ---
         if (route === 'leagues') {
             if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
             let allLeagues = await kv.get('global_leagues') || [];
 
-            if (req.method === 'GET') {
-                return res.status(200).json(allLeagues.filter(l => l.members.includes(userSession.uid)));
-            }
+            if (req.method === 'GET') return res.status(200).json(allLeagues.filter(l => l.members.includes(userSession.uid)));
 
             const { name, code, leagueId } = req.body || {};
 
