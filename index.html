@@ -235,32 +235,36 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
     <div id="lgdet" style="display:none"></div>
   </div></div>
   <div id="pg-lb" class="pg"><div class="pi" style="position:relative"><div id="glb"></div></div></div>
+  
+  <!-- صفحة القواعد بعد التحديث الجديد -->
   <div id="pg-rules" class="pg"><div class="pi">
     <div class="rb"><h3>🔵 الفرق العادية ضد بعضها</h3>
-      <div class="rr"><span>توقع الفوز / التعادل / الخسارة</span><span class="rpts">1 نقطة</span></div>
-      <div class="rr"><span>توقع النتيجة الرقمية الصحيحة</span><span class="rpts">2 نقطة</span></div>
-      <div class="rr"><span>مجموع 5+ أهداف أو تعادل 0-0</span><span class="rpts">3 نقاط</span></div>
+      <div class="rr"><span>توقع الفوز / التعادل</span><span class="rpts">1 نقطة</span></div>
+      <div class="rr"><span>توقع النتيجة الرقمية الصحيحة</span><span class="rpts">3 نقاط</span></div>
+      <div class="rr"><span>مجموع +5 أهداف أو التعادل 0-0</span><span class="rpts">4 نقاط</span></div>
     </div>
     <div class="rb"><h3>🌟 فريق كبير ضد فريق عادي</h3>
       <div class="rr"><span>فوز الفريق الكبير</span><span class="rpts">1 نقطة</span></div>
+      <div class="rr"><span>فوز الفريق الكبير الرقمي</span><span class="rpts">2 نقطة</span></div>
       <div class="rr"><span>التعادل</span><span class="rpts">2 نقطة</span></div>
+      <div class="rr"><span>التعادل الرقمي</span><span class="rpts">3 نقاط</span></div>
       <div class="rr"><span>فوز الفريق العادي</span><span class="rpts">4 نقاط</span></div>
-      <div class="rr"><span>الفوز أو التعادل الرقمي</span><span class="rpts">3 نقاط</span></div>
-      <div class="rr"><span>خسارة الكبير الرقمية</span><span class="rpts">5 نقاط</span></div>
+      <div class="rr"><span>فوز الفريق العادي الرقمي</span><span class="rpts">6 نقاط</span></div>
     </div>
     <div class="rb"><h3>⭐ الفرق الكبيرة ضد بعضها</h3>
       <div class="rr"><span>توقع التعادل</span><span class="rpts">2 نقطة</span></div>
-      <div class="rr"><span>توقع فوز أحد الفريقين</span><span class="rpts">3 نقاط</span></div>
       <div class="rr"><span>توقع التعادل الرقمي</span><span class="rpts">3 نقاط</span></div>
+      <div class="rr"><span>توقع فوز أحد الفريقين</span><span class="rpts">3 نقاط</span></div>
       <div class="rr"><span>توقع الفوز الرقمي</span><span class="rpts">5 نقاط</span></div>
     </div>
     <div class="rb"><h3>🔴 الأدوار الإقصائية</h3>
-      <div class="rr"><span>الفائز بضربات الجزاء</span><span class="rpts">+1 نقطة</span></div>
-      <div class="rr"><span>نتيجة الجزاء الرقمية</span><span class="rpts">+3 نقاط</span></div>
+      <div class="rr"><span>توقع الفائز بضربات الجزاء</span><span class="rpts">+1 نقطة</span></div>
+      <div class="rr"><span>توقع نتيجة ضربات الجزاء الرقمية</span><span class="rpts">+5 نقاط</span></div>
     </div>
     <div class="rb"><h3>🔒 قاعدة التجميد</h3><div class="rr"><span>يُغلق التوقع قبل ساعة من الانطلاق تلقائياً</span><span class="rpts" style="color:var(--red);background:rgba(231,76,60,.12)">ملزم</span></div></div>
     <div class="rb"><h3>🌟 الفرق الكبيرة</h3><p style="font-size:11px;color:var(--t2);line-height:2.2">البرازيل · الأرجنتين · إنكلترا · ألمانيا · إسبانيا · البرتغال · هولندا · فرنسا · بلجيكا</p></div>
   </div></div>
+
   <div id="pg-profile" class="pg"><div class="pi">
     <div class="pcard"><div class="pav" id="pav"></div><div class="pnm" id="pnm"></div><div class="psb" id="psb"></div><div class="pst" id="pst"></div></div>
     <div class="sec">تغيير كلمة المرور</div>
@@ -322,7 +326,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴%A2','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴%A7','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
+const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
@@ -470,28 +474,63 @@ function goTab(t, btn) {
   fn[t]?.();
 }
 
+// دالة حساب النقاط المحدثة بالكامل طبقاً لطلبك
 function calcPts(m, pred) {
   if (!m.res || !pred) return 0;
   const s1=+pred.s1, s2=+pred.s2, r1=+m.res.s1, r2=+m.res.s2;
   const t1b=isB(m.t1), t2b=isB(m.t2); let pts=0;
-  if (t1b&&t2b) {
+  
+  if (t1b && t2b) {
+    // الفرق الكبيرة ضد بعضها
     const pr=s1>s2?'w1':s1<s2?'w2':'d', ar=r1>r2?'w1':r1<r2?'w2':'d';
-    if(s1===r1&&s2===r2) pts=ar==='d'?3:5; else if(pr===ar) pts=pr==='d'?2:3;
-  } else if (t1b||t2b) {
-    const bf=t1b, bW=bf?r1>r2:r2>r1, dr=r1===r2, sW=!bW&&!dr;
-    const pbW=bf?s1>s2:s2>s1, pd=s1===s2, psW=!pbW&&!pd;
-    if(s1===r1&&s2===r2) pts=psW?5:pd?3:3;
-    else if(psW&&sW)pts=4; else if(pd&&dr)pts=2; else if(pbW&&bW)pts=1;
+    if(s1===r1&&s2===r2) {
+      pts = (ar === 'd') ? 3 : 5; // التعادل الرقمي = 3، الفوز الرقمي = 5
+    } else if(pr===ar) {
+      pts = (ar === 'd') ? 2 : 3; // التعادل = 2، فوز أحد الفريقين = 3
+    }
+  } else if (t1b || t2b) {
+    // فريق كبير ضد فريق عادي
+    const bf=t1b;
+    const bW = bf ? (r1 > r2) : (r2 > r1);
+    const dr = (r1 === r2);
+    const sW = bf ? (r2 > r1) : (r1 > r2);
+    
+    const pbW = bf ? (s1 > s2) : (s2 > s1);
+    const pd = (s1 === s2);
+    const psW = bf ? (s2 > s1) : (s1 > s2);
+
+    if (s1 === r1 && s2 === r2) {
+      if (bW) pts = 2; // فوز الفريق الكبير الرقمي = 2
+      if (dr) pts = 3; // التعادل الرقمي = 3
+      if (sW) pts = 6; // فوز الفريق العادي الرقمي = 6
+    } else {
+      if (pbW && bW) pts = 1; // فوز الفريق الكبير = 1
+      if (pd && dr) pts = 2;  // التعادل = 2
+      if (psW && sW) pts = 4; // فوز الفريق العادي = 4
+    }
   } else {
-    const sr=r1+r2, pr=s1>s2?'w1':s1<s2?'w2':'d', ar=r1>r2?'w1':r1<r2?'w2':'d';
-    if(s1===r1&&s2===r2) pts=(sr>=5||(r1===0&&r2===0))?3:2; else if(pr===ar)pts=1;
+    // الفرق العادية ضد بعضها
+    const pr=s1>s2?'w1':s1<s2?'w2':'d', ar=r1>r2?'w1':r1<r2?'w2':'d';
+    if(s1===r1&&s2===r2) {
+      const sr = r1 + r2;
+      pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; // مجموع +5 أهداف أو التعادل 0-0 = 4، النتيجة الرقمية الصحيحة = 3
+    } else if(pr===ar) {
+      pts = 1; // توقع الفوز / التعادل = 1
+    }
   }
-  if (KO.includes(m.stg)&&m.res&&pred.penW&&m.res.penW&&pred.penW===m.res.penW) {
-    pts+=1;
-    if(pred.ps1!=null&&pred.ps2!=null&&m.res.ps1!=null&&m.res.ps2!=null&&+pred.ps1===+m.res.ps1&&+pred.ps2===+m.res.ps2)pts+=3;
+  
+  // الأدوار الإقصائية (ضربات الجزاء) المحدثة بعد الحساب الأساسي
+  if (KO.includes(m.stg) && m.res) {
+    if (pred.penW && m.res.penW && pred.penW === m.res.penW) {
+      pts += 1; // توقع الفائز بضربات الجزاء = 1
+    }
+    if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) {
+      pts += 5; // توقع نتيجة ضربات الجزاء الرقمية = 5
+    }
   }
   return pts;
 }
+
 function pDesc(m, pred) {
   const s1=+pred.s1, s2=+pred.s2, t1b=isB(m.t1), t2b=isB(m.t2);
   if(t1b&&t2b) return s1===s2?'تعادل بين فريقين كبيرين':'فوز بين فريقين كبيرين';
@@ -710,7 +749,6 @@ function showLg(lgId){
   document.getElementById('lglist').style.display='none'; const myUid=me?.uid, isOwn=lg.owner===myUid;
   document.getElementById('lgdet').style.display='';
   
-  // بناء وعرض لوحة صدارة المشتركين داخل الدوري فوراً
   const lgBoard=board.filter(u=>lg.members.includes(u.uid)).sort((a,b)=>b.pts-a.pts);
   const rks=['🥇','🥈','🥉'];
 
