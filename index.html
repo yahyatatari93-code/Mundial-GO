@@ -377,7 +377,14 @@ async function api(method, path, body) {
   } else { showAuth(); }
 })();
 
-function showLoader(msg) { document.getElementById('spin-lbl').textContent = msg || 'جاري التحميل...'; document.getElementById('loader').getElementById('loader').classList.remove('hide'); }
+function showLoader(msg) { 
+    const loader = document.getElementById('loader');
+    if(loader) {
+        loader.classList.remove('hide');
+        const lbl = document.getElementById('spin-lbl');
+        if(lbl) lbl.textContent = msg || 'جاري التحميل...';
+    }
+}
 function hideLoader() { document.getElementById('loader').classList.add('hide'); }
 function showAuth() { hideLoader(); document.getElementById('auth').classList.remove('hide'); }
 function hideAuth() { document.getElementById('auth').classList.add('hide'); }
@@ -402,17 +409,32 @@ async function doLogin() {
 }
 
 async function doRegister() {
-  const username = document.getElementById('r-u').value.trim();
-  const password = document.getElementById('r-p').value;
-  const err = document.getElementById('r-err'); err.textContent = '';
-  if (!username || !password) { err.textContent = 'أدخل اسم المستخدم وكلمة المرور'; return; }
-  try {
-    showLoader('جاري إنشاء الحساب...');
-    const data = await api('POST', 'auth?action=register', { username, password });
-    token = data.token; me = data.user;
-    localStorage.setItem('wc_token', token); localStorage.setItem('wc_me', JSON.stringify(me));
-    await enterApp();
-  } catch (e) { hideLoader(); showAuth(); err.textContent = e.message; }
+    const uInput = document.getElementById('r-u');
+    const pInput = document.getElementById('r-p');
+    const err = document.getElementById('r-err');
+    
+    // حماية إضافية: إذا لم توجد حقول الإدخال في الصفحة لا ينفذ الكود
+    if (!uInput || !pInput) return; 
+
+    const username = uInput.value.trim();
+    const password = pInput.value;
+    if(err) err.textContent = '';
+    
+    if (!username || !password) {
+        if(err) err.textContent = 'أدخل اسم المستخدم وكلمة المرور';
+        return;
+    }
+    try {
+        showLoader('جاري إنشاء الحساب...');
+        const data = await api('POST', 'auth?action=register', { username, password });
+        token = data.token; me = data.user;
+        localStorage.setItem('wc_token', token);
+        localStorage.setItem('wc_me', JSON.stringify(me));
+        await enterApp();
+    } catch (e) {
+        hideLoader();
+        if(err) err.textContent = e.message;
+    }
 }
 
 function doLogout() {
