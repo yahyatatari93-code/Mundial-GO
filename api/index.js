@@ -6,9 +6,7 @@ const ADMINS = ['red_army', 'yahya'];
 const BIG_TEAMS = ['البرازيل', 'الأرجنتين', 'إنكلترا', 'ألمانيا', 'إسبانيا', 'البرتغال', 'هولندا', 'فرنسا', 'بلجيكا'];
 const KO_STAGES = ['r32', 'r16', 'qf', 'sf', 'final'];
 
-// جدول الـ 72 مباراة للدور الأول كاملاً متوافقاً 100% مع مسميات وقاموس أعلام واجهتك
 const OFFICIAL_SCHEDULE = [
-    // الجولة 1
     { id: "m1", t1: "المكسيك", t2: "جنوب أفريقيا", grp: "1", stg: "group", dt: "2026-06-11T19:00:00Z", res: null },
     { id: "m2", t1: "كوريا الجنوبية", t2: "التشيك", grp: "1", stg: "group", dt: "2026-06-12T02:00:00Z", res: null },
     { id: "m3", t1: "كندا", t2: "البوسنة", grp: "1", stg: "group", dt: "2026-06-12T19:00:00Z", res: null },
@@ -36,7 +34,6 @@ const OFFICIAL_SCHEDULE = [
     { id: "m25", t1: "التشيك", t2: "جنوب أفريقيا", grp: "1", stg: "group", dt: "2026-06-18T16:00:00Z", res: null },
     { id: "m26", t1: "سويسرا", t2: "البوسنة", grp: "1", stg: "group", dt: "2026-06-18T19:00:00Z", res: null },
 
-    // الجولة 2
     { id: "m27", t1: "كندا", t2: "قطر", grp: "2", stg: "group", dt: "2026-06-18T22:00:00Z", res: null },
     { id: "m28", t1: "المكسيك", t2: "كوريا الجنوبية", grp: "2", stg: "group", dt: "2026-06-19T01:00:00Z", res: null },
     { id: "m29", t1: "الولايات المتحدة", t2: "أستراليا", grp: "2", stg: "group", dt: "2026-06-19T19:00:00Z", res: null },
@@ -62,7 +59,6 @@ const OFFICIAL_SCHEDULE = [
     { id: "m49", t1: "سويسرا", t2: "كندا", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
     { id: "m50", t1: "البوسنة", t2: "قطر", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
 
-    // الجولة 3
     { id: "m51", t1: "إسكتلندا", t2: "البرازيل", grp: "3", stg: "group", dt: "2026-06-24T22:00:00Z", res: null },
     { id: "m52", t1: "المغرب", t2: "هايتي", grp: "3", stg: "group", dt: "2026-06-24T22:00:00Z", res: null },
     { id: "m53", t1: "التشيك", t2: "المكسيك", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: null },
@@ -87,7 +83,6 @@ const OFFICIAL_SCHEDULE = [
     { id: "m72", t1: "الجزائر", t2: "النمسا", grp: "3", stg: "group", dt: "2026-06-28T02:00:00Z", res: null }
 ];
 
-// دالة سيرفر لحساب النقاط ومزامنتها مع المتصدرين
 function calculatePtsServer(m, pred) {
     if (!m.res || !pred) return 0;
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
@@ -123,7 +118,6 @@ module.exports = async (req, res) => {
     const action = urlObj.searchParams.get('action') || '';
     const matchIdParam = urlObj.searchParams.get('id') || '';
 
-    // التحقق من هوية المستخدم الحالية
     let userSession = null;
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -133,7 +127,7 @@ module.exports = async (req, res) => {
     }
 
     try {
-        // --- 1. مسار الحسابات والمصادقة (route=auth) ---
+        // --- 1. المصادقة والحسابات وفحص الهجرة للحسابات القديمة ---
         if (route === 'auth') {
             const { username, password, newPassword } = req.body || {};
 
@@ -148,7 +142,6 @@ module.exports = async (req, res) => {
                 await kv.set(`user:${cleanUser}`, userObj);
                 await kv.set(`uid:${uid}`, userObj);
                 
-                // إضافة المستخدم لقائمة المتصدرين العامة
                 let allUsers = await kv.get('all_users_list') || [];
                 allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
                 await kv.set('all_users_list', allUsers);
@@ -161,7 +154,20 @@ module.exports = async (req, res) => {
                 const userObj = await kv.get(`user:${cleanUser}`);
                 if (!userObj || userObj.password !== password) return res.status(400).json({ error: 'بيانات الدخول خاطئة' });
                 
-                userObj.isAdmin = ADMINS.includes(cleanUser); // تأكيد الصلاحيات لـ Red_Army
+                // إصلاح فوري للمستخدمين القدامى لضمان عدم تداخل التوقعات أبداً
+                if (!userObj.uid) {
+                    userObj.uid = 'u_' + Math.random().toString(36).substr(2, 9);
+                    await kv.set(`user:${cleanUser}`, userObj);
+                    await kv.set(`uid:${userObj.uid}`, userObj);
+                    
+                    let allUsers = await kv.get('all_users_list') || [];
+                    if (!allUsers.some(u => u.username === cleanUser)) {
+                        allUsers.push({ uid: userObj.uid, username: cleanUser, isAdmin: ADMINS.includes(cleanUser) });
+                        await kv.set('all_users_list', allUsers);
+                    }
+                }
+
+                userObj.isAdmin = ADMINS.includes(cleanUser);
                 return res.status(200).json({ token: jwt.sign({ username: cleanUser, uid: userObj.uid }, JWT_SECRET), user: userObj });
             }
 
@@ -180,7 +186,7 @@ module.exports = async (req, res) => {
             }
         }
 
-        // --- 2. مسار المباريات (route=matches) ---
+        // --- 2. جلب وتحديث جدول المباريات السحابي ---
         if (route === 'matches') {
             let matches = await kv.get('db_matches');
             if (!matches || !Array.isArray(matches) || matches.length === 0) {
@@ -188,43 +194,23 @@ module.exports = async (req, res) => {
                 await kv.set('db_matches', OFFICIAL_SCHEDULE);
             }
 
-            if (req.method === 'GET') {
-                return res.status(200).json(matches);
-            }
+            if (req.method === 'GET') return res.status(200).json(matches);
 
-            // الإدارة والتحديث (Admin Only)
             if (req.method === 'PUT') {
                 const { res: gameRes } = req.body || {};
                 matches = matches.map(m => m.id === matchIdParam ? { ...m, res: gameRes } : m);
                 await kv.set('db_matches', matches);
-                const updatedMatch = matches.find(m => m.id === matchIdParam);
-                return res.status(200).json(updatedMatch);
-            }
-
-            if (req.method === 'POST') {
-                const { t1, t2, grp, stg, dt } = req.body;
-                const newId = 'm_' + Date.now();
-                const newMatch = { id: newId, t1, t2, grp, stg, dt, res: null };
-                matches.push(newMatch);
-                await kv.set('db_matches', matches);
-                return res.status(200).json(newMatch);
-            }
-
-            if (req.method === 'DELETE') {
-                matches = matches.filter(m => m.id !== matchIdParam);
-                await kv.set('db_matches', matches);
-                return res.status(200).json({ success: true });
+                return res.status(200).json(matches.find(m => m.id === matchIdParam));
             }
         }
 
-        // --- 3. مسار التوقعات (route=predictions) ---
+        // --- 3. قسم حفظ وعزل توقعات المستخدمين بدقة ---
         if (route === 'predictions') {
-            if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
+            if (!userSession || !userSession.uid) return res.status(401).json({ error: 'سجل دخولك أولاً' });
             const userPredsKey = `preds:${userSession.uid}`;
 
             if (req.method === 'GET') {
-                const preds = await kv.get(userPredsKey) || {};
-                return res.status(200).json(preds);
+                return res.status(200).json(await kv.get(userPredsKey) || {});
             }
 
             if (req.method === 'POST') {
@@ -233,22 +219,18 @@ module.exports = async (req, res) => {
                 const currentMatch = matches.find(m => m.id === matchId);
 
                 if (!currentMatch) return res.status(404).json({ error: 'المباراة غير موجودة' });
-
-                // فحص قاعدة التجميد قبل ساعة من الانطلاق
-                const matchTime = new Date(currentMatch.dt).getTime();
-                if (Date.now() >= (matchTime - 3600000)) {
+                if (Date.now() >= (new Date(currentMatch.dt).getTime() - 3600000)) {
                     return res.status(400).json({ error: 'أغلق التوقع، متبقي أقل من ساعة!' });
                 }
 
                 const currentPreds = await kv.get(userPredsKey) || {};
                 currentPreds[matchId] = { s1, s2, penW, ps1, ps2 };
                 await kv.set(userPredsKey, currentPreds);
-
                 return res.status(200).json({ success: true });
             }
         }
 
-        // --- 4. لوحة الصدارة العامة (route=leaderboard) ---
+        // --- 4. حساب لوحة صدارة المتصدرين تلقائياً ---
         if (route === 'leaderboard') {
             const allUsers = await kv.get('all_users_list') || [];
             const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
@@ -256,48 +238,26 @@ module.exports = async (req, res) => {
             const leaderboard = await Promise.all(allUsers.map(async (u) => {
                 const preds = await kv.get(`preds:${u.uid}`) || {};
                 let score = 0;
-                let count = Object.keys(preds).length;
-
-                matches.forEach(m => {
-                    if (m.res && preds[m.id]) {
-                        score += calculatePtsServer(m, preds[m.id]);
-                    }
-                });
-
-                return {
-                    uid: u.uid,
-                    username: u.username,
-                    isAdmin: ADMINS.includes(u.username),
-                    pts: score,
-                    predCount: count
-                };
+                matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
+                return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
             }));
 
-            leaderboard.sort((a, b) => b.pts - a.pts);
-            return res.status(200).json(leaderboard);
+            return res.status(200).json(leaderboard.sort((a, b) => b.pts - a.pts));
         }
 
-        // --- 5. مسار الدوريات (route=leagues) ---
+        // --- 5. نظام الدوريات الخاصة التفاعلي الكامل ---
         if (route === 'leagues') {
             if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
             let allLeagues = await kv.get('global_leagues') || [];
 
             if (req.method === 'GET') {
-                const myLeagues = allLeagues.filter(l => l.members.includes(userSession.uid));
-                return res.status(200).json(myLeagues);
+                return res.status(200).json(allLeagues.filter(l => l.members.includes(userSession.uid)));
             }
 
             const { name, code, leagueId } = req.body || {};
 
             if (action === 'create') {
-                const newLgCode = Math.random().toString(36).substr(2, 6).toUpperCase();
-                const newLg = {
-                    id: 'lg_' + Date.now(),
-                    name,
-                    code: newLgCode,
-                    owner: userSession.uid,
-                    members: [userSession.uid]
-                };
+                const newLg = { id: 'lg_' + Date.now(), name, code: Math.random().toString(36).substr(2, 6).toUpperCase(), owner: userSession.uid, members: [userSession.uid] };
                 allLeagues.push(newLg);
                 await kv.set('global_leagues', allLeagues);
                 return res.status(200).json(newLg);
@@ -306,36 +266,19 @@ module.exports = async (req, res) => {
             if (action === 'join') {
                 const targetLg = allLeagues.find(l => l.code === code.toUpperCase());
                 if (!targetLg) return res.status(404).json({ error: 'كود الدوري غير صحيح' });
-                
-                if (!targetLg.members.includes(userSession.uid)) {
-                    targetLg.members.push(userSession.uid);
-                    await kv.set('global_leagues', allLeagues);
-                }
-                return res.status(200).json(targetLg);
-            }
-
-            if (action === 'leave') {
-                allLeagues = allLeagues.map(l => {
-                    if (l.id === leagueId) {
-                        l.members = l.members.filter(m => m !== userSession.uid);
-                    }
-                    return l;
-                }).filter(l => l.members.length > 0);
+                if (!targetLg.members.includes(userSession.uid)) targetLg.members.push(userSession.uid);
                 await kv.set('global_leagues', allLeagues);
-                return res.status(200).json({ success: true });
+                return res.status(200).json(targetLg);
             }
         }
 
-        // --- 6. قائمة المستخدمين للإدارة (route=users) ---
         if (route === 'users') {
             if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
-            const allUsers = await kv.get('all_users_list') || [];
-            return res.status(200).json(allUsers);
+            return res.status(200).json(await kv.get('all_users_list') || []);
         }
 
         return res.status(200).json(OFFICIAL_SCHEDULE);
-
     } catch (error) {
-        return res.status(500).json({ error: 'خطأ داخلي في نظام قاعدة البيانات السحابية' });
+        return res.status(500).json({ error: 'خطأ داخلي' });
     }
 };
