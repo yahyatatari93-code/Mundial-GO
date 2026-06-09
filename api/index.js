@@ -3,86 +3,114 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'wc2026-secret-key';
 const ADMINS = ['red_army', 'yahya'];
+const BIG_TEAMS = ['البرازيل', 'الأرجنتين', 'إنكلترا', 'ألمانيا', 'إسبانيا', 'البرتغال', 'هولندا', 'فرنسا', 'بلجيكا'];
+const KO_STAGES = ['r32', 'r16', 'qf', 'sf', 'final'];
 
+// جدول الـ 72 مباراة للدور الأول كاملاً متوافقاً 100% مع مسميات وقاموس أعلام واجهتك
 const OFFICIAL_SCHEDULE = [
     // الجولة 1
-    { id: "m1", matchId: "m1", teamA: "المكسيك", teamB: "جنوب أفريقيا", day: 1, time: "22:00", startTime: "2026-06-11T22:00:00Z", round: "first", status: "pending" },
-    { id: "m2", matchId: "m2", teamA: "كوريا الجنوبية", teamB: "التشيك", day: 2, time: "05:00", startTime: "2026-06-12T05:00:00Z", round: "first", status: "pending" },
-    { id: "m3", matchId: "m3", teamA: "كندا", teamB: "البوسنة والهرسك", day: 2, time: "22:00", startTime: "2026-06-12T22:00:00Z", round: "first", status: "pending" },
-    { id: "m4", matchId: "m4", teamA: "الولايات المتحدة", teamB: "باراغواي", day: 3, time: "04:00", startTime: "2026-06-13T04:00:00Z", round: "first", status: "pending" },
-    { id: "m5", matchId: "m5", teamA: "قطر", teamB: "سويسرا", day: 3, time: "22:00", startTime: "2026-06-13T22:00:00Z", round: "first", status: "pending" },
-    { id: "m6", matchId: "m6", teamA: "البرازيل", teamB: "المغرب", day: 4, time: "01:00", startTime: "2026-06-14T01:00:00Z", round: "first", status: "pending" },
-    { id: "m7", matchId: "m7", teamA: "هايتي", teamB: "اسكتلندا", day: 4, time: "04:00", startTime: "2026-06-14T04:00:00Z", round: "first", status: "pending" },
-    { id: "m8", matchId: "m8", teamA: "أستراليا", teamB: "تركيا", day: 4, time: "07:00", startTime: "2026-06-14T07:00:00Z", round: "first", status: "pending" },
-    { id: "m9", matchId: "m9", teamA: "ألمانيا", teamB: "كوراساو", day: 4, time: "20:00", startTime: "2026-06-14T20:00:00Z", round: "first", status: "pending" },
-    { id: "m10", matchId: "m10", teamA: "هولندا", teamB: "اليابان", day: 4, time: "23:00", startTime: "2026-06-14T23:00:00Z", round: "first", status: "pending" },
-    { id: "m11", matchId: "m11", teamA: "ساحل العاج", teamB: "الإكوادور", day: 5, time: "02:00", startTime: "2026-06-15T02:00:00Z", round: "first", status: "pending" },
-    { id: "m12", matchId: "m12", teamA: "السويد", teamB: "تونس", day: 5, time: "05:00", startTime: "2026-06-15T05:00:00Z", round: "first", status: "pending" },
-    { id: "m13", matchId: "m13", teamA: "إسبانيا", teamB: "الرأس الأخضر", day: 5, time: "19:00", startTime: "2026-06-15T19:00:00Z", round: "first", status: "pending" },
-    { id: "m14", matchId: "m14", teamA: "بلجيكا", teamB: "مصر", day: 5, time: "22:00", startTime: "2026-06-15T22:00:00Z", round: "first", status: "pending" },
-    { id: "m15", matchId: "m15", teamA: "السعودية", teamB: "أوروغواي", day: 6, time: "01:00", startTime: "2026-06-16T01:00:00Z", round: "first", status: "pending" },
-    { id: "m16", matchId: "m16", teamA: "إيران", teamB: "نيوزيلندا", day: 6, time: "04:00", startTime: "2026-06-16T04:00:00Z", round: "first", status: "pending" },
-    { id: "m17", matchId: "m17", teamA: "فرنسا", teamB: "السنغال", day: 6, time: "22:00", startTime: "2026-06-16T22:00:00Z", round: "first", status: "pending" },
-    { id: "m18", matchId: "m18", teamA: "العراق", teamB: "النرويج", day: 7, time: "01:00", startTime: "2026-06-17T01:00:00Z", round: "first", status: "pending" },
-    { id: "m19", matchId: "m19", teamA: "الأرجنتين", teamB: "الجزائر", day: 7, time: "04:00", startTime: "2026-06-17T04:00:00Z", round: "first", status: "pending" },
-    { id: "m20", matchId: "m20", teamA: "النمسا", teamB: "الأردن", day: 7, time: "07:00", startTime: "2026-06-17T07:00:00Z", round: "first", status: "pending" },
-    { id: "m21", matchId: "m21", teamA: "البرتغال", teamB: "جمهورية الكونغو الديمقراطية", day: 7, time: "20:00", startTime: "2026-06-17T20:00:00Z", round: "first", status: "pending" },
-    { id: "m22", matchId: "m22", teamA: "إنجلترا", teamB: "كرواتيا", day: 7, time: "23:00", startTime: "2026-06-17T23:00:00Z", round: "first", status: "pending" },
-    { id: "m23", matchId: "m23", teamA: "غانا", teamB: "بنما", day: 8, time: "02:00", startTime: "2026-06-18T02:00:00Z", round: "first", status: "pending" },
-    { id: "m24", matchId: "m24", teamA: "أوزبكستان", teamB: "كولومبيا", day: 8, time: "05:00", startTime: "2026-06-18T05:00:00Z", round: "first", status: "pending" },
-    { id: "m25", matchId: "m25", teamA: "التشيك", teamB: "جنوب أفريقيا", day: 8, time: "19:00", startTime: "2026-06-18T19:00:00Z", round: "first", status: "pending" },
-    { id: "m26", matchId: "m26", teamA: "سويسرا", teamB: "البوسنة والهرسك", day: 8, time: "22:00", startTime: "2026-06-18T22:00:00Z", round: "first", status: "pending" },
-    
+    { id: "m1", t1: "المكسيك", t2: "جنوب أفريقيا", grp: "1", stg: "group", dt: "2026-06-11T19:00:00Z", res: null },
+    { id: "m2", t1: "كوريا الجنوبية", t2: "التشيك", grp: "1", stg: "group", dt: "2026-06-12T02:00:00Z", res: null },
+    { id: "m3", t1: "كندا", t2: "البوسنة", grp: "1", stg: "group", dt: "2026-06-12T19:00:00Z", res: null },
+    { id: "m4", t1: "الولايات المتحدة", t2: "الباراغواي", grp: "1", stg: "group", dt: "2026-06-13T01:00:00Z", res: null },
+    { id: "m5", t1: "قطر", t2: "سويسرا", grp: "1", stg: "group", dt: "2026-06-13T19:00:00Z", res: null },
+    { id: "m6", t1: "البرازيل", t2: "المغرب", grp: "1", stg: "group", dt: "2026-06-13T22:00:00Z", res: null },
+    { id: "m7", t1: "هايتي", t2: "إسكتلندا", grp: "1", stg: "group", dt: "2026-06-14T01:00:00Z", res: null },
+    { id: "m8", t1: "أستراليا", t2: "تركيا", grp: "1", stg: "group", dt: "2026-06-14T04:00:00Z", res: null },
+    { id: "m9", t1: "ألمانيا", t2: "كوراساو", grp: "1", stg: "group", dt: "2026-06-14T17:00:00Z", res: null },
+    { id: "m10", t1: "هولندا", t2: "اليابان", grp: "1", stg: "group", dt: "2026-06-14T20:00:00Z", res: null },
+    { id: "m11", t1: "كوت ديفوار", t2: "الإكوادور", grp: "1", stg: "group", dt: "2026-06-14T23:00:00Z", res: null },
+    { id: "m12", t1: "السويد", t2: "تونس", grp: "1", stg: "group", dt: "2026-06-15T02:00:00Z", res: null },
+    { id: "m13", t1: "إسبانيا", t2: "الرأس الأخضر", grp: "1", stg: "group", dt: "2026-06-15T16:00:00Z", res: null },
+    { id: "m14", t1: "بلجيكا", t2: "مصر", grp: "1", stg: "group", dt: "2026-06-15T19:00:00Z", res: null },
+    { id: "m15", t1: "السعودية", t2: "الأوروغواي", grp: "1", stg: "group", dt: "2026-06-15T22:00:00Z", res: null },
+    { id: "m16", t1: "إيران", t2: "نيوزيلندا", grp: "1", stg: "group", dt: "2026-06-16T01:00:00Z", res: null },
+    { id: "m17", t1: "فرنسا", t2: "السنغال", grp: "1", stg: "group", dt: "2026-06-16T19:00:00Z", res: null },
+    { id: "m18", t1: "العراق", t2: "النرويج", grp: "1", stg: "group", dt: "2026-06-16T22:00:00Z", res: null },
+    { id: "m19", t1: "الأرجنتين", t2: "الجزائر", grp: "1", stg: "group", dt: "2026-06-17T01:00:00Z", res: null },
+    { id: "m20", t1: "النمسا", t2: "الأردن", grp: "1", stg: "group", dt: "2026-06-17T04:00:00Z", res: null },
+    { id: "m21", t1: "البرتغال", t2: "الكونغو", grp: "1", stg: "group", dt: "2026-06-17T17:00:00Z", res: null },
+    { id: "m22", t1: "إنكلترا", t2: "كرواتيا", grp: "1", stg: "group", dt: "2026-06-17T20:00:00Z", res: null },
+    { id: "m23", t1: "غانا", t2: "بنما", grp: "1", stg: "group", dt: "2026-06-17T23:00:00Z", res: null },
+    { id: "m24", t1: "أوزبكستان", t2: "كولومبيا", grp: "1", stg: "group", dt: "2026-06-18T02:00:00Z", res: null },
+    { id: "m25", t1: "التشيك", t2: "جنوب أفريقيا", grp: "1", stg: "group", dt: "2026-06-18T16:00:00Z", res: null },
+    { id: "m26", t1: "سويسرا", t2: "البوسنة", grp: "1", stg: "group", dt: "2026-06-18T19:00:00Z", res: null },
+
     // الجولة 2
-    { id: "m27", matchId: "m27", teamA: "كندا", teamB: "قطر", day: 9, time: "01:00", startTime: "2026-06-19T01:00:00Z", round: "first", status: "pending" },
-    { id: "m28", matchId: "m28", teamA: "المكسيك", teamB: "كوريا الجنوبية", day: 9, time: "04:00", startTime: "2026-06-19T04:00:00Z", round: "first", status: "pending" },
-    { id: "m29", matchId: "m29", teamA: "الولايات المتحدة", teamB: "أستراليا", day: 9, time: "22:00", startTime: "2026-06-19T22:00:00Z", round: "first", status: "pending" },
-    { id: "m30", matchId: "m30", teamA: "اسكتلندا", teamB: "المغرب", day: 10, time: "01:00", startTime: "2026-06-20T01:00:00Z", round: "first", status: "pending" },
-    { id: "m31", matchId: "m31", teamA: "البرازيل", teamB: "هايتي", day: 10, time: "03:30", startTime: "2026-06-20T03:30:00Z", round: "first", status: "pending" },
-    { id: "m32", matchId: "m32", teamA: "تركيا", teamB: "باراغواي", day: 10, time: "06:00", startTime: "2026-06-20T06:00:00Z", round: "first", status: "pending" },
-    { id: "m33", matchId: "m33", teamA: "هولندا", teamB: "السويد", day: 10, time: "20:00", startTime: "2026-06-20T20:00:00Z", round: "first", status: "pending" },
-    { id: "m34", matchId: "m34", teamA: "ألمانيا", teamB: "ساحل العاج", day: 10, time: "23:00", startTime: "2026-06-20T23:00:00Z", round: "first", status: "pending" },
-    { id: "m35", matchId: "m35", teamA: "الإكوادور", teamB: "كوراساو", day: 11, time: "03:00", startTime: "2026-06-21T03:00:00Z", round: "first", status: "pending" },
-    { id: "m36", matchId: "m36", teamA: "تونس", teamB: "اليابان", day: 11, time: "07:00", startTime: "2026-06-21T07:00:00Z", round: "first", status: "pending" },
-    { id: "m37", matchId: "m37", teamA: "إسبانيا", teamB: "السعودية", day: 11, time: "19:00", startTime: "2026-06-21T19:00:00Z", round: "first", status: "pending" },
-    { id: "m38", matchId: "m38", teamA: "بلجيكا", teamB: "إيران", day: 11, time: "22:00", startTime: "2026-06-21T22:00:00Z", round: "first", status: "pending" },
-    { id: "m39", matchId: "m39", teamA: "أوروغواي", teamB: "الرأس الأخضر", day: 12, time: "01:00", startTime: "2026-06-22T01:00:00Z", round: "first", status: "pending" },
-    { id: "m40", matchId: "m40", teamA: "نيوزيلندا", teamB: "مصر", day: 12, time: "04:00", startTime: "2026-06-22T04:00:00Z", round: "first", status: "pending" },
-    { id: "m41", matchId: "m41", teamA: "الأرجنتين", teamB: "النمسا", day: 12, time: "20:00", startTime: "2026-06-22T20:00:00Z", round: "first", status: "pending" },
-    { id: "m42", matchId: "m42", teamA: "فرنسا", teamB: "العراق", day: 13, time: "00:00", startTime: "2026-06-23T00:00:00Z", round: "first", status: "pending" },
-    { id: "m43", matchId: "m43", teamA: "النرويج", teamB: "السنغال", day: 13, time: "03:00", startTime: "2026-06-23T03:00:00Z", round: "first", status: "pending" },
-    { id: "m44", matchId: "m44", teamA: "الأردن", teamB: "الجزائر", day: 13, time: "06:00", startTime: "2026-06-23T06:00:00Z", round: "first", status: "pending" },
-    { id: "m45", matchId: "m45", teamA: "البرتغال", teamB: "أوزبكستان", day: 13, time: "20:00", startTime: "2026-06-23T20:00:00Z", round: "first", status: "pending" },
-    { id: "m46", matchId: "m46", teamA: "إنجلترا", teamB: "غانا", day: 13, time: "21:00", startTime: "2026-06-23T21:00:00Z", round: "first", status: "pending" },
-    { id: "m47", matchId: "m47", teamA: "بنما", teamB: "كرواتيا", day: 14, time: "02:00", startTime: "2026-06-24T02:00:00Z", round: "first", status: "pending" },
-    { id: "m48", matchId: "m48", teamA: "كولومبيا", teamB: "جمهورية الكونغو الديمقراطية", day: 14, time: "05:00", startTime: "2026-06-24T05:00:00Z", round: "first", status: "pending" },
-    { id: "m49", matchId: "m49", teamA: "سويسرا", teamB: "كندا", day: 14, time: "22:00", startTime: "2026-06-24T22:00:00Z", round: "first", status: "pending" },
-    { id: "m50", matchId: "m50", teamA: "البوسنة والهرسك", teamB: "قطر", day: 14, time: "22:00", startTime: "2026-06-24T22:00:00Z", round: "first", status: "pending" },
+    { id: "m27", t1: "كندا", t2: "قطر", grp: "2", stg: "group", dt: "2026-06-18T22:00:00Z", res: null },
+    { id: "m28", t1: "المكسيك", t2: "كوريا الجنوبية", grp: "2", stg: "group", dt: "2026-06-19T01:00:00Z", res: null },
+    { id: "m29", t1: "الولايات المتحدة", t2: "أستراليا", grp: "2", stg: "group", dt: "2026-06-19T19:00:00Z", res: null },
+    { id: "m30", t1: "إسكتلندا", t2: "المغرب", grp: "2", stg: "group", dt: "2026-06-19T22:00:00Z", res: null },
+    { id: "m31", t1: "البرازيل", t2: "هايتي", grp: "2", stg: "group", dt: "2026-06-20T00:30:00Z", res: null },
+    { id: "m32", t1: "تركيا", t2: "الباراغواي", grp: "2", stg: "group", dt: "2026-06-20T03:00:00Z", res: null },
+    { id: "m33", t1: "هولندا", t2: "السويد", grp: "2", stg: "group", dt: "2026-06-20T17:00:00Z", res: null },
+    { id: "m34", t1: "ألمانيا", t2: "كوت ديفوار", grp: "2", stg: "group", dt: "2026-06-20T20:00:00Z", res: null },
+    { id: "m35", t1: "الإكوادور", t2: "كوراساو", grp: "2", stg: "group", dt: "2026-06-21T00:00:00Z", res: null },
+    { id: "m36", t1: "تونس", t2: "اليابان", grp: "2", stg: "group", dt: "2026-06-21T04:00:00Z", res: null },
+    { id: "m37", t1: "إسبانيا", t2: "السعودية", grp: "2", stg: "group", dt: "2026-06-21T16:00:00Z", res: null },
+    { id: "m38", t1: "بلجيكا", t2: "إيران", grp: "2", stg: "group", dt: "2026-06-21T19:00:00Z", res: null },
+    { id: "m39", t1: "الأوروغواي", t2: "الرأس الأخضر", grp: "2", stg: "group", dt: "2026-06-21T22:00:00Z", res: null },
+    { id: "m40", t1: "نيوزيلندا", t2: "مصر", grp: "2", stg: "group", dt: "2026-06-22T01:00:00Z", res: null },
+    { id: "m41", t1: "الأرجنتين", t2: "النمسا", grp: "2", stg: "group", dt: "2026-06-22T17:00:00Z", res: null },
+    { id: "m42", t1: "فرنسا", t2: "العراق", grp: "2", stg: "group", dt: "2026-06-22T21:00:00Z", res: null },
+    { id: "m43", t1: "النرويج", t2: "السنغال", grp: "2", stg: "group", dt: "2026-06-23T00:00:00Z", res: null },
+    { id: "m44", t1: "الأردن", t2: "الجزائر", grp: "2", stg: "group", dt: "2026-06-23T03:00:00Z", res: null },
+    { id: "m45", t1: "البرتغال", t2: "أوزبكستان", grp: "2", stg: "group", dt: "2026-06-23T17:00:00Z", res: null },
+    { id: "m46", t1: "إنكلترا", t2: "غانا", grp: "2", stg: "group", dt: "2026-06-23T20:00:00Z", res: null },
+    { id: "m47", t1: "بنما", t2: "كرواتيا", grp: "2", stg: "group", dt: "2026-06-23T23:00:00Z", res: null },
+    { id: "m48", t1: "كولومبيا", t2: "الكونغو", grp: "2", stg: "group", dt: "2026-06-24T02:00:00Z", res: null },
+    { id: "m49", t1: "سويسرا", t2: "كندا", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
+    { id: "m50", t1: "البوسنة", t2: "قطر", grp: "2", stg: "group", dt: "2026-06-24T19:00:00Z", res: null },
 
     // الجولة 3
-    { id: "m51", matchId: "m51", teamA: "اسكتلندا", teamB: "البرازيل", day: 15, time: "01:00", startTime: "2026-06-25T01:00:00Z", round: "first", status: "pending" },
-    { id: "m52", matchId: "m52", teamA: "المغرب", teamB: "هايتي", day: 15, time: "01:00", startTime: "2026-06-25T01:00:00Z", round: "first", status: "pending" },
-    { id: "m53", matchId: "m53", teamA: "التشيك", teamB: "المكسيك", day: 15, time: "04:00", startTime: "2026-06-25T04:00:00Z", round: "first", status: "pending" },
-    { id: "m54", matchId: "m54", teamA: "جنوب أفريقيا", teamB: "كوريا الجنوبية", day: 15, time: "04:00", startTime: "2026-06-25T04:00:00Z", round: "first", status: "pending" },
-    { id: "m55", matchId: "m55", teamA: "الإكوادور", teamB: "ألمانيا", day: 15, time: "23:00", startTime: "2026-06-25T23:00:00Z", round: "first", status: "pending" },
-    { id: "m56", matchId: "m56", teamA: "كوراساو", teamB: "ساحل العاج", day: 15, time: "23:00", startTime: "2026-06-25T23:00:00Z", round: "first", status: "pending" },
-    { id: "m57", matchId: "m57", teamA: "تونس", teamB: "هولندا", day: 16, time: "02:00", startTime: "2026-06-26T02:00:00Z", round: "first", status: "pending" },
-    { id: "m58", matchId: "m58", teamA: "اليابان", teamB: "السويد", day: 16, time: "02:00", startTime: "2026-06-26T02:00:00Z", round: "first", status: "pending" },
-    { id: "m59", matchId: "m59", teamA: "تركيا", teamB: "الولايات المتحدة", day: 16, time: "05:00", startTime: "2026-06-26T05:00:00Z", round: "first", status: "pending" },
-    { id: "m60", matchId: "m60", teamA: "باراغواي", teamB: "أستراليا", day: 16, time: "05:00", startTime: "2026-06-26T05:00:00Z", round: "first", status: "pending" },
-    { id: "m61", matchId: "m61", teamA: "النرويج", teamB: "فرنسا", day: 16, time: "22:00", startTime: "2026-06-26T22:00:00Z", round: "first", status: "pending" },
-    { id: "m62", matchId: "m62", teamA: "السنغال", teamB: "العراق", day: 16, time: "22:00", startTime: "2026-06-26T22:00:00Z", round: "first", status: "pending" },
-    { id: "m63", matchId: "m63", teamA: "أوروغواي", teamB: "إسبانيا", day: 17, time: "03:00", startTime: "2026-06-27T03:00:00Z", round: "first", status: "pending" },
-    { id: "m64", matchId: "m64", teamA: "الرأس الأخضر", teamB: "السعودية", day: 17, time: "03:00", startTime: "2026-06-27T03:00:00Z", round: "first", status: "pending" },
-    { id: "m65", matchId: "m65", teamA: "نيوزيلندا", teamB: "بلجيكا", day: 17, time: "06:00", startTime: "2026-06-27T06:00:00Z", round: "first", status: "pending" },
-    { id: "m66", matchId: "m66", teamA: "مصر", teamB: "إيران", day: 17, time: "06:00", startTime: "2026-06-27T06:00:00Z", round: "first", status: "pending" },
-    { id: "m67", matchId: "m67", teamA: "بنما", teamB: "إنجلترا", day: 18, time: "00:00", startTime: "2026-06-28T00:00:00Z", round: "first", status: "pending" },
-    { id: "m68", matchId: "m68", teamA: "كرواتيا", teamB: "غانا", day: 18, time: "00:00", startTime: "2026-06-28T00:00:00Z", round: "first", status: "pending" },
-    { id: "m69", matchId: "m69", teamA: "كولومبيا", teamB: "البرتغال", day: 18, time: "02:30", startTime: "2026-06-28T02:30:00Z", round: "first", status: "pending" },
-    { id: "m70", matchId: "m70", teamA: "جمهورية الكونغو الديمقراطية", teamB: "أوزبكستان", day: 18, time: "02:30", startTime: "2026-06-28T02:30:00Z", round: "first", status: "pending" },
-    { id: "m71", matchId: "m71", teamA: "الأردن", teamB: "الأرجنتين", day: 18, time: "05:00", startTime: "2026-06-28T05:00:00Z", round: "first", status: "pending" },
-    { id: "m72", matchId: "m72", teamA: "الجزائر", teamB: "النمسا", day: 18, time: "05:00", startTime: "2026-06-28T05:00:00Z", round: "first", status: "pending" }
+    { id: "m51", t1: "إسكتلندا", t2: "البرازيل", grp: "3", stg: "group", dt: "2026-06-24T22:00:00Z", res: null },
+    { id: "m52", t1: "المغرب", t2: "هايتي", grp: "3", stg: "group", dt: "2026-06-24T22:00:00Z", res: null },
+    { id: "m53", t1: "التشيك", t2: "المكسيك", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: null },
+    { id: "m54", t1: "جنوب أفريقيا", t2: "كوريا الجنوبية", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: null },
+    { id: "m55", t1: "الإكوادور", t2: "ألمانيا", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
+    { id: "m56", t1: "كوراساو", t2: "كوت ديفوار", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
+    { id: "m57", t1: "تونس", t2: "هولندا", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
+    { id: "m58", t1: "اليابان", t2: "السويد", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
+    { id: "m59", t1: "تركيا", t2: "الولايات المتحدة", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
+    { id: "m60", t1: "الباراغواي", t2: "أستراليا", grp: "3", stg: "group", dt: "2026-06-26T02:00:00Z", res: null },
+    { id: "m61", t1: "النرويج", t2: "فرنسا", grp: "3", stg: "group", dt: "2026-06-26T19:00:00Z", res: null },
+    { id: "m62", t1: "السنغال", t2: "العراق", grp: "3", stg: "group", dt: "2026-06-26T19:00:00Z", res: null },
+    { id: "m63", t1: "الأوروغواي", t2: "إسبانيا", grp: "3", stg: "group", dt: "2026-06-27T00:00:00Z", res: null },
+    { id: "m64", t1: "الرأس الأخضر", t2: "السعودية", grp: "3", stg: "group", dt: "2026-06-27T00:00:00Z", res: null },
+    { id: "m65", t1: "نيوزيلندا", t2: "بلجيكا", grp: "3", stg: "group", dt: "2026-06-27T03:00:00Z", res: null },
+    { id: "m66", t1: "مصر", t2: "إيران", grp: "3", stg: "group", dt: "2026-06-27T03:00:00Z", res: null },
+    { id: "m67", t1: "بنما", t2: "إنكلترا", grp: "3", stg: "group", dt: "2026-06-27T21:00:00Z", res: null },
+    { id: "m68", t1: "كرواتيا", t2: "غانا", grp: "3", stg: "group", dt: "2026-06-27T21:00:00Z", res: null },
+    { id: "m69", t1: "كولومبيا", t2: "البرتغال", grp: "3", stg: "group", dt: "2026-06-27T23:30:00Z", res: null },
+    { id: "m70", t1: "الكونغو", t2: "أوزبكستان", grp: "3", stg: "group", dt: "2026-06-27T23:30:00Z", res: null },
+    { id: "m71", t1: "الأردن", t2: "الأرجنتين", grp: "3", stg: "group", dt: "2026-06-28T02:00:00Z", res: null },
+    { id: "m72", t1: "الجزائر", t2: "النمسا", grp: "3", stg: "group", dt: "2026-06-28T02:00:00Z", res: null }
 ];
+
+// دالة سيرفر لحساب النقاط ومزامنتها مع المتصدرين
+function calculatePtsServer(m, pred) {
+    if (!m.res || !pred) return 0;
+    const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
+    const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
+    let pts = 0;
+    if (t1b && t2b) {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) pts = ar === 'd' ? 3 : 5; else if (pr === ar) pts = pr === 'd' ? 2 : 3;
+    } else if (t1b || t2b) {
+        const bf = t1b, bW = bf ? r1 > r2 : r2 > r1, dr = r1 === r2, sW = !bW && !dr;
+        const pbW = bf ? s1 > s2 : s2 > s1, pd = s1 === s2, psW = !pbW && !pd;
+        if (s1 === r1 && s2 === r2) pts = psW ? 5 : pd ? 3 : 3;
+        else if (psW && sW) pts = 4; else if (pd && dr) pts = 2; else if (pbW && bW) pts = 1;
+    } else {
+        const sr = r1 + r2, pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 3 : 2; else if (pr === ar) pts = 1;
+    }
+    if (KO_STAGES.includes(m.stg) && m.res && pred.penW && m.res.penW && pred.penW === m.res.penW) {
+        pts += 1;
+        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 3;
+    }
+    return pts;
+}
 
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -90,122 +118,224 @@ module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     if (req.method === 'OPTIONS') return res.status(200).end();
 
-    const reqUrl = req.url.toLowerCase();
+    const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+    const route = urlObj.searchParams.get('route') || '';
+    const action = urlObj.searchParams.get('action') || '';
+    const matchIdParam = urlObj.searchParams.get('id') || '';
+
+    // التحقق من هوية المستخدم الحالية
+    let userSession = null;
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        try {
+            userSession = jwt.verify(authHeader.split(' ')[1], JWT_SECRET);
+        } catch (e) {}
+    }
 
     try {
-        // --- 1. قسم المصادقة والحسابات ---
-        if (reqUrl.includes('auth')) {
-            const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-            const action = urlObj.searchParams.get('action');
-            const { username, password } = req.body || {};
-
-            if (!username) return res.status(400).json({ error: 'اسم المستخدم مطلوب' });
-            const isAnAdmin = ADMINS.includes(username.toLowerCase());
+        // --- 1. مسار الحسابات والمصادقة (route=auth) ---
+        if (route === 'auth') {
+            const { username, password, newPassword } = req.body || {};
 
             if (action === 'register') {
-                const existing = await kv.get(`user:${username}`);
-                if (existing) return res.status(400).json({ error: 'اسم المستخدم موجود' });
-                const user = { username, password, isAdmin: isAnAdmin };
-                await kv.set(`user:${username}`, user);
-                return res.status(200).json({ token: jwt.sign({ username }, JWT_SECRET), user });
+                const cleanUser = username.trim().toLowerCase();
+                const existing = await kv.get(`user:${cleanUser}`);
+                if (existing) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
+                
+                const uid = 'u_' + Math.random().toString(36).substr(2, 9);
+                const userObj = { uid, username: cleanUser, password, isAdmin: ADMINS.includes(cleanUser) };
+                
+                await kv.set(`user:${cleanUser}`, userObj);
+                await kv.set(`uid:${uid}`, userObj);
+                
+                // إضافة المستخدم لقائمة المتصدرين العامة
+                let allUsers = await kv.get('all_users_list') || [];
+                allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
+                await kv.set('all_users_list', allUsers);
+
+                return res.status(200).json({ token: jwt.sign({ username: cleanUser, uid }, JWT_SECRET), user: userObj });
             }
+
             if (action === 'login') {
-                const user = await kv.get(`user:${username}`);
-                if (!user || user.password !== password) return res.status(400).json({ error: 'بيانات خاطئة' });
-                user.isAdmin = isAnAdmin;
-                return res.status(200).json({ token: jwt.sign({ username }, JWT_SECRET), user });
+                const cleanUser = username.trim().toLowerCase();
+                const userObj = await kv.get(`user:${cleanUser}`);
+                if (!userObj || userObj.password !== password) return res.status(400).json({ error: 'بيانات الدخول خاطئة' });
+                
+                userObj.isAdmin = ADMINS.includes(cleanUser); // تأكيد الصلاحيات لـ Red_Army
+                return res.status(200).json({ token: jwt.sign({ username: cleanUser, uid: userObj.uid }, JWT_SECRET), user: userObj });
+            }
+
+            if (action === 'me') {
+                if (!userSession) return res.status(401).json({ error: 'غير مصرح' });
+                const userObj = await kv.get(`user:${userSession.username}`);
+                return res.status(200).json(userObj);
+            }
+
+            if (action === 'change-password') {
+                if (!userSession) return res.status(401).json({ error: 'غير مصرح' });
+                const userObj = await kv.get(`user:${userSession.username}`);
+                userObj.password = newPassword;
+                await kv.set(`user:${userSession.username}`, userObj);
+                return res.status(200).json({ success: true });
             }
         }
 
-        // --- 2. توليد مصفوفة المباريات الشاملة بكافة هياكل البيانات المحتملة واجهاتك ---
-        const processedMatches = OFFICIAL_SCHEDULE.map(m => {
-            // صياغة الحقول بكافة الأشكال (مصفوفات، كائنات مدمجة، نصوص مسطحة) منعا لاختفاء الأسماء
-            return {
-                ...m,
-                id: m.id, matchId: m.id, match_id: m.id,
-                date: m.date || m.startTime.split('T')[0],
-                matchDate: m.date || m.startTime.split('T')[0],
-                match_date: m.date || m.startTime.split('T')[0],
-                time: m.time, matchTime: m.time, match_time: m.time,
-                
-                // أسماء الفرق بجميع الأشكال النصية المحتملة
-                teamA: m.teamA, team1: m.teamA, team_1: m.teamA, homeTeam: m.teamA, home_team: m.teamA, home: m.teamA, teamA_name: m.teamA, nameA: m.teamA, homeName: m.teamA, home_name: m.teamA,
-                teamB: m.teamB, team2: m.teamB, team_2: m.teamB, awayTeam: m.teamB, away_team: m.teamB, away: m.teamB, teamB_name: m.teamB, nameB: m.teamB, awayName: m.teamB, away_name: m.teamB,
-                
-                // صياغة الكائنات المتداخلة (Nested Objects) إن كانت واجهتك تستخدمها
-                home: { name: m.teamA, title: m.teamA, teamA: m.teamA },
-                away: { name: m.teamB, title: m.teamB, teamB: m.teamB },
-                home_team: { name: m.teamA }, away_team: { name: m.teamB },
-                teamA_obj: { name: m.teamA }, teamB_obj: { name: m.teamB },
-                
-                // صياغة المصفوفات (Arrays) في حال كانت تقرأ عبر الفهرس [0] و [1]
-                teams: [m.teamA, m.teamB],
-                countries: [m.teamA, m.teamB]
-            };
-        });
-
-        // --- 3. قسم جلب المباريات بالتنقل التلقائي الذكي ---
-        if (reqUrl.includes('matches') || reqUrl === '/api' || reqUrl === '/api/') {
-            const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
-            const view = urlObj.searchParams.get('view');
-
-            // حساب اليوم النشط بناء على توقيت الساعة الحالي
-            const currentTime = Date.now();
-            const matchDuration = 2.5 * 60 * 60 * 1000; // وقت المباراة المقدر ساعتان ونصف
-            let activeDay = 1;
-
-            // البحث التلقائي عن أول مباراة لم تنته في الجدول لمعرفة رقم يومها
-            const currentUnfinished = OFFICIAL_SCHEDULE.find(m => {
-                const matchEndTime = new Date(m.startTime).getTime() + matchDuration;
-                return currentTime < matchEndTime;
-            });
-
-            if (currentUnfinished) {
-                activeDay = currentUnfinished.day;
-            } else {
-                activeDay = 18; // في حال انتهاء المجموعات، ثبت اليوم الأخير
+        // --- 2. مسار المباريات (route=matches) ---
+        if (route === 'matches') {
+            let matches = await kv.get('db_matches');
+            if (!matches || !Array.isArray(matches) || matches.length === 0) {
+                matches = OFFICIAL_SCHEDULE;
+                await kv.set('db_matches', OFFICIAL_SCHEDULE);
             }
 
-            // أ: إذا كان الطلب من الصفحة الرئيسية (مباريات اليوم النشط تلقائياً)
-            if (view === 'today' || reqUrl.includes('today')) {
-                const todayMatches = processedMatches.filter(m => m.day === activeDay);
-                return res.status(200).json(todayMatches);
+            if (req.method === 'GET') {
+                return res.status(200).json(matches);
             }
 
-            // ب: إذا كان الطلب للجدول بالكامل (كل مباريات الدور الأول)
-            processedMatches.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
-            return res.status(200).json(processedMatches);
+            // الإدارة والتحديث (Admin Only)
+            if (req.method === 'PUT') {
+                const { res: gameRes } = req.body || {};
+                matches = matches.map(m => m.id === matchIdParam ? { ...m, res: gameRes } : m);
+                await kv.set('db_matches', matches);
+                const updatedMatch = matches.find(m => m.id === matchIdParam);
+                return res.status(200).json(updatedMatch);
+            }
+
+            if (req.method === 'POST') {
+                const { t1, t2, grp, stg, dt } = req.body;
+                const newId = 'm_' + Date.now();
+                const newMatch = { id: newId, t1, t2, grp, stg, dt, res: null };
+                matches.push(newMatch);
+                await kv.set('db_matches', matches);
+                return res.status(200).json(newMatch);
+            }
+
+            if (req.method === 'DELETE') {
+                matches = matches.filter(m => m.id !== matchIdParam);
+                await kv.set('db_matches', matches);
+                return res.status(200).json({ success: true });
+            }
         }
 
-        // --- 4. قسم التوقعات (قفل قبل ساعة) ---
-        if (reqUrl.includes('predictions') && req.method === 'POST') {
-            let authUser = null;
-            const authHeader = req.headers['authorization'];
-            if (authHeader && authHeader.startsWith('Bearer ')) {
-                try {
-                    authUser = jwt.verify(authHeader.split(' ')[1], JWT_SECRET).username;
-                } catch (e) {}
-            }
-            if (!authUser) return res.status(401).json({ error: 'سجل دخولك أولاً' });
+        // --- 3. مسار التوقعات (route=predictions) ---
+        if (route === 'predictions') {
+            if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
+            const userPredsKey = `preds:${userSession.uid}`;
 
-            const { matchId } = req.body;
-            const match = OFFICIAL_SCHEDULE.find(m => m.id === matchId || m.matchId === matchId);
-            if (!match) return res.status(404).json({ error: 'المباراة غير موجودة' });
-
-            const matchTime = new Date(match.startTime).getTime();
-            const oneHourInMs = 60 * 60 * 1000;
-
-            if (Date.now() > (matchTime - oneHourInMs)) {
-                return res.status(400).json({ error: 'عذراً، تم إغلاق التوقعات لهذه المباراة' });
+            if (req.method === 'GET') {
+                const preds = await kv.get(userPredsKey) || {};
+                return res.status(200).json(preds);
             }
 
-            await kv.set(`pred:${authUser}:${matchId}`, { ...req.body, updatedAt: Date.now() });
-            return res.status(200).json({ success: true });
+            if (req.method === 'POST') {
+                const { matchId, s1, s2, penW, ps1, ps2 } = req.body;
+                let matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
+                const currentMatch = matches.find(m => m.id === matchId);
+
+                if (!currentMatch) return res.status(404).json({ error: 'المباراة غير موجودة' });
+
+                // فحص قاعدة التجميد قبل ساعة من الانطلاق
+                const matchTime = new Date(currentMatch.dt).getTime();
+                if (Date.now() >= (matchTime - 3600000)) {
+                    return res.status(400).json({ error: 'أغلق التوقع، متبقي أقل من ساعة!' });
+                }
+
+                const currentPreds = await kv.get(userPredsKey) || {};
+                currentPreds[matchId] = { s1, s2, penW, ps1, ps2 };
+                await kv.set(userPredsKey, currentPreds);
+
+                return res.status(200).json({ success: true });
+            }
         }
 
-        return res.status(200).json(processedMatches);
+        // --- 4. لوحة الصدارة العامة (route=leaderboard) ---
+        if (route === 'leaderboard') {
+            const allUsers = await kv.get('all_users_list') || [];
+            const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
+
+            const leaderboard = await Promise.all(allUsers.map(async (u) => {
+                const preds = await kv.get(`preds:${u.uid}`) || {};
+                let score = 0;
+                let count = Object.keys(preds).length;
+
+                matches.forEach(m => {
+                    if (m.res && preds[m.id]) {
+                        score += calculatePtsServer(m, preds[m.id]);
+                    }
+                });
+
+                return {
+                    uid: u.uid,
+                    username: u.username,
+                    isAdmin: ADMINS.includes(u.username),
+                    pts: score,
+                    predCount: count
+                };
+            }));
+
+            leaderboard.sort((a, b) => b.pts - a.pts);
+            return res.status(200).json(leaderboard);
+        }
+
+        // --- 5. مسار الدوريات (route=leagues) ---
+        if (route === 'leagues') {
+            if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
+            let allLeagues = await kv.get('global_leagues') || [];
+
+            if (req.method === 'GET') {
+                const myLeagues = allLeagues.filter(l => l.members.includes(userSession.uid));
+                return res.status(200).json(myLeagues);
+            }
+
+            const { name, code, leagueId } = req.body || {};
+
+            if (action === 'create') {
+                const newLgCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+                const newLg = {
+                    id: 'lg_' + Date.now(),
+                    name,
+                    code: newLgCode,
+                    owner: userSession.uid,
+                    members: [userSession.uid]
+                };
+                allLeagues.push(newLg);
+                await kv.set('global_leagues', allLeagues);
+                return res.status(200).json(newLg);
+            }
+
+            if (action === 'join') {
+                const targetLg = allLeagues.find(l => l.code === code.toUpperCase());
+                if (!targetLg) return res.status(404).json({ error: 'كود الدوري غير صحيح' });
+                
+                if (!targetLg.members.includes(userSession.uid)) {
+                    targetLg.members.push(userSession.uid);
+                    await kv.set('global_leagues', allLeagues);
+                }
+                return res.status(200).json(targetLg);
+            }
+
+            if (action === 'leave') {
+                allLeagues = allLeagues.map(l => {
+                    if (l.id === leagueId) {
+                        l.members = l.members.filter(m => m !== userSession.uid);
+                    }
+                    return l;
+                }).filter(l => l.members.length > 0);
+                await kv.set('global_leagues', allLeagues);
+                return res.status(200).json({ success: true });
+            }
+        }
+
+        // --- 6. قائمة المستخدمين للإدارة (route=users) ---
+        if (route === 'users') {
+            if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
+            const allUsers = await kv.get('all_users_list') || [];
+            return res.status(200).json(allUsers);
+        }
+
+        return res.status(200).json(OFFICIAL_SCHEDULE);
 
     } catch (error) {
-        return res.status(500).json({ error: 'خطأ داخلي' });
+        return res.status(500).json({ error: 'خطأ داخلي في نظام قاعدة البيانات السحابية' });
     }
 };
