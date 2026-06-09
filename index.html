@@ -3,178 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mundial GO - توقعات كأس العالم 2026</title>
+    <title>Mundial GO</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        h1 { color: #1a5e20; }
-        input {
-            width: 90%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        button {
-            width: 95%;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 6px;
-            background-color: #2e7d32;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover { background-color: #1b5e20; }
-        .toggle-btn { background-color: #4fc3f7; color: #000; }
-        .toggle-btn:hover { background-color: #29b6f6; }
+        body { font-family: sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; }
+        .container { max-width: 400px; margin: 50px auto; background: white; padding: 20px; border-radius: 8px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 95%; padding: 10px; margin: 10px 0; border: none; border-radius: 5px; background-color: #2e7d32; color: white; cursor: pointer; }
+        .toggle-btn { background-color: #4fc3f7; color: black; }
         #app-section { display: none; }
-        .match-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            background: #fafafa;
-        }
-        .logout-btn { background-color: #d32f2f; margin-top: 20px;}
+        .match-card { border: 1px solid #ddd; padding: 10px; margin: 10px 0; background: #fafafa; }
     </style>
 </head>
 <body>
 
-    <!-- قسم تسجيل الدخول / إنشاء الحساب -->
     <div class="container" id="auth-section">
-        <h1 id="auth-title">تسجيل الدخول</h1>
+        <h2 id="auth-title">تسجيل الدخول</h2>
         <input type="text" id="username" placeholder="اسم المستخدم">
         <input type="password" id="password" placeholder="كلمة المرور">
         <button onclick="authenticate()">دخول</button>
-        <button class="toggle-btn" onclick="toggleAuthMode()">ليس لديك حساب؟ إنشاء حساب جديد</button>
-        <p id="auth-msg" style="color: red;"></p>
+        <button class="toggle-btn" onclick="toggleMode()">إنشاء حساب جديد</button>
+        <p id="msg" style="color: red;"></p>
     </div>
 
-    <!-- قسم التطبيق (يظهر بعد تسجيل الدخول) -->
     <div class="container" id="app-section">
-        <h1>مرحباً بك في Mundial GO 🏆</h1>
-        <h3 id="welcome-user"></h3>
-        
-        <div id="matches-container">
-            <!-- سيتم جلب المباريات ووضعها هنا -->
-        </div>
-
-        <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+        <h2>مرحباً <span id="user-name"></span></h2>
+        <div id="matches"></div>
+        <button onclick="logout()" style="background-color: red;">خروج</button>
     </div>
 
     <script>
-        let isLoginMode = true;
+        let isLogin = true;
 
-        // التبديل بين شاشة الدخول والتسجيل
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').innerText = isLoginMode ? 'تسجيل الدخول' : 'إنشاء حساب';
-            document.querySelector('#auth-section button').innerText = isLoginMode ? 'دخول' : 'تسجيل';
-            document.querySelector('.toggle-btn').innerText = isLoginMode ? 'ليس لديك حساب؟ إنشاء حساب جديد' : 'لديك حساب بالفعل؟ تسجيل الدخول';
+        function toggleMode() {
+            isLogin = !isLogin;
+            document.getElementById('auth-title').innerText = isLogin ? 'تسجيل الدخول' : 'إنشاء حساب';
+            document.querySelector('#auth-section button').innerText = isLogin ? 'دخول' : 'تسجيل';
+            document.querySelector('.toggle-btn').innerText = isLogin ? 'إنشاء حساب جديد' : 'تسجيل الدخول';
         }
 
-        // إرسال بيانات الدخول/التسجيل للخادم
         async function authenticate() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
-            const msg = document.getElementById('auth-msg');
-            msg.innerText = "جاري التحميل...";
+            const msg = document.getElementById('msg');
+            const action = isLogin ? 'login' : 'register';
 
-            const action = isLoginMode ? 'login' : 'register';
-            
             try {
-                const response = await fetch(`/api/auth?action=${action}`, {
+                const res = await fetch(`/api/auth?action=${action}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username: user, password: pass })
                 });
+                const data = await res.json();
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    // حفظ التوكن في المتصفح
+                if (res.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('username', data.user.username);
                     showApp();
                 } else {
                     msg.innerText = data.error;
                 }
-            } catch (error) {
-                msg.innerText = "حدث خطأ في الاتصال بالخادم";
+            } catch (err) {
+                msg.innerText = "خطأ في الاتصال";
             }
         }
 
-        // إظهار واجهة التطبيق وجلب المباريات
         function showApp() {
-            const token = localStorage.getItem('token');
-            const username = localStorage.getItem('username');
-            
-            if (token) {
+            if (localStorage.getItem('token')) {
                 document.getElementById('auth-section').style.display = 'none';
                 document.getElementById('app-section').style.display = 'block';
-                document.getElementById('welcome-user').innerText = 'اللاعب: ' + username;
-                fetchMatches(token);
+                document.getElementById('user-name').innerText = localStorage.getItem('username');
+                fetchMatches();
             }
         }
 
-        // جلب المباريات من الخادم
-        async function fetchMatches(token) {
-            const container = document.getElementById('matches-container');
-            container.innerHTML = 'جاري جلب المباريات...';
-
-            try {
-                const response = await fetch('/api/matches', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const matches = await response.json();
-
-                if (matches.length === 0) {
-                    container.innerHTML = '<p>لا توجد مباريات متاحة حالياً.</p>';
-                } else {
-                    container.innerHTML = '';
-                    matches.forEach(m => {
-                        container.innerHTML += `
-                            <div class="match-card">
-                                <strong>${m.teamA} ⚔️ ${m.teamB}</strong>
-                            </div>
-                        `;
-                    });
-                }
-            } catch (error) {
-                container.innerHTML = '<p>فشل جلب المباريات.</p>';
-            }
+        async function fetchMatches() {
+            const res = await fetch('/api/matches');
+            const matches = await res.json();
+            const div = document.getElementById('matches');
+            div.innerHTML = matches.length ? matches.map(m => `<div class="match-card">${m.teamA} ضد ${m.teamB}</div>`).join('') : '<p>لا توجد مباريات</p>';
         }
 
-        // تسجيل الخروج
         function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('username');
-            document.getElementById('auth-section').style.display = 'block';
-            document.getElementById('app-section').style.display = 'none';
+            localStorage.clear();
+            location.reload();
         }
 
-        // التحقق عند فتح الصفحة إذا كان مسجلاً دخول مسبقاً
-        window.onload = () => {
-            if (localStorage.getItem('token')) showApp();
-        };
+        window.onload = showApp;
     </script>
 </body>
 </html>
