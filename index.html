@@ -78,6 +78,8 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .tdone{background:rgba(46,204,113,.15);color:var(--green)}.tlock{background:rgba(231,76,60,.12);color:var(--red)}
 .tlive{background:rgba(46,204,113,.18);color:var(--green);animation:blink 1.2s infinite}
 .mteams{display:flex;align-items:center;gap:7px}
+.nav_sel{width:100%; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:8px; color:#fff; font-size:12px; padding:8px; outline:none; margin-bottom:8px;}
+.nav_sel option{background:#0D1520; color:#fff;}
 .mt{flex:1;display:flex;align-items:center;gap:6px}.mt.r{flex-direction:row-reverse}
 .mfl{font-size:21px;line-height:1;flex-shrink:0}
 .mnm{font-size:12px;font-weight:600;color:var(--text);flex:1}.mnm.r{text-align:right}
@@ -167,10 +169,8 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 <body>
 <div id="app">
 
-<!-- LOADER -->
 <div id="loader"><div class="spin"></div><div class="spin-lbl" id="spin-lbl">جاري التحميل...</div></div>
 
-<!-- AUTH -->
 <div id="auth">
   <div class="a-logo">
     <div class="a-trophy">🏆</div>
@@ -201,7 +201,6 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div class="topbar">
   <div class="tb">
     <div class="tb-ico">🏆</div>
@@ -280,6 +279,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <button class="btn blue" onclick="addMatch()"><i class="ti ti-plus"></i> إضافة المباراة</button>
     </div>
     <div class="sec"><i class="ti ti-edit"></i> إدخال النتائج الحقيقية</div><div id="admlist"></div>
+    <div class="sec"><i class="ti ti-trophy"></i> تثبيت بونص المربع الذهبي والهداف النهائي</div><div id="adm-bonus-panel" class="af"></div>
   </div></div>
 </div>
 <div class="nav">
@@ -325,13 +325,19 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴%A2','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴%A7','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
+const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴%A7','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+// قائمة كبار نجوم الهدافين لقفل الاختيارات ومنع الأخطاء الإملائية
+const TOP_SCORERS_LIST = ['كيليان مبابي', 'فينيسيوس جونيور', 'ليونيل ميسي', 'جود بلينغهام', 'هاري كين', 'إيرلينغ هالاند', 'لوتارو مارتينيز', 'كريستيانو رونالدو', 'جمال موسيالا', 'بوكايو ساكا', 'روبرت ليفاندوفسكي', 'مصطفى محمد', 'سالم الدوسري', 'حكيم زياش', 'ألفارو موراتا'];
 
 let token = localStorage.getItem('wc_token') || null;
 let me = JSON.parse(localStorage.getItem('wc_me') || 'null');
 let matches = [], myPreds = {}, board = [], leagues = [], curMid = null, mflt = 'all', pollT = null;
+
+// متغيرات حفظ بونص التوقعات الكبرى
+let myBonus = {}, officialOutcomes = {};
 
 async function api(method, path, body) {
   setSyncDot('busy');
@@ -406,7 +412,7 @@ function doLogout() {
   token = null; me = null;
   localStorage.removeItem('wc_token'); localStorage.removeItem('wc_me');
   clearTimeout(pollT);
-  matches = []; myPreds = {}; board = []; leagues = [];
+  matches = []; myPreds = {}; board = []; leagues = []; myBonus = {}; officialOutcomes = {};
   document.getElementById('auth').classList.remove('hide');
   document.getElementById('l-u').value = ''; document.getElementById('l-p').value = '';
   swAuth('login'); setSyncDot('off');
@@ -415,8 +421,9 @@ function doLogout() {
 async function enterApp() {
   showLoader('جاري تحميل البيانات...');
   try {
-    [matches, myPreds, board, leagues] = await Promise.all([
-      api('GET', 'matches'), api('GET', 'predictions'), api('GET', 'leaderboard'), api('GET', 'leagues')
+    [matches, myPreds, board, leagues, myBonus, officialOutcomes] = await Promise.all([
+      api('GET', 'matches'), api('GET', 'predictions'), api('GET', 'leaderboard'), api('GET', 'leagues'),
+      api('GET', 'bonus'), api('GET', 'bonus_outcomes')
     ]);
   } catch (e) { doLogout(); return; }
   hideLoader(); hideAuth();
@@ -441,6 +448,8 @@ function refreshActive() {
 const gf = t => FL[t] || '🌍';
 const isB = t => BIG.includes(t);
 const isLocked = m => m.dt ? Date.now() >= new Date(m.dt).getTime() - 3600000 : false;
+const isBonusLocked = () => Date.now() >= new Date('2026-06-11T19:00:00Z').getTime();
+
 const getDayKey = dt => new Date(dt).toLocaleDateString('en-CA', { timeZone: TZ });
 const fmtTime = dt => dt ? new Date(dt).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:TZ, hour12:false }) : '';
 const fmtDT = dt => {
@@ -448,7 +457,20 @@ const fmtDT = dt => {
   return d.toLocaleDateString('ar-SY',{weekday:'short',month:'short',day:'numeric',timeZone:TZ}) + ' · ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:TZ,hour12:false});
 };
 const getDayHeader = dk => { const d=new Date(dk+'T12:00:00'); return DAYS[d.getDay()]+' '+d.getDate()+' '+d.toLocaleDateString('ar-SY',{month:'long'}); };
-const getTotalPts = () => matches.reduce((s,m)=>{ const p=myPreds[m.id]; return s+(p&&m.res?calcPts(m,p):0); }, 0);
+
+// دالة حساب النقاط الإجمالية مدمج معها حساب بونص المربع الذهبي والهداف تلقائياً
+const getTotalPts = () => {
+  let s = matches.reduce((sum, m) => { const p = myPreds[m.id]; return sum + (p && m.res ? calcPts(m, p) : 0); }, 0);
+  if (myBonus && officialOutcomes) {
+    if (myBonus.first && officialOutcomes.first && myBonus.first === officialOutcomes.first) s += 10;
+    if (myBonus.second && officialOutcomes.second && myBonus.second === officialOutcomes.second) s += 10;
+    if (myBonus.third && officialOutcomes.third && myBonus.third === officialOutcomes.third) s += 8;
+    if (myBonus.fourth && officialOutcomes.fourth && myBonus.fourth === officialOutcomes.fourth) s += 5;
+    if (myBonus.topScorer && officialOutcomes.topScorer && myBonus.topScorer === officialOutcomes.topScorer) s += 5;
+  }
+  return s;
+};
+
 const getMyRank = () => { const i=board.findIndex(u=>u.uid===me?.uid); return i>=0?i+1:board.length+1; };
 function setSyncDot(s) { const d=document.getElementById('sdot'); d.className='sdot'+(s==='on'?'':s==='off'?' off':' busy'); }
 function toast(msg) { const t=document.getElementById('tst'); t.textContent=msg; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2600); }
@@ -480,11 +502,8 @@ function calcPts(m, pred) {
   
   if (t1b && t2b) {
     const pr=s1>s2?'w1':s1<s2?'w2':'d', ar=r1>r2?'w1':r1<r2?'w2':'d';
-    if(s1===r1&&s2===r2) {
-      pts = (ar === 'd') ? 3 : 5;
-    } else if(pr===ar) {
-      pts = (ar === 'd') ? 2 : 3;
-    }
+    if(s1===r1&&s2===r2) { pts = (ar === 'd') ? 3 : 5; } 
+    else if(pr===ar) { pts = (ar === 'd') ? 2 : 3; }
   } else if (t1b || t2b) {
     const bf=t1b;
     const bW = bf ? (r1 > r2) : (r2 > r1);
@@ -507,9 +526,7 @@ function calcPts(m, pred) {
     if(s1===r1&&s2===r2) {
       const sr = r1 + r2;
       pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3;
-    } else if(pr===ar) {
-      pts = 1;
-    }
+    } else if(pr===ar) { pts = 1; }
   }
   if (KO.includes(m.stg) && m.res) {
     if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
@@ -545,6 +562,41 @@ function rHome() {
     <div class="sc"><div class="sc-n">${pc}</div><div class="sc-l">توقعاتي</div></div>
     <div class="sc"><div class="sc-n">${matches.length-pc}</div><div class="sc-l">متبقية</div></div>`;
   
+  // توليد خيارات المنتخبات واللاعبين ديناميكياً لتجنب الاختلافات الإملائية وعيوب الكتابة الحرة
+  const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
+  const pOpts = TOP_SCORERS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
+
+  const isLockedBonus = isBonusLocked();
+  
+  let html = `<div class="box" style="border: 1px solid rgba(245, 200, 66, 0.25); background: linear-gradient(135deg, rgba(27,43,94,0.4), var(--card));">
+    <div style="font-size:13px; font-weight:700; color:var(--gold); margin-bottom:10px;"><i class="ti ti-trophy"></i> التوقعات الكبرى للبطولة (بونص 38 نقطة)</div>`;
+  
+  if (isLockedBonus) {
+    html += `<div style="font-size:11px; color:var(--t2); line-height:1.8;">
+      <div class="rr"><span>🥇 المركز الأول (10ن):</span> <span style="font-weight:600; color:#fff">${myBonus.first ? gf(myBonus.first)+' '+myBonus.first : 'لم يتوقع'}</span></div>
+      <div class="rr"><span>🥈 المركز الثاني (10ن):</span> <span style="font-weight:600; color:#fff">${myBonus.second ? gf(myBonus.second)+' '+myBonus.second : 'لم يتوقع'}</span></div>
+      <div class="rr"><span>🥉 المركز الثالث (8ن):</span> <span style="font-weight:600; color:#fff">${myBonus.third ? gf(myBonus.third)+' '+myBonus.third : 'لم يتوقع'}</span></div>
+      <div class="rr"><span>🏅 المركز الرابع (5ن):</span> <span style="font-weight:600; color:#fff">${myBonus.fourth ? gf(myBonus.fourth)+' '+myBonus.fourth : 'لم يتوقع'}</span></div>
+      <div class="rr"><span>⚽ هداف البطولة (5ن):</span> <span style="font-weight:600; color:var(--blue)">${myBonus.topScorer || 'لم يتوقع'}</span></div>
+      <div style="text-align:center; color:var(--red); font-size:10px; margin-top:8px; font-weight:600;"><i class="ti ti-lock"></i> تم إغلاق التوقعات الكبرى مع انطلاق مباراة الافتتاح</div>
+    </div>`;
+  } else {
+    html += `<div id="bonus-form">
+      <label class="lbl">🥇 المركز الأول - البطل (10 نقاط)</label>
+      <select id="b-first" class="nav_sel"><option value="">-- اختر المنتخب --</option>${tOpts}</select>
+      <label class="lbl">🥈 المركز الثاني (10 نقاط)</label>
+      <select id="b-second" class="nav_sel"><option value="">-- اختر المنتخب --</option>${tOpts}</select>
+      <label class="lbl">🥉 المركز الثالث (8 نقاط)</label>
+      <select id="b-third" class="nav_sel"><option value="">-- اختر المنتخب --</option>${tOpts}</select>
+      <label class="lbl">🏅 المركز الرابع (5 نقاط)</label>
+      <select id="b-fourth" class="nav_sel"><option value="">-- اختر المنتخب --</option>${tOpts}</select>
+      <label class="lbl">⚽ هداف البطولة (5 نقاط)</label>
+      <select id="b-scorer" class="nav_sel"><option value="">-- اختر الهداف المرشح --</option>${pOpts}</select>
+      <button class="btn gold" onclick="saveBonus()"><i class="ti ti-check"></i> تثبيت وحفظ التوقعات الكبرى</button>
+    </div>`;
+  }
+  html += `</div>`;
+
   const activeDay = activeTournamentDay(); _homeDay = activeDay;
   const dayMs = activeDay ? matches.filter(m=>m.dt&&getDayKey(m.dt)===activeDay) : [];
   const _dl = activeDay ? new Date(activeDay+'T12:00:00') : null;
@@ -556,7 +608,8 @@ function rHome() {
   const upcoming= dayMs.filter(m=>new Date(m.dt).getTime()>now&&!m.res);
   const finished= dayMs.filter(m=>m.res);
   const allDone = total>0&&done===total;
-  let html = `<div style="background:var(--card2);border:1px solid rgba(212,160,23,.2);border-radius:13px;padding:11px 13px;margin-bottom:12px">
+  
+  html += `<div style="background:var(--card2);border:1px solid rgba(212,160,23,.2);border-radius:13px;padding:11px 13px;margin-bottom:12px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
       <div style="font-size:12px;font-weight:700;color:var(--gold)"><i class="ti ti-calendar-event" style="font-size:12px;vertical-align:-1px"></i> ${dayLbl||'جدول البطولة'}</div>
       <div style="font-size:9px;color:var(--t3);direction:ltr">${done}/${total}</div>
@@ -570,8 +623,35 @@ function rHome() {
   if(finished.length)html+='<div class="sec"><i class="ti ti-check"></i> انتهت</div>'+finished.map(mcHTML).join('');
   if(!dayMs.length)  html+='<div class="empty">لا توجد مباريات بعد. تواصل مع المشرف لإضافة المباريات.</div>';
   document.getElementById('hm').innerHTML = html;
+
+  // ملء الخيارات المحفوظة مسبقاً للمستخدم إذا وُجدت قبل القفل
+  if (!isLockedBonus && myBonus) {
+    if(myBonus.first) document.getElementById('b-first').value = myBonus.first;
+    if(myBonus.second) document.getElementById('b-second').value = myBonus.second;
+    if(myBonus.third) document.getElementById('b-third').value = myBonus.third;
+    if(myBonus.fourth) document.getElementById('b-fourth').value = myBonus.fourth;
+    if(myBonus.topScorer) document.getElementById('b-scorer').value = myBonus.topScorer;
+  }
+
   clearTimeout(window._hrt);
   if(allDone) window._hrt=setTimeout(()=>{if(activeTournamentDay()!==_homeDay)rHome();else window._hrt=setTimeout(rHome,30000);},30000);
+}
+
+// دالة إرسال وحفظ بونص التوقعات الكبرى
+async function saveBonus() {
+  const first = document.getElementById('b-first').value;
+  const second = document.getElementById('b-second').value;
+  const third = document.getElementById('b-third').value;
+  const fourth = document.getElementById('b-fourth').value;
+  const topScorer = document.getElementById('b-scorer').value;
+
+  if(!first || !second || !third || !fourth || !topScorer) { return toast('الرجاء تعبئة كافة اختيارات البونص الكبرى!'); }
+  try {
+    await api('POST', 'bonus', { first, second, third, fourth, topScorer });
+    myBonus = { first, second, third, fourth, topScorer };
+    toast('تم حفظ وتثبيت التوقعات الكبرى بنجاح ✓');
+    rHome();
+  } catch(e) { toast('خطأ: ' + e.message); }
 }
 
 function rMatches() {
@@ -602,7 +682,6 @@ function rMatches() {
   }).join('');
 }
 
-// تعديل طريقة رسم البطاقة لحل مشكلة الإتجاه المعاكس نهائياً وإلغاء اختلال المتصفحات
 function mcHTML(m) {
   const pred=myPreds[m.id], locked=isLocked(m), b1=isB(m.t1), b2=isB(m.t2);
   const pts = pred&&m.res ? calcPts(m,pred) : null;
@@ -783,20 +862,62 @@ async function rAdmin(){
       `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
         <div style="width:30px;height:30px;border-radius:50%;background:${u.isAdmin?'var(--gold2)':'#2D3F7A'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${u.isAdmin?'#0D1520':'#fff'};flex-shrink:0">${(u.username||'?').charAt(0).toUpperCase()}</div>
         <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">@${u.username}</div><div style="font-size:10px;color:var(--t3)">${u.isAdmin?'★ مشرف':'مستخدم عادي'}</div></div>
-        ${!u.isAdmin&&u.uid!==me?.uid?`<button class="sbtn" onclick="toggleAdmin('${u.uid}',true)" style="background:var(--blue)">ترقية مشرف</button>`:''}
-        ${u.isAdmin&&u.uid!==me?.uid?`<button class="dbtn" onclick="toggleAdmin('${u.uid}',false)">إزالة صلاحية</button>`:''}
       </div>`).join('');
   }catch{}
+  
+  // بناء قسم الإدخال الرسمي للنتائج النهائية الكبرى للأدمن تلقائياً
+  const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
+  const pOpts = TOP_SCORERS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
+  
+  document.getElementById('adm-bonus-panel').innerHTML = `
+    <label class="lbl">🥇 المنتخب البطل الفعلي</label>
+    <select id="adm-f-first" class="nav_sel"><option value="">-- حدد البطل --</option>${tOpts}</select>
+    <label class="lbl">🥈 صاحب المركز الثاني الفعلي</label>
+    <select id="adm-f-second" class="nav_sel"><option value="">-- حدد الوصيف --</option>${tOpts}</select>
+    <label class="lbl">🥉 صاحب المركز الثالث الفعلي</label>
+    <select id="adm-f-third" class="nav_sel"><option value="">-- حدد الثالث --</option>${tOpts}</select>
+    <label class="lbl">🏅 صاحب المركز الرابع الفعلي</label>
+    <select id="adm-f-fourth" class="nav_sel"><option value="">-- حدد الرابع --</option>${tOpts}</select>
+    <label class="lbl">⚽ هداف البطولة الفعلي الحاصل على الحذاء الذهبي</label>
+    <select id="adm-f-scorer" class="nav_sel"><option value="">-- حدد الهداف الفائز --</option>${pOpts}</select>
+    <button class="btn gold" onclick="saveOfficialOutcomes()"><i class="ti ti-lock"></i> حفظ وتوزيع نقاط البونص تلقائياً على الجميع</button>
+  `;
+
+  if(officialOutcomes) {
+    if(officialOutcomes.first) document.getElementById('adm-f-first').value = officialOutcomes.first;
+    if(officialOutcomes.second) document.getElementById('adm-f-second').value = officialOutcomes.second;
+    if(officialOutcomes.third) document.getElementById('adm-f-third').value = officialOutcomes.third;
+    if(officialOutcomes.fourth) document.getElementById('adm-f-fourth').value = officialOutcomes.fourth;
+    if(officialOutcomes.topScorer) document.getElementById('adm-f-scorer').value = officialOutcomes.topScorer;
+  }
+
   document.getElementById('admlist').innerHTML=matches.map(m=>
     `<div class="arow">
       <div style="font-size:12px;font-weight:600;color:var(--text)">${gf(m.t1)} ${m.t1} <span style="color:var(--t3)">vs</span> ${m.t2} ${gf(m.t2)} <span style="font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px">${SLBL[m.stg]} · ${m.grp?'ج'+m.grp:''}</span></div>
       <div style="font-size:9px;color:var(--t3);margin-top:2px">${fmtDT(m.dt)}${isLocked(m)?' 🔒':''}</div>
-      ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr; font-family:monospace;">✓ ${m.res.s2} - ${m.res.s1}${m.res.penW?` (P: ${m.res.ps2!=null?m.res.ps2:'-'} - ${m.res.ps1!=null?m.res.ps1:'Explicit'})`:''}</div>`:''}
+      ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr; font-family:monospace;">✓ ${m.res.s2} - ${m.res.s1}${m.res.penW?` (P: ${m.res.ps2!=null?m.res.ps2:'-'} - ${m.res.ps1!=null?m.res.ps1:'-'})`:''}</div>`:''}
       <div class="ri"><input type="number" min="0" max="20" id="r1-${m.id}" value="${m.res?m.res.s1:''}"/> <span style="color:var(--t3)">–</span> <input type="number" min="0" max="20" id="r2-${m.id}" value="${m.res?m.res.s2:''}"/></div>
       ${KO.includes(m.stg) ? `<div class="ri" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); display:flex; gap:6px; align-items:center;"><select id="r-penw-${m.id}" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); padding:5px; border-radius:6px; font-size:11px; outline:none; flex:1;"><option value="">-- بدون ضربات جزاء --</option><option value="t1" ${m.res&&m.res.penW==='t1'?'selected':''}>فوز ${m.t1}</option><option value="t2" ${m.res&&m.res.penW==='t2'?'selected':''}>فوز ${m.t2}</option></select><div style="display:flex; gap:3px; align-items:center;"><input type="number" id="r-ps1-${m.id}" value="${m.res&&m.res.ps1!=null?m.res.ps1:''}" placeholder="${m.t1}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/><span style="color:var(--t3)">-</span><input type="number" id="r-ps2-${m.id}" value="${m.res&&m.res.ps2!=null?m.res.ps2:''}" placeholder="${m.t2}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/></div></div>` : ''}
       <div class="ri" style="margin-top:8px"><button class="sbtn" onclick="setR('${m.id}')">تسجيل النتيجة</button> ${m.res?`<button class="dbtn" onclick="clrR('${m.id}')">إلغاء</button>`:''} <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash" style="font-size:12px"></i></button></div>
     </div>`).join('');
 }
+
+// دالة الأدمن لتثبيت النتائج الرسمية الكبرى وحساب بونص المجموعات تلقائياً
+async function saveOfficialOutcomes() {
+  const first = document.getElementById('adm-f-first').value;
+  const second = document.getElementById('adm-f-second').value;
+  const third = document.getElementById('adm-f-third').value;
+  const fourth = document.getElementById('adm-f-fourth').value;
+  const topScorer = document.getElementById('adm-f-scorer').value;
+
+  try {
+    await api('POST', 'bonus_outcomes', { first, second, third, fourth, topScorer });
+    officialOutcomes = { first, second, third, fourth, topScorer };
+    toast('تم تثبيت النتائج الرسمية وبث نقاط البونص للجميع بنجاح ✓');
+    rAdmin();
+  } catch(e) { toast('خطأ: ' + e.message); }
+}
+
 async function setR(id){
   const m = matches.find(x=>x.id===id); const s1=document.getElementById('r1-'+id)?.value, s2=document.getElementById('r2-'+id)?.value;
   if(s1===''||s2===''){toast('أدخل النتيجة الأساسية');return;}
