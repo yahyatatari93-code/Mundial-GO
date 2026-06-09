@@ -6,7 +6,6 @@ const ADMINS = ['red_army', 'yahya'];
 const BIG_TEAMS = ['البرازيل', 'الأرجنتين', 'إنكلترا', 'ألمانيا', 'إسبانيا', 'البرتغال', 'هولندا', 'فرنسا', 'بلجيكا'];
 const KO_STAGES = ['r32', 'r16', 'qf', 'sf', 'final'];
 
-// الموعد الصارم لقفل التوقعات الكبرى: لحظة انطلاق مباراة الافتتاح
 const BONUS_LOCK_TIME = new Date('2026-06-11T19:00:00Z').getTime();
 
 const OFFICIAL_SCHEDULE = [
@@ -66,7 +65,7 @@ const OFFICIAL_SCHEDULE = [
     { id: "m52", t1: "المغرب", t2: "هايتي", grp: "3", stg: "group", dt: "2026-06-24T22:00:00Z", res: null },
     { id: "m53", t1: "التشيك", t2: "المكسيك", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: null },
     { id: "m54", t1: "جنوب أفريقيا", t2: "كوريا الجنوبية", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: null },
-    { id: "m55", t1: "الإكوادور", t2: "أمركيا", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
+    { id: "m55", t1: "الإكوادور", t2: "ألمانيا", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
     { id: "m56", t1: "كوراساو", t2: "كوت ديفوار", grp: "3", stg: "group", dt: "2026-06-25T20:00:00Z", res: null },
     { id: "m57", t1: "تونس", t2: "هولندا", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
     { id: "m58", t1: "اليابان", t2: "السويد", grp: "3", stg: "group", dt: "2026-06-25T23:00:00Z", res: null },
@@ -202,18 +201,16 @@ module.exports = async (req, res) => {
             }
         }
 
-        // --- مسار بونص التوقعات الكبرى للمشتركين ---
         if (route === 'bonus') {
             if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
             if (req.method === 'GET') return res.status(200).json(await kv.get(`bonus:${userSession.uid}`) || {});
             if (req.method === 'POST') {
-                if (Date.now() >= BONUS_LOCK_TIME) return res.status(400).json({ error: 'عذراً، تم إغلاق التوقعات الكبرى مع انطلاق مباراة الافتتاح!' });
+                if (Date.now() >= BONUS_LOCK_TIME) return res.status(400).json({ error: 'عذراً، تم إغلاق التوقعات الكبرى!' });
                 await kv.set(`bonus:${userSession.uid}`, req.body);
                 return res.status(200).json({ success: true });
             }
         }
 
-        // --- مسار النتائج الرسمية للبطولة من الإدارة ---
         if (route === 'bonus_outcomes') {
             if (req.method === 'GET') return res.status(200).json(await kv.get('official_outcomes') || {});
             if (req.method === 'POST') {
@@ -232,11 +229,7 @@ module.exports = async (req, res) => {
                 const preds = await kv.get(`preds:${u.uid}`) || {};
                 const bonus = await kv.get(`bonus:${u.uid}`) || {};
                 let score = 0;
-                
-                // 1. حساب نقاط المباريات العادية
                 matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
-                
-                // 2. دمج حساب نقاط البونص الكبرى تلقائياً عند اعتمادها من الأدمن
                 if (bonus.first && official.first && bonus.first === official.first) score += 10;
                 if (bonus.second && official.second && bonus.second === official.second) score += 10;
                 if (bonus.third && official.third && bonus.third === official.third) score += 8;
@@ -265,7 +258,16 @@ module.exports = async (req, res) => {
             }
         }
 
-        if (route === 'users') return res.status(200).json(await kv.get('all_users_list') || []);
+        if (route === 'users') {
+            if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
+            const allUsers = await kv.get('all_users_list') || [];
+            const usersWithBonus = await Promise.all(allUsers.map(async (u) => {
+                const bonus = await kv.get(`bonus:${u.uid}`) || {};
+                return { ...u, bonus };
+            }));
+            return res.status(200).json(usersWithBonus);
+        }
+
         return res.status(200).json(OFFICIAL_SCHEDULE);
     } catch (error) { return res.status(500).json({ error: 'خطأ داخلي' }); }
 };
