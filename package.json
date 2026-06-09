@@ -1,14 +1,12 @@
 {
-"name": "wc2026-app",
-"version": "1.0.0",
-"description": "World Cup 2026 Predictions App",
-"main": "api/index.js",
-"dependencies": {
-"express": "^4.18.2",
-"@vercel/kv": "^2.0.0",
-"jsonwebtoken": "^9.0.0"
-},
-"engines": {
-"node": "18.x"
-}
+  "name": "wc2026-api",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.18.2",
+    "@vercel/kv": "^2.0.0",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "engines": {
+    "node": "24.x"
+  }
 }
