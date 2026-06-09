@@ -84,7 +84,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .bdot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.7;flex-shrink:0}
 .vsc{text-align:center;flex-shrink:0}
 .vs-v{font-size:10px;color:var(--t3);background:rgba(255,255,255,.05);border-radius:6px;padding:3px 8px;display:inline-block;border:1px solid var(--border)}
-.vs-r{font-size:16px;font-weight:700;color:#fff;background:rgba(255,255,255,.07);border-radius:6px;padding:3px 9px;display:inline-block;direction:ltr}
+.vs-r{font-size:16px;font-weight:700;color:#fff;background:rgba(255,255,255,.07);border-radius:6px;padding:3px 9px;display:inline-block;direction:rtl}
 .mbot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
 .mpred{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:3px}.mpred.y{color:var(--gold)}
 .chip{font-size:10px;padding:2px 9px;border-radius:20px;font-weight:500;direction:ltr}
@@ -322,7 +322,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
+const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴%A2','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴%A7','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
@@ -591,11 +591,11 @@ function mcHTML(m) {
     </div>
     <div class="mteams">
       <div class="mt">${b1?'<span class="bdot"></span>':''}<span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span></div>
-      <div class="vsc">${m.res?`<span class="vs-r">${m.res.s1}–${m.res.s2}</span>`:`<span class="vs-v">VS</span>`}</div>
+      <div class="vsc">${m.res?`<span class="vs-r">${m.res.s2}–${m.res.s1}</span>`:`<span class="vs-v">VS</span>`}</div>
       <div class="mt r"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span>${b2?'<span class="bdot"></span>':''}</div>
     </div>
     <div class="mbot">
-      <div class="mpred ${pred?'y':''}">${pred?`<i class="ti ti-check" style="font-size:10px"></i> توقعي: <span dir="ltr">${pred.s1}–${pred.s2}</span>`:`<i class="ti ti-pencil" style="font-size:10px"></i> ${locked?'مغلق للتوقع':'اضغط للتوقع'}`}</div>
+      <div class="mpred ${pred?'y':''}">${pred?`<i class="ti ti-check" style="font-size:10px"></i> توقعي: <span dir="ltr">${pred.s2}–${pred.s1}</span>`:`<i class="ti ti-pencil" style="font-size:10px"></i> ${locked?'مغلق للتوقع':'اضغط للتوقع'}`}</div>
       ${pts!==null?`<span class="chip e">+${pts}</span>`:pred&&!m.res?'<span class="chip w">انتظار</span>':''}
     </div>
   </div>`;
@@ -709,11 +709,27 @@ function showLg(lgId){
   const lg=leagues.find(l=>l.id===lgId); if(!lg) return;
   document.getElementById('lglist').style.display='none'; const myUid=me?.uid, isOwn=lg.owner===myUid;
   document.getElementById('lgdet').style.display='';
+  
+  // بناء وعرض لوحة صدارة المشتركين داخل الدوري فوراً
+  const lgBoard=board.filter(u=>lg.members.includes(u.uid)).sort((a,b)=>b.pts-a.pts);
+  const rks=['🥇','🥈','🥉'];
+
   document.getElementById('lgdet').innerHTML=`<div style="padding-bottom:80px">
     <button class="bkbtn" onclick="document.getElementById('lgdet').style.display='none';document.getElementById('lglist').style.display='';"><i class="ti ti-arrow-left"></i> الدوريات</button>
     <div style="font-size:17px;font-weight:700;margin-bottom:4px">${lg.name}</div>
     <div class="codebox"><span class="codebig">${lg.code}</span><div class="codelbl">أرسل الكود للأصدقاء للانضمام</div><button class="copybtn" onclick="navigator.clipboard.writeText('${lg.code}').then(()=>toast('تم النسخ ✓'))">نسخ الكود</button></div>
-    ${!isOwn?`<button class="btn outline" onclick="doLeaveLg('${lgId}');document.getElementById('lgdet').style.display='none';document.getElementById('lglist').style.display='';">مغادرة الدوري</button>`:''}
+    
+    <div class="sec"><i class="ti ti-medal"></i> المشتركون وجدول الترتيب المباشر</div>
+    ${lgBoard.map((u,i)=>`
+      <div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
+        <div class="lbr ${i===0?'g':i===1?'s':i===2?'b':''}">${rks[i]||`#${i+1}`}</div>
+        <div class="lbav" style="${i===0?'background:var(--gold2);color:#0D1520':''}">${(u.username||'?').charAt(0).toUpperCase()}</div>
+        <div class="lbn">${u.username}${u.uid===myUid?' <span style="font-size:9px;color:var(--blue)">(أنت)</span>':''}<small>${u.predCount} توقع</small></div>
+        <div style="text-align:right"><div class="lbp">${u.pts}</div><div style="font-size:10px;color:var(--t3)">نقطة</div></div>
+      </div>
+    `).join('')}
+
+    ${!isOwn?`<button class="btn outline" style="margin-top:15px" onclick="doLeaveLg('${lgId}');document.getElementById('lgdet').style.display='none';document.getElementById('lglist').style.display='';">مغادرة الدوري</button>`:''}
   </div>`;
 }
 
@@ -747,7 +763,7 @@ async function rAdmin(){
     `<div class="arow">
       <div style="font-size:12px;font-weight:600;color:var(--text)">${gf(m.t1)} ${m.t1} <span style="color:var(--t3)">vs</span> ${m.t2} ${gf(m.t2)} <span style="font-size:9px;color:var(--t3);background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px">${SLBL[m.stg]} · ${m.grp?'ج'+m.grp:''}</span></div>
       <div style="font-size:9px;color:var(--t3);margin-top:2px">${fmtDT(m.dt)}${isLocked(m)?' 🔒':''}</div>
-      ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr">✓ ${m.res.s1}–${m.res.s2}${m.res.penW?` (P: ${m.res.ps1!=null?m.res.ps1:'-'}–${m.res.ps2!=null?m.res.ps2:'-'})`:''}</div>`:''}
+      ${m.res?`<div style="font-size:10px;color:var(--green);background:rgba(46,204,113,.1);display:inline-block;padding:1px 7px;border-radius:3px;margin-top:3px;direction:ltr">✓ ${m.res.s2}–${m.res.s1}${m.res.penW?` (P: ${m.res.ps1!=null?m.res.ps1:'-'}–${m.res.ps2!=null?m.res.ps2:'-'})`:''}</div>`:''}
       <div class="ri"><input type="number" min="0" max="20" id="r1-${m.id}" value="${m.res?m.res.s1:''}"/> <span style="color:var(--t3)">–</span> <input type="number" min="0" max="20" id="r2-${m.id}" value="${m.res?m.res.s2:''}"/></div>
       ${KO.includes(m.stg) ? `<div class="ri" style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border); display:flex; gap:6px; align-items:center;"><select id="r-penw-${m.id}" style="background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); padding:5px; border-radius:6px; font-size:11px; outline:none; flex:1;"><option value="">-- بدون ضربات جزاء --</option><option value="t1" ${m.res&&m.res.penW==='t1'?'selected':''}>فوز ${m.t1}</option><option value="t2" ${m.res&&m.res.penW==='t2'?'selected':''}>فوز ${m.t2}</option></select><div style="display:flex; gap:3px; align-items:center;"><input type="number" id="r-ps1-${m.id}" value="${m.res&&m.res.ps1!=null?m.res.ps1:''}" placeholder="${m.t1}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/><span style="color:var(--t3)">-</span><input type="number" id="r-ps2-${m.id}" value="${m.res&&m.res.ps2!=null?m.res.ps2:''}" placeholder="${m.t2}" style="width:42px; text-align:center; padding:5px; border-radius:6px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15); color:var(--text); outline:none; font-size:11px; direction:ltr;"/></div></div>` : ''}
       <div class="ri" style="margin-top:8px"><button class="sbtn" onclick="setR('${m.id}')">تسجيل النتيجة</button> ${m.res?`<button class="dbtn" onclick="clrR('${m.id}')">إلغاء</button>`:''} <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash" style="font-size:12px"></i></button></div>
