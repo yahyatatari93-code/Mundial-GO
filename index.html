@@ -189,8 +189,6 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <input class="inp ltr" id="l-u" type="text" placeholder="username" autocomplete="username"/>
       <label class="lbl">كلمة المرور</label>
       <input class="inp" id="l-p" type="password" placeholder="••••••••" autocomplete="current-password"/>
-      <label class="lbl">كلمة المرور</label>
-      <input class="inp" id="l-p" type="password" placeholder="••••••••" autocomplete="current-password"/>
       <button class="btn gold" onclick="doLogin()"><i class="ti ti-login"></i> دخول</button>
       <div class="err" id="l-err"></div>
     </div>
@@ -275,7 +273,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
     <div id="logout-w"></div>
   </div></div>
   <div id="pg-admin" class="pg"><div class="pi">
-    <div class="sec"><i class="ti ti-users"></i> المستخدمون</div><div id="adm-users"></div>
+    <div class="sec"><i class="ti ti-users"></i> المشتركون وتوقعاتهم الكبرى الحية</div><div id="adm-users"></div>
     <div class="sec"><i class="ti ti-plus"></i> إضافة مباراة</div>
     <div class="af">
       <div class="fg"><input id="at1" type="text" placeholder="الفريق الأول"/><input id="at2" type="text" placeholder="الفريق الثاني"/></div>
@@ -330,11 +328,10 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
+const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴\u200D󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
-// قائمة نجوم الهدافين المحدثة بالكامل طبقاً لطلبك الدقيق
 const TOP_SCORERS_LIST = [
   'كيليان مبابي', 'هاري كين', 'إيرلينغ هالاند', 'ليونيل ميسي', 'فينيسيوس جونيور', 
   'كريستيانو رونالدو', 'برونو فيرنانديز', 'لاوتارو مارتينيز', 'محمد صلاح', 'جود بيلينغهام', 
@@ -346,7 +343,6 @@ const TOP_SCORERS_LIST = [
 let token = localStorage.getItem('wc_token') || null;
 let me = JSON.parse(localStorage.getItem('wc_me') || 'null');
 let matches = [], myPreds = {}, board = [], leagues = [], curMid = null, mflt = 'all', pollT = null;
-
 let myBonus = {}, officialOutcomes = {};
 
 async function api(method, path, body) {
@@ -450,9 +446,10 @@ function startPoll() {
   }, 45000);
 }
 
+// تعديل دالة التحديث التلقائي لتشمل لوحة الإدارة حية وتلقائية
 function refreshActive() {
   const t = document.querySelector('.pg.on')?.id?.replace('pg-','');
-  if (t==='home') rHome(); else if (t==='matches') rMatches(); else if (t==='lb') rLb();
+  if (t==='home') rHome(); else if (t==='matches') rMatches(); else if (t==='lb') rLb(); else if (t==='admin') rAdmin();
 }
 
 const gf = t => FL[t] || '🌍';
@@ -573,7 +570,6 @@ function rHome() {
   
   const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
   const pOpts = TOP_SCORERS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
-
   const isLockedBonus = isBonusLocked();
   
   let html = `<div class="box" style="border: 1px solid rgba(245, 200, 66, 0.25); background: linear-gradient(135deg, rgba(27,43,94,0.4), var(--card));">
@@ -758,9 +754,10 @@ async function savePred(){
   } catch(e){toast('خطأ: '+e.message);}
 }
 
+// تعديل قسم الترتيب ليعرض الترتيب العام فقط بشكل حصري ونظيف
 async function rLb() {
   try { board=await api('GET','leaderboard'); } catch {}
-  const myUid=me?.uid, rks=['🥇','🥈','🥉']; const myLeagues=leagues;
+  const myUid=me?.uid, rks=['🥇','🥈','🥉'];
   let html='<div class="sec"><i class="ti ti-world"></i> الترتيب العام</div>';
   html+=board.map((u,i)=>
     `<div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
@@ -769,27 +766,15 @@ async function rLb() {
       <div class="lbn">${u.username}${u.isAdmin?' <span style="font-size:9px;color:var(--gold)">★ مشرف</span>':''}${u.uid===myUid?' <span style="font-size:9px;color:var(--blue)">(أنت)</span>':''}<small>${u.predCount} توقع</small></div>
       <div style="text-align:right"><div class="lbp">${u.pts}</div><div style="font-size:10px;color:var(--t3)">نقطة</div></div>
     </div>`).join('');
-  if(myLeagues.length){
-    html+='<div class="sec" style="margin-top:18px"><i class="ti ti-users"></i> دورياتي</div>';
-    html+=myLeagues.map(lg=>{
-      const lgBoard=board.filter(u=>lg.members.includes(u.uid)).sort((a,b)=>b.pts-a.pts);
-      const myPos=lgBoard.findIndex(u=>u.uid===myUid)+1;
-      return`<div class="lcard ${lg.owner===myUid?'own':''}" onclick="showLbLg('${lg.id}')">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between">
-          <div><div style="font-size:13px;font-weight:600;color:var(--text)">${lg.name}</div><div style="font-size:11px;color:var(--t3);margin-top:2px"><i class="ti ti-users" style="font-size:11px"></i> ${lg.members.length} عضو</div></div>
-          <div style="text-align:right"><div style="font-size:18px;font-weight:700;color:var(--gold)">#${myPos}</div><div style="font-size:10px;color:var(--t3)">ترتيبي</div></div>
-        </div>
-      </div>`;
-    }).join('');
-  } else { html+=`<div class="sec" style="margin-top:18px"><i class="ti ti-users"></i> دورياتي</div><div class="empty">لم تنضم إلى أي دوري بعد</div>`; }
   document.getElementById('glb').innerHTML=html;
 }
+
 function showLbLg(lgId) {
   const lg=leagues.find(l=>l.id===lgId); if(!lg) return;
   const myUid=me?.uid, lgBoard=board.filter(u=>lg.members.includes(u.uid)).sort((a,b)=>b.pts-a.pts);
   const myPos=lgBoard.findIndex(u=>u.uid===myUid)+1, rks=['🥇','🥈','🥉'];
   const ov=document.createElement('div'); ov.id='lb-lg-ov'; ov.style.cssText='position:absolute;inset:0;background:var(--bg);z-index:40;overflow-y:auto;';
-  ov.innerHTML=`<div style="padding:14px 14px 90px"><button class="bkbtn" onclick="document.getElementById('lb-lg-ov').remove()"><i class="ti ti-arrow-left"></i> الترتيب</button><div style="font-size:17px;font-weight:700;margin-bottom:4px">${lg.name}</div><div class="sec"><i class="ti ti-medal"></i> ترتيب الدوري</div>
+  ov.innerHTML=`<div style="padding:14px 14px 90px"><button class="bkbtn" onclick="document.getElementById('lb-lg-ov').remove()"><i class="ti ti-arrow-left"></i> الدوريات</button><div style="font-size:17px;font-weight:700;margin-bottom:4px">${lg.name}</div><div class="sec"><i class="ti ti-medal"></i> ترتيب الدوري</div>
     ${lgBoard.map((u,i)=>`<div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
       <div class="lbr ${i===0?'g':i===1?'s':i===2?'b':''}">${rks[i]||`#${i+1}`}</div>
       <div class="lbav" style="${i===0?'background:var(--gold2);color:#0D1520':''}">${(u.username||'?').charAt(0).toUpperCase()}</div>
@@ -861,14 +846,29 @@ async function chpw(){
 
 function flt(f,btn){mflt=f;document.querySelectorAll('.fbr .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rMatches();}
 
+// تعديل لوحة الإدارة لتعرض تلقائياً وبشكل حي كارت توقعات المربع الذهبي والهداف لكل مشترك
 async function rAdmin(){
   try{
     const users=await api('GET','users');
-    document.getElementById('adm-users').innerHTML=users.map(u=>
-      `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:6px">
-        <div style="width:30px;height:30px;border-radius:50%;background:${u.isAdmin?'var(--gold2)':'#2D3F7A'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${u.isAdmin?'#0D1520':'#fff'};flex-shrink:0">${(u.username||'?').charAt(0).toUpperCase()}</div>
-        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">@${u.username}</div><div style="font-size:10px;color:var(--t3)">${u.isAdmin?'★ مشرف':'مستخدم عادي'}</div></div>
-      </div>`).join('');
+    document.getElementById('adm-users').innerHTML=users.map(u=> {
+      const b = u.bonus || {};
+      const bonusHtml = b.first ? `
+        <div style="font-size:11px; margin-top:6px; color:var(--t2); background:rgba(255,255,255,0.02); padding:8px; border-radius:8px; border:1px dashed rgba(255,255,255,0.06); line-height:1.7;">
+          🥇 البطل: ${gf(b.first)} ${b.first} | 🥈 الثاني: ${gf(b.second)} ${b.second}<br>
+          🥉 الثالث: ${gf(b.third)} ${b.third} | 🏅 الرابع: ${gf(b.fourth)} ${b.fourth}<br>
+          ⚽ الهداف: <span style="color:var(--gold); font-weight:600;">${b.topScorer || '—'}</span>
+        </div>
+      ` : `<div style="font-size:10px; color:var(--t3); margin-top:5px; font-style:italic;">⚠️ لم يثبت التوقعات الكبرى بعد</div>`;
+
+      return `
+      <div style="padding:10px 12px; background:var(--card); border:1px solid var(--border); border-radius:11px; margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:30px;height:30px;border-radius:50%;background:${u.isAdmin?'var(--gold2)':'#2D3F7A'};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${u.isAdmin?'#0D1520':'#fff'};flex-shrink:0">${(u.username||'?').charAt(0).toUpperCase()}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">@${u.username}</div><div style="font-size:10px;color:var(--t3)">${u.isAdmin?'★ مشرف':'مستخدم عادي'}</div></div>
+        </div>
+        ${bonusHtml}
+      </div>`;
+    }).join('');
   }catch{}
   
   const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
