@@ -822,9 +822,33 @@ async function rLb() {
       </div>`;
   }
 
-  let html = myRowHtml + `<div class="sec"><i class="ti ti-world"></i> الترتيب العام للبطولة (أول ${lbLimit})</div>`;
+  // 2. كارت الجوائز الفخم (منصة التتويج)
+  const prizesCard = `
+    <div style="background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(27,43,94,0.6)); border: 1px solid rgba(212,160,23,0.4); border-radius: 16px; padding: 16px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+      <div style="font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 14px;"><i class="ti ti-gift" style="font-size: 15px; vertical-align: -2px;"></i> الجوائز المالية الكبرى للمتصدرين</div>
+      <div style="display: flex; justify-content: space-around; align-items: flex-end;">
+        <div style="text-align: center; width: 30%;">
+          <div style="font-size: 22px; margin-bottom: 4px; filter: drop-shadow(0 0 3px rgba(192,192,192,0.4));">🥈</div>
+          <div style="font-size: 11px; color: var(--t2); margin-bottom: 2px;">المركز الثاني</div>
+          <div style="font-size: 15px; font-weight: 700; color: #E0E0E0; font-family: monospace;">$75</div>
+        </div>
+        <div style="text-align: center; width: 40%; transform: translateY(-5px);">
+          <div style="font-size: 32px; margin-bottom: 4px; filter: drop-shadow(0 0 6px rgba(245,200,66,0.6));">🥇</div>
+          <div style="font-size: 12px; color: var(--gold); font-weight: 600; margin-bottom: 2px;">المركز الأول</div>
+          <div style="font-size: 19px; font-weight: 700; color: var(--gold); font-family: monospace;">$100</div>
+        </div>
+        <div style="text-align: center; width: 30%;">
+          <div style="font-size: 22px; margin-bottom: 4px; filter: drop-shadow(0 0 3px rgba(205,127,50,0.4));">🥉</div>
+          <div style="font-size: 11px; color: var(--t2); margin-bottom: 2px;">المركز الثالث</div>
+          <div style="font-size: 15px; font-weight: 700; color: #CD7F32; font-family: monospace;">$50</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 3. تجميع المحتوى وعرض أول 50 مشترك
+  let html = myRowHtml + prizesCard + `<div class="sec"><i class="ti ti-world"></i> الترتيب العام للبطولة (أول ${lbLimit})</div>`;
   
-  // 2. تقطيع المصفوفة لعرض أول 50 فقط لمنع التهنيج
   const visibleUsers = board.slice(0, lbLimit);
   html += visibleUsers.map((u,i)=>
     `<div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
@@ -834,7 +858,7 @@ async function rLb() {
       <div style="text-align:right"><div class="lbp">${u.pts}</div><div style="font-size:10px;color:var(--t3)">نقطة</div></div>
     </div>`).join('');
     
-  // 3. إظهار زر عرض المزيد إذا كانت القائمة تحتمل الزيادة
+  // 4. زر عرض المزيد
   if (board.length > lbLimit) {
     html += `<button class="btn outline" style="width:100%; margin-top:12px; border-color:var(--blue); color:var(--blue); font-weight:600;" onclick="lbLimit += 50; rLb();"><i class="ti ti-plus"></i> عرض الـ 50 مشترك التاليين</button>`;
   }
