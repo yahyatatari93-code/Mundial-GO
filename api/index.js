@@ -126,7 +126,7 @@ function calculatePtsServer(m, pred) {
     return pts;
 }
 
-// دالة الإنتاج الثورية: جلب مصفوفات البيانات لآلاف المشتركين دفعة واحدة عبر الـ Pipeline لمنع الـ Timeout
+// نظام الدفعات (Batches) الآمن جداً - يمنع توقف السيرفر تماماً
 async function refreshLeaderboardCache() {
     const allUsers = await kv.get('all_users_list') || [];
     const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
@@ -134,28 +134,28 @@ async function refreshLeaderboardCache() {
 
     if (allUsers.length === 0) return [];
 
-    // تجميع كل مفاتيح التوقعات والبونص في أنبوب واحد لقراءتها دفعة واحدة
-    const pipeline = kv.pipeline();
-    allUsers.forEach(u => {
-        pipeline.get(`preds:${u.uid}`);
-        pipeline.get(`bonus:${u.uid}`);
-    });
-    const pipelineResults = await pipeline.exec();
-
-    const leaderboard = allUsers.map((u, index) => {
-        const preds = pipelineResults[index * 2] || {};
-        const bonus = pipelineResults[index * 2 + 1] || {};
-        let score = 0;
-        
-        matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
-        if (bonus.first && official.first && bonus.first === official.first) score += 10;
-        if (bonus.second && official.second && bonus.second === official.second) score += 10;
-        if (bonus.third && official.third && bonus.third === official.third) score += 8;
-        if (bonus.fourth && official.fourth && bonus.fourth === official.fourth) score += 5;
-        if (bonus.topScorer && official.topScorer && bonus.topScorer === official.topScorer) score += 5;
-
-        return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
-    });
+    const leaderboard = [];
+    // نقسم المشتركين إلى دفعات صغيرة لمعالجتها بسلاسة دون ضغط
+    for (let i = 0; i < allUsers.length; i += 30) {
+        const batch = allUsers.slice(i, i + 30);
+        const batchResults = await Promise.all(batch.map(async (u) => {
+            try {
+                const preds = await kv.get(`preds:${u.uid}`) || {};
+                const bonus = await kv.get(`bonus:${u.uid}`) || {};
+                let score = 0;
+                matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
+                if (bonus.first && official.first && bonus.first === official.first) score += 10;
+                if (bonus.second && official.second && bonus.second === official.second) score += 10;
+                if (bonus.third && official.third && bonus.third === official.third) score += 8;
+                if (bonus.fourth && official.fourth && bonus.fourth === official.fourth) score += 5;
+                if (bonus.topScorer && official.topScorer && bonus.topScorer === official.topScorer) score += 5;
+                return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
+            } catch(e) {
+                return { uid: u.uid, username: u.username, isAdmin: false, pts: 0, predCount: 0 };
+            }
+        }));
+        leaderboard.push(...batchResults);
+    }
 
     leaderboard.sort((a, b) => b.pts - a.pts);
     await kv.set('cache:leaderboard', leaderboard);
@@ -222,8 +222,15 @@ module.exports = async (req, res) => {
                 const { res: gameRes } = req.body || {};
                 matches = matches.map(m => m.id === matchIdParam ? { ...m, res: gameRes } : m);
                 await kv.set('db_matches', matches);
-                await refreshLeaderboardCache(); // التحديث الفوري والآمن للكاش عند تسجيل النتائج
+                await refreshLeaderboardCache(); // يحديث الكاش فوراً بضمان وعدم انهيار
                 return res.status(200).json(matches.find(m => m.id === matchIdParam));
+            }
+            if (req.method === 'DELETE') {
+                if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
+                matches = matches.filter(m => m.id !== matchIdParam);
+                await kv.set('db_matches', matches);
+                await refreshLeaderboardCache(); 
+                return res.status(200).json({ success: true });
             }
         }
 
