@@ -85,16 +85,68 @@ const OFFICIAL_SCHEDULE = [
     { id: "m72", t1: "الجزائر", t2: "النمسا", grp: "3", stg: "group", dt: "2026-06-28T02:00:00Z", res: null }
 ];
 
-// دالة الإنتاج لحساب الكاش مسبقاً وتخزينه لـ 2000 مستخدم
+function calculatePtsServer(m, pred) {
+    if (!m.res || !pred) return 0;
+    const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
+    const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
+    let pts = 0;
+    
+    if (t1b && t2b) {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) pts = (ar === 'd') ? 3 : 5;
+        else if (pr === ar) pts = (ar === 'd') ? 2 : 3;
+    } else if (t1b || t2b) {
+        const bf = t1b;
+        const bW = bf ? (r1 > r2) : (r2 > r1);
+        const dr = (r1 === r2);
+        const sW = bf ? (r2 > r1) : (r1 > r2);
+        const pbW = bf ? (s1 > s2) : (s2 > s1);
+        const pd = (s1 === s2);
+        const psW = bf ? (s2 > s1) : (s1 > s2);
+        if (s1 === r1 && s2 === r2) {
+            if (bW) pts = 2;
+            if (dr) pts = 3;
+            if (sW) pts = 6;
+        } else {
+            if (pbW && bW) pts = 1;
+            if (pd && dr) pts = 2;
+            if (psW && sW) pts = 4;
+        }
+    } else {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) {
+            const sr = r1 + r2;
+            pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3;
+        } else if (pr === ar) pts = 1;
+    }
+    if (KO_STAGES.includes(m.stg) && m.res) {
+        if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
+        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
+    }
+    return pts;
+}
+
+// دالة الإنتاج الثورية: جلب مصفوفات البيانات لآلاف المشتركين دفعة واحدة عبر الـ Pipeline لمنع الـ Timeout
 async function refreshLeaderboardCache() {
     const allUsers = await kv.get('all_users_list') || [];
     const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
     const official = await kv.get('official_outcomes') || {};
 
-    const leaderboard = await Promise.all(allUsers.map(async (u) => {
-        const preds = await kv.get(`preds:${u.uid}`) || {};
-        const bonus = await kv.get(`bonus:${u.uid}`) || {};
+    if (allUsers.length === 0) return [];
+
+    // تجميع كل مفاتيح التوقعات والبونص في أنبوب واحد لقراءتها دفعة واحدة
+    const pipeline = kv.pipeline();
+    allUsers.forEach(u => {
+        pipeline.get(`preds:${u.uid}`);
+        pipeline.get(`bonus:${u.uid}`);
+    });
+    const pipelineResults = await pipeline.exec();
+
+    const leaderboard = allUsers.map((u, index) => {
+        const preds = pipelineResults[index * 2] || {};
+        const bonus = pipelineResults[index * 2 + 1] || {};
         let score = 0;
+        
         matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
         if (bonus.first && official.first && bonus.first === official.first) score += 10;
         if (bonus.second && official.second && bonus.second === official.second) score += 10;
@@ -103,7 +155,7 @@ async function refreshLeaderboardCache() {
         if (bonus.topScorer && official.topScorer && bonus.topScorer === official.topScorer) score += 5;
 
         return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
-    }));
+    });
 
     leaderboard.sort((a, b) => b.pts - a.pts);
     await kv.set('cache:leaderboard', leaderboard);
@@ -135,7 +187,7 @@ module.exports = async (req, res) => {
 
     try {
         if (route === 'auth') {
-            const { username, password, newPassword } = req.body || {};
+            const { username, password } = req.body || {};
             if (action === 'register') {
                 const cleanUser = username.trim().toLowerCase();
                 if (await kv.get(`user:${cleanUser}`)) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
@@ -146,7 +198,7 @@ module.exports = async (req, res) => {
                 let allUsers = await kv.get('all_users_list') || [];
                 allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
                 await kv.set('all_users_list', allUsers);
-                await refreshLeaderboardCache(); // تحديث فوري للكاش
+                await refreshLeaderboardCache();
                 return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
             if (action === 'login') {
@@ -162,9 +214,7 @@ module.exports = async (req, res) => {
         if (route === 'matches') {
             let matches = await kv.get('db_matches');
             if (!matches || matches.length === 0) { matches = OFFICIAL_SCHEDULE; await kv.set('db_matches', OFFICIAL_SCHEDULE); }
-            
             if (req.method === 'GET') {
-                // تفعيل كاش الـ CDN من Vercel لمدة دقيقة كاملة مجاناً
                 res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60');
                 return res.status(200).json(matches);
             }
@@ -172,7 +222,7 @@ module.exports = async (req, res) => {
                 const { res: gameRes } = req.body || {};
                 matches = matches.map(m => m.id === matchIdParam ? { ...m, res: gameRes } : m);
                 await kv.set('db_matches', matches);
-                await refreshLeaderboardCache(); // تحديث كاش الصدارة فوراً عند إدخال النتيجة
+                await refreshLeaderboardCache(); // التحديث الفوري والآمن للكاش عند تسجيل النتائج
                 return res.status(200).json(matches.find(m => m.id === matchIdParam));
             }
         }
@@ -207,14 +257,13 @@ module.exports = async (req, res) => {
             if (req.method === 'POST') {
                 if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
                 await kv.set('official_outcomes', req.body);
-                await refreshLeaderboardCache(); // تحديث كاش الصدارة فوراً
+                await refreshLeaderboardCache();
                 return res.status(200).json({ success: true });
             }
         }
 
-        // مسار الصدارة الفائق السرعة - يعتمد على قراءة سطر واحد ومحمي بكاش CDN
         if (route === 'leaderboard') {
-            res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60'); // كاش CDN دقيقة
+            res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60');
             let cachedLb = await kv.get('cache:leaderboard');
             if (!cachedLb || !Array.isArray(cachedLb)) { cachedLb = await refreshLeaderboardCache(); }
             return res.status(200).json(cachedLb);
