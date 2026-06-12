@@ -126,7 +126,7 @@ function calculatePtsServer(m, pred) {
     return pts;
 }
 
-// نظام الدفعات (Batches) الآمن جداً - يمنع توقف السيرفر تماماً
+// تقنية MGET الصاروخية: جلب جميع المشتركين بطلب واحد دون أي ضغط أو أخطاء Timeout
 async function refreshLeaderboardCache() {
     const allUsers = await kv.get('all_users_list') || [];
     const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
@@ -134,28 +134,34 @@ async function refreshLeaderboardCache() {
 
     if (allUsers.length === 0) return [];
 
-    const leaderboard = [];
-    // نقسم المشتركين إلى دفعات صغيرة لمعالجتها بسلاسة دون ضغط
-    for (let i = 0; i < allUsers.length; i += 30) {
-        const batch = allUsers.slice(i, i + 30);
-        const batchResults = await Promise.all(batch.map(async (u) => {
-            try {
-                const preds = await kv.get(`preds:${u.uid}`) || {};
-                const bonus = await kv.get(`bonus:${u.uid}`) || {};
-                let score = 0;
-                matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
-                if (bonus.first && official.first && bonus.first === official.first) score += 10;
-                if (bonus.second && official.second && bonus.second === official.second) score += 10;
-                if (bonus.third && official.third && bonus.third === official.third) score += 8;
-                if (bonus.fourth && official.fourth && bonus.fourth === official.fourth) score += 5;
-                if (bonus.topScorer && official.topScorer && bonus.topScorer === official.topScorer) score += 5;
-                return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
-            } catch(e) {
-                return { uid: u.uid, username: u.username, isAdmin: false, pts: 0, predCount: 0 };
-            }
-        }));
-        leaderboard.push(...batchResults);
+    const predKeys = allUsers.map(u => `preds:${u.uid}`);
+    const bonusKeys = allUsers.map(u => `bonus:${u.uid}`);
+
+    let allPreds = [];
+    let allBonuses = [];
+
+    // جلب البيانات بذكاء (100 مشترك في كل طلب MGET) لتجنب أي ضغط على الشبكة
+    for (let i = 0; i < allUsers.length; i += 100) {
+        const pBatch = await kv.mget(...predKeys.slice(i, i + 100));
+        const bBatch = await kv.mget(...bonusKeys.slice(i, i + 100));
+        allPreds.push(...pBatch);
+        allBonuses.push(...bBatch);
     }
+
+    const leaderboard = allUsers.map((u, index) => {
+        const preds = allPreds[index] || {};
+        const bonus = allBonuses[index] || {};
+        let score = 0;
+        
+        matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
+        if (bonus.first && official.first && bonus.first === official.first) score += 10;
+        if (bonus.second && official.second && bonus.second === official.second) score += 10;
+        if (bonus.third && official.third && bonus.third === official.third) score += 8;
+        if (bonus.fourth && official.fourth && bonus.fourth === official.fourth) score += 5;
+        if (bonus.topScorer && official.topScorer && bonus.topScorer === official.topScorer) score += 5;
+
+        return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
+    });
 
     leaderboard.sort((a, b) => b.pts - a.pts);
     await kv.set('cache:leaderboard', leaderboard);
@@ -222,7 +228,7 @@ module.exports = async (req, res) => {
                 const { res: gameRes } = req.body || {};
                 matches = matches.map(m => m.id === matchIdParam ? { ...m, res: gameRes } : m);
                 await kv.set('db_matches', matches);
-                await refreshLeaderboardCache(); // يحديث الكاش فوراً بضمان وعدم انهيار
+                await refreshLeaderboardCache(); 
                 return res.status(200).json(matches.find(m => m.id === matchIdParam));
             }
             if (req.method === 'DELETE') {
@@ -270,7 +276,8 @@ module.exports = async (req, res) => {
         }
 
         if (route === 'leaderboard') {
-            res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60');
+            // إزالة الكاش نهائياً للوحة الترتيب لضمان ظهور النقاط فوراً بمجرد تسجيلك للنتيجة
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
             let cachedLb = await kv.get('cache:leaderboard');
             if (!cachedLb || !Array.isArray(cachedLb)) { cachedLb = await refreshLeaderboardCache(); }
             return res.status(200).json(cachedLb);
@@ -296,7 +303,14 @@ module.exports = async (req, res) => {
         if (route === 'users') {
             if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
             const allUsers = await kv.get('all_users_list') || [];
-            const usersWithBonus = await Promise.all(allUsers.map(async (u) => { const bonus = await kv.get(`bonus:${u.uid}`) || {}; return { ...u, bonus }; }));
+            
+            // تطبيق نظام MGET الآمن هنا أيضاً لصفحة الإدارة
+            const bonusKeys = allUsers.map(u => `bonus:${u.uid}`);
+            let allBonuses = [];
+            for (let i = 0; i < bonusKeys.length; i += 100) {
+                allBonuses.push(...(await kv.mget(...bonusKeys.slice(i, i + 100))));
+            }
+            const usersWithBonus = allUsers.map((u, i) => ({ ...u, bonus: allBonuses[i] || {} }));
             return res.status(200).json(usersWithBonus);
         }
 
