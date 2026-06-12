@@ -169,8 +169,10 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 <body>
 <div id="app">
 
+<!-- LOADER -->
 <div id="loader"><div class="spin"></div><div class="spin-lbl" id="spin-lbl">جاري التحميل...</div></div>
 
+<!-- AUTH -->
 <div id="auth">
   <div class="a-logo">
     <div class="a-trophy">🏆</div>
@@ -201,6 +203,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   </div>
 </div>
 
+<!-- MAIN APP -->
 <div class="topbar">
   <div class="tb">
     <div class="tb-ico">🏆</div>
@@ -269,20 +272,21 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
     <div class="box"><label class="lbl">كلمة المرور الجديدة</label><input class="inp" id="pw-new" type="password" placeholder="4 أحرف على الأقل"/><button class="btn blue" onclick="chpw()">تحديث</button><div class="err" id="pw-err"></div></div>
     <div id="logout-w"></div>
     
+    <!-- كارت معلومات المطور -->
     <div class="sec" style="margin-top:24px"><i class="ti ti-code"></i> عن المطور</div>
     <div style="background:var(--card); border:1px solid rgba(74,158,255,.2); border-radius:13px; padding:14px; display:flex; align-items:center; gap:12px; margin-bottom:15px;">
       <div style="width:46px; height:46px; border-radius:50%; background:rgba(74,158,255,.1); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0;">
         <i class="ti ti-device-laptop"></i>
       </div>
       <div>
-        <div style="font-size:13px; font-weight:700; color:var(--text);">تطوير وبرمجة: يحيى</div>
+        <div style="font-size:13px; font-weight:700; color:var(--text);"> المهندس : يحيى ططري / التقني : علي طرقجي</div>
         <div style="font-size:10px; color:var(--t2); margin-top:4px; line-height:1.6;">
           تم تصميم وبرمجة هذا التطبيق لتقديم أفضل تجربة تنافسية في كأس العالم 2026. نتمنى لكم متعة التحدي!
         </div>
       </div>
     </div>
-  </div></div>
 
+  </div></div>
   <div id="pg-admin" class="pg"><div class="pi">
     <div class="sec"><i class="ti ti-users"></i> المشتركون وتوقعاتهم الكبرى الحية</div><div id="adm-users"></div>
     <div class="sec"><i class="ti ti-plus"></i> إضافة مباراة</div>
@@ -336,23 +340,9 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 <div class="toast-el" id="tst"></div>
 
 <script>
-function showLoader(msg) { 
-    const loader = document.getElementById('loader');
-    if(loader) {
-        loader.classList.remove('hide');
-        const lbl = document.getElementById('spin-lbl');
-        if(lbl) lbl.textContent = msg || 'جاري التحميل...';
-    }
-}
-function hideLoader() { 
-    const loader = document.getElementById('loader');
-    if(loader) loader.classList.add('hide'); 
-}
-
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-// علم كرواتيا مصحح 100%
 const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus';
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -369,7 +359,7 @@ let token = localStorage.getItem('wc_token') || null;
 let me = JSON.parse(localStorage.getItem('wc_me') || 'null');
 let matches = [], myPreds = {}, board = [], leagues = [], curMid = null, mflt = 'all', pollT = null;
 let myBonus = {}, officialOutcomes = {};
-let lbLimit = 50;
+let lbLimit = 50; // حد العرض الأولي للمتصدرين لمنع تعليق التطبيق
 
 async function api(method, path, body) {
   setSyncDot('busy');
@@ -402,6 +392,15 @@ async function api(method, path, body) {
   } else { showAuth(); }
 })();
 
+function showLoader(msg) { 
+    const loader = document.getElementById('loader');
+    if(loader) {
+        loader.classList.remove('hide');
+        const lbl = document.getElementById('spin-lbl');
+        if(lbl) lbl.textContent = msg || 'جاري التحميل...';
+    }
+}
+function hideLoader() { document.getElementById('loader').classList.add('hide'); }
 function showAuth() { hideLoader(); document.getElementById('auth').classList.remove('hide'); }
 function hideAuth() { document.getElementById('auth').classList.add('hide'); }
 function swAuth(t) {
@@ -428,16 +427,24 @@ async function doRegister() {
     const uInput = document.getElementById('r-u');
     const pInput = document.getElementById('r-p');
     const err = document.getElementById('r-err');
+    
+    // حماية إضافية: إذا لم توجد حقول الإدخال في الصفحة لا ينفذ الكود
     if (!uInput || !pInput) return; 
+
     const username = uInput.value.trim();
     const password = pInput.value;
     if(err) err.textContent = '';
-    if (!username || !password) { if(err) err.textContent = 'أدخل البيانات كاملة'; return; }
+    
+    if (!username || !password) {
+        if(err) err.textContent = 'أدخل اسم المستخدم وكلمة المرور';
+        return;
+    }
     try {
         showLoader('جاري إنشاء الحساب...');
         const data = await api('POST', 'auth?action=register', { username, password });
         token = data.token; me = data.user;
-        localStorage.setItem('wc_token', token); localStorage.setItem('wc_me', JSON.stringify(me));
+        localStorage.setItem('wc_token', token);
+        localStorage.setItem('wc_me', JSON.stringify(me));
         await enterApp();
     } catch (e) {
         hideLoader();
@@ -450,7 +457,7 @@ function doLogout() {
   localStorage.removeItem('wc_token'); localStorage.removeItem('wc_me');
   clearTimeout(pollT);
   matches = []; myPreds = {}; board = []; leagues = []; myBonus = {}; officialOutcomes = {};
-  hideLoader();
+  hideLoader(); // حل مشكلة تعليق شاشة التحميل عند الخروج أو الأخطاء
   document.getElementById('auth').classList.remove('hide');
   document.getElementById('l-u').value = ''; document.getElementById('l-p').value = '';
   swAuth('login'); setSyncDot('off');
@@ -467,7 +474,8 @@ async function enterApp() {
     document.getElementById('admtab').style.display = me?.isAdmin ? 'flex' : 'none';
     startPoll(); goTab('home', document.querySelector('.nt'));
   } catch (e) {
-    doLogout();
+    hideLoader();
+    showAuth();
     toast('حدث خطأ أثناء تحميل البيانات: ' + e.message);
   }
 }
@@ -490,6 +498,11 @@ function refreshActive() {
   const t = document.querySelector('.pg.on')?.id?.replace('pg-','');
   if (t==='home') rHome(); else if (t==='matches') rMatches(); else if (t==='lb') rLb(); else if (t==='admin') rAdmin();
 }
+
+const gf = t => FL[t] || '🌍';
+const isB = t => BIG.includes(t);
+const isLocked = m => m.dt ? Date.now() >= new Date(m.dt).getTime() - 3600000 : false;
+const isBonusLocked = () => Date.now() >= new Date('2026-06-11T19:00:00Z').getTime();
 
 const getDayKey = dt => new Date(dt).toLocaleDateString('en-CA', { timeZone: TZ });
 const fmtTime = dt => dt ? new Date(dt).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:TZ, hour12:false }) : '';
@@ -532,7 +545,7 @@ function goTab(t, btn) {
   document.getElementById('pg-'+t)?.classList.add('on');
   if (btn) btn.classList.add('on');
   const fn={home:rHome,matches:rMatches,leagues:rLeagues,lb:rLb,profile:rProf,admin:rAdmin};
-  if (t === 'lb') lbLimit = 50; 
+  if (t === 'lb') lbLimit = 50; // ريست التقسيم عند فتح التبويب
   fn[t]?.();
 }
 
@@ -789,10 +802,12 @@ async function savePred(){
   } catch(e){toast('خطأ: '+e.message);}
 }
 
+// تعديل شاشة الترتيب العام لتستوعب التقطيع الذكي (أول 50) + الكارت العلوي المنفصل لترتيب الحساب الحالي
 async function rLb() {
   try { board=await api('GET','leaderboard'); } catch {}
   const myUid=me?.uid, rks=['🥇','🥈','🥉'];
   
+  // 1. بناء الكارت المنفصل للعلامة الشخصية بالكامل في الأعلى
   let myRowHtml = '';
   const myIndex = board.findIndex(u => u.uid === myUid);
   if (myIndex >= 0) {
@@ -807,6 +822,7 @@ async function rLb() {
       </div>`;
   }
 
+  // 2. كارت الجوائز الفخم (منصة التتويج)
   const prizesCard = `
     <div style="background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(27,43,94,0.6)); border: 1px solid rgba(212,160,23,0.4); border-radius: 16px; padding: 16px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
       <div style="font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 14px;"><i class="ti ti-gift" style="font-size: 15px; vertical-align: -2px;"></i> الجوائز المالية الكبرى للمتصدرين</div>
@@ -830,7 +846,9 @@ async function rLb() {
     </div>
   `;
 
+  // 3. تجميع المحتوى وعرض أول 50 مشترك
   let html = myRowHtml + prizesCard + `<div class="sec"><i class="ti ti-world"></i> الترتيب العام للبطولة (أول ${lbLimit})</div>`;
+  
   const visibleUsers = board.slice(0, lbLimit);
   html += visibleUsers.map((u,i)=>
     `<div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
@@ -840,9 +858,11 @@ async function rLb() {
       <div style="text-align:right"><div class="lbp">${u.pts}</div><div style="font-size:10px;color:var(--t3)">نقطة</div></div>
     </div>`).join('');
     
+  // 4. زر عرض المزيد
   if (board.length > lbLimit) {
     html += `<button class="btn outline" style="width:100%; margin-top:12px; border-color:var(--blue); color:var(--blue); font-weight:600;" onclick="lbLimit += 50; rLb();"><i class="ti ti-plus"></i> عرض الـ 50 مشترك التاليين</button>`;
   }
+  
   document.getElementById('glb').innerHTML=html;
 }
 
@@ -894,7 +914,7 @@ function showLg(lgId){
     <div style="font-size:17px;font-weight:700;margin-bottom:4px">${lg.name}</div>
     <div class="codebox"><span class="codebig">${lg.code}</span><div class="codelbl">أرسل الكود للأصدقاء للانضمام</div><button class="copybtn" onclick="navigator.clipboard.writeText('${lg.code}').then(()=>toast('تم النسخ ✓'))">نسخ الكود</button></div>
     
-    <div class="sec"><i class="ti ti-medal"></i> المشتركون وجدول الترتيب المباشر</div>
+    <div class="sec"><i class="ti ti-medal"></i> المشتركون وجدول الترتيب المباشر للدوري الخاصة</div>
     ${lgBoard.map((u,i)=>`
       <div class="lb-r ${u.uid===myUid?'me':''} ${i===0?'t1':''}">
         <div class="lbr ${i===0?'g':i===1?'s':i===2?'b':''}">${rks[i]||`#${i+1}`}</div>
@@ -920,6 +940,8 @@ async function chpw(){
   if(np.length<4){err.textContent='4 أحرف على الأقل';return;}
   try{await api('POST','auth?action=change-password',{newPassword:np}); err.style.color='var(--green)'; err.textContent='تم التحديث ✓'; document.getElementById('pw-new').value=''; setTimeout(()=>{err.textContent='';err.style.color='';},3000);}catch(e){err.textContent=e.message;}
 }
+
+function flt(f,btn){mflt=f;document.querySelectorAll('.fbr .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rMatches();}
 
 async function rAdmin(){
   try{
@@ -1004,20 +1026,7 @@ async function setR(id){
   try{const upd=await api('PUT','matches?id='+id,{res:{s1:+s1,s2:+s2, penW, ps1, ps2}}); matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم تسجيل النتيجة ✓');}catch(e){toast(e.message);}
 }
 async function clrR(id){ try{const upd=await api('PUT','matches?id='+id,{res:null});matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم إلغاء النتيجة');}catch(e){toast(e.message);} }
-
-async function delM(id){ 
-  if(!confirm('🚨 تنبيه أمني خطير:\nهل أنت متأكد تماماً من حذف هذه المباراة نهائياً؟ سيتم تصفير وحذف جميع توقعات المشتركين المرتبطة بها فوراً ولا يمكن التراجع!')) return;
-  try{
-    await api('DELETE','matches?id='+id);
-    matches=matches.filter(m=>m.id!==id); 
-    rAdmin(); 
-    rMatches(); 
-    toast('تم حذف المباراة بنجاح ✓');
-  } catch(e){
-    toast('خطأ: ' + e.message);
-  } 
-}
-
+async function delM(id){ try{await api('DELETE','matches?id='+id);matches=matches.filter(m=>m.id!==id); rAdmin(); rMatches(); toast('حُذفت المباراة');}catch(e){toast(e.message);} }
 async function addMatch(){
   const t1=document.getElementById('at1').value.trim(),t2=document.getElementById('at2').value.trim(); if(!t1||!t2)return toast('أدخل اسمي الفريقين');
   const d=document.getElementById('adate').value.trim(),ti=document.getElementById('atime').value.trim(); let dt=null; try{if(d&&ti)dt=new Date(`${d}T${ti}:00Z`).toISOString();}catch{}
