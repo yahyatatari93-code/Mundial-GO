@@ -1026,8 +1026,20 @@ async function setR(id){
   try{const upd=await api('PUT','matches?id='+id,{res:{s1:+s1,s2:+s2, penW, ps1, ps2}}); matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم تسجيل النتيجة ✓');}catch(e){toast(e.message);}
 }
 async function clrR(id){ try{const upd=await api('PUT','matches?id='+id,{res:null});matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم إلغاء النتيجة');}catch(e){toast(e.message);} }
-async function delM(id){ try{await api('DELETE','matches?id='+id);matches=matches.filter(m=>m.id!==id); rAdmin(); rMatches(); toast('حُذفت المباراة');}catch(e){toast(e.message);} }
-async function addMatch(){
+async function delM(id){ 
+  // نافذة تأكيد منبثقة لحماية المباريات من الحذف العشوائي
+  if(!confirm('🚨 تنبيه أمني خطير:\nهل أنت متأكد تماماً من حذف هذه المباراة نهائياً؟ سيتم تصفير وحذف جميع توقعات المشتركين المرتبطة بها فوراً ولا يمكن التراجع!')) return;
+  
+  try{
+    await api('DELETE','matches?id='+id);
+    matches=matches.filter(m=>m.id!==id); 
+    rAdmin(); 
+    rMatches(); 
+    toast('تم حذف المباراة بنجاح ✓');
+  } catch(e){
+    toast('خطأ: ' + e.message);
+  } 
+}
   const t1=document.getElementById('at1').value.trim(),t2=document.getElementById('at2').value.trim(); if(!t1||!t2)return toast('أدخل اسمي الفريقين');
   const d=document.getElementById('adate').value.trim(),ti=document.getElementById('atime').value.trim(); let dt=null; try{if(d&&ti)dt=new Date(`${d}T${ti}:00Z`).toISOString();}catch{}
   try{const m=await api('POST','matches',{t1,t2,grp:document.getElementById('agrp').value.trim(),stg:document.getElementById('astg').value,dt,venue:''}); matches.push(m); ['at1','at2','adate','atime','agrp'].forEach(i=>document.getElementById(i).value=''); rAdmin(); rMatches(); toast('تمت الإضافة ✓');}catch(e){toast(e.message);}
