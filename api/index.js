@@ -6,7 +6,7 @@ const ADMINS = ['red_army', 'yahya'];
 const BIG_TEAMS = ['البرازيل', 'الأرجنتين', 'إنكلترا', 'ألمانيا', 'إسبانيا', 'البرتغال', 'هولندا', 'فرنسا', 'بلجيكا'];
 const KO_STAGES = ['r32', 'r16', 'qf', 'sf', 'final'];
 
-const BONUS_LOCK_TIME = new Date('2026-06-11T19:00:00Z').getTime();
+const BONUS_LOCK_TIME = new Date('2026-06-19T19:00:00Z').getTime();
 
 const OFFICIAL_SCHEDULE = [
     { id: "m1", t1: "المكسيك", t2: "جنوب أفريقيا", grp: "1", stg: "group", dt: "2026-06-11T19:00:00Z", res: null },
