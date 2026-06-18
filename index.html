@@ -502,7 +502,7 @@ function refreshActive() {
 const gf = t => FL[t] || '🌍';
 const isB = t => BIG.includes(t);
 const isLocked = m => m.dt ? Date.now() >= new Date(m.dt).getTime() - 3600000 : false;
-const isBonusLocked = () => Date.now() >= new Date('2026-06-11T19:00:00Z').getTime();
+const isBonusLocked = () => Date.now() >= new Date('2026-06-19T19:00:00Z').getTime();
 
 const getDayKey = dt => new Date(dt).toLocaleDateString('en-CA', { timeZone: TZ });
 const fmtTime = dt => dt ? new Date(dt).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:TZ, hour12:false }) : '';
