@@ -477,28 +477,53 @@ function mcHTML(m) {
 }
 
 function openM(id) {
-  const m=matches.find(x=>x.id===id); if(!m) return; curMid=id; const isKo = KO.includes(m.stg);
-  document.getElementById('mtitle').textContent=`${m.t1} vs ${m.t2}`;
-  document.getElementById('mfl1').textContent=gf(m.t1); document.getElementById('mfl2').textContent=gf(m.t2);
-  document.getElementById('mtn1').textContent=m.t1; document.getElementById('mtn2').textContent=m.t2;
-  document.getElementById('stl1').textContent=m.t1; document.getElementById('stl2').textContent=m.t2;
+  const m = matches.find(x => x.id === id); 
+  if (!m) return; 
+  curMid = id; 
+  const isKo = KO.includes(m.stg);
+  
+  document.getElementById('mtitle').textContent = `${m.t1} vs ${m.t2}`;
+  document.getElementById('mfl1').textContent = gf(m.t1); 
+  document.getElementById('mfl2').textContent = gf(m.t2);
+  document.getElementById('mtn1').textContent = m.t1; 
+  document.getElementById('mtn2').textContent = m.t2;
+  document.getElementById('stl1').textContent = m.t1; 
+  document.getElementById('stl2').textContent = m.t2;
 
-  const pred = myPreds[id] || {s1:0,s2:0};
-  document.getElementById('sc1').value=pred.s1; document.getElementById('sc2').value=pred.s2;
+  const pred = myPreds[id] || { s1: 0, s2: 0 };
+  document.getElementById('sc1').value = pred.s1; 
+  document.getElementById('sc2').value = pred.s2;
   
   const kbx = document.getElementById('kobox');
-  if(isKo) {
-      kbx.style.display='block';
-      document.getElementById('pt1o').textContent=m.t1; document.getElementById('pt2o').textContent=m.t2;
-      document.getElementById('penw').value=pred.penW||'';
-      document.getElementById('ps1').value=pred.ps1||''; document.getElementById('ps2').value=pred.ps2||'';
-      upPS();
-  } else { kbx.style.display='none'; }
+  
+  // دالة ذكية لإظهار خانة الجزاء فقط عند التعادل في الأدوار الإقصائية
+  const togglePenalty = () => {
+    const s1 = +document.getElementById('sc1').value;
+    const s2 = +document.getElementById('sc2').value;
+    kbx.style.display = (isKo && s1 === s2) ? 'block' : 'none';
+  };
+
+  if (isKo) {
+    document.getElementById('pt1o').textContent = m.t1; 
+    document.getElementById('pt2o').textContent = m.t2;
+    document.getElementById('penw').value = pred.penW || '';
+    document.getElementById('ps1').value = pred.ps1 || ''; 
+    document.getElementById('ps2').value = pred.ps2 || '';
+    
+    // ربط الحدث لتحديث الظهور فور تغيير النتيجة
+    document.getElementById('sc1').oninput = () => { togglePenalty(); upPrev(); };
+    document.getElementById('sc2').oninput = () => { togglePenalty(); upPrev(); };
+    togglePenalty(); // استدعاء أولي
+    upPS();
+  } else { 
+    kbx.style.display = 'none'; 
+  }
 
   const locked = isLocked(m);
-  document.getElementById('lkMsg').style.display=locked?'block':'none';
+  document.getElementById('lkMsg').style.display = locked ? 'block' : 'none';
   const form = document.getElementById('predForm');
-  if(locked){ form.style.opacity='0.5'; form.style.pointerEvents='none'; } else { form.style.opacity='1'; form.style.pointerEvents='auto'; }
+  if (locked) { form.style.opacity = '0.5'; form.style.pointerEvents = 'none'; } 
+  else { form.style.opacity = '1'; form.style.pointerEvents = 'auto'; }
   
   upPrev();
   document.getElementById('mwrap').classList.add('open');
