@@ -371,9 +371,15 @@ function goTab(t, btn) { document.querySelectorAll('.pg').forEach(p=>p.classList
 function flt(type, btn) { mflt = type; document.querySelectorAll('.fb').forEach(b => b.classList.remove('on')); if (btn) btn.classList.add('on'); rMatches(); }
 
 function rHome() {
-  if (!me) return; const pts=getTotalPts(); const pc=matches.filter(m => myPreds[m.id]).length;
-  document.getElementById('tpts').textContent = pts+' نقطة';
-  document.getElementById('hst').innerHTML = `<div class="sc"><div class="sc-n">${pts}</div><div class="sc-l">نقاطي</div></div><div class="sc"><div class="sc-n">#${getMyRank()}</div><div class="sc-l">ترتيبي</div></div><div class="sc"><div class="sc-n">${pc}</div><div class="sc-l">توقعاتي</div></div><div class="sc"><div class="sc-n">${matches.length-pc}</div><div class="sc-l">متبقية</div></div>`;
+  if (isLockedBonus) {
+    html += `<div style="font-size:11px; color:var(--t2); line-height:1.8;">
+      <div class="rr"><span>🥇 المركز الأول:</span> <span style="font-weight:600; color:#fff">${myBonus.first ? gf(myBonus.first)+' '+myBonus.first : '---'}</span></div>
+      <div class="rr"><span>🥈 المركز الثاني:</span> <span style="font-weight:600; color:#fff">${myBonus.second ? gf(myBonus.second)+' '+myBonus.second : '---'}</span></div>
+      <div class="rr"><span>🥉 المركز الثالث:</span> <span style="font-weight:600; color:#fff">${myBonus.third ? gf(myBonus.third)+' '+myBonus.third : '---'}</span></div>
+      <div class="rr"><span>🏅 المركز الرابع:</span> <span style="font-weight:600; color:#fff">${myBonus.fourth ? gf(myBonus.fourth)+' '+myBonus.fourth : '---'}</span></div>
+      <div class="rr"><span>⚽ هداف البطولة:</span> <span style="font-weight:600; color:var(--blue)">${myBonus.topScorer || '---'}</span></div>
+    </div>`;
+  }
   
   const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
   const pOpts = TOP_SCORERS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
