@@ -186,7 +186,12 @@ module.exports = async (req, res) => {
             const token = authHeader.split(' ')[1];
             const decoded = jwt.verify(token, JWT_SECRET);
             if (decoded && decoded.username) {
-                userSession = await kv.get(`user:${decoded.username.toLowerCase().trim()}`);
+                // جلب البيانات مع فحص أمان قاطع إذا كانت نصاً متجمداً
+                let userData = await kv.get(`user:${decoded.username.toLowerCase().trim()}`);
+                if (typeof userData === 'string') {
+                    try { userData = JSON.parse(userData); } catch(e) {}
+                }
+                userSession = userData;
             }
         } catch (e) {}
     }
