@@ -65,6 +65,15 @@ const OFFICIAL_SCHEDULE = [
     { id: "m54", t1: "جنوب أفريقيا", t2: "كوريا الجنوبية", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: { s1: 1, s2: 0, penW: null, ps1: null, ps2: null } }
 ];
 
+// 🚀 الدالة السحرية لإصلاح أي تدمير للبيانات بسبب التعديل اليدوي في Upstash Console
+async function safeGet(key) {
+    let data = await kv.get(key);
+    if (typeof data === 'string') {
+        try { data = JSON.parse(data); } catch (e) {}
+    }
+    return data;
+}
+
 function calculatePtsServer(m, pred) {
     if (!m.res || !pred) return 0;
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
@@ -92,9 +101,11 @@ function calculatePtsServer(m, pred) {
 }
 
 async function refreshLeaderboardCache() {
-    const allUsers = await kv.get('all_users_list') || [];
-    const matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
-    const official = await kv.get('official_outcomes') || {};
+    let allUsers = await safeGet('all_users_list') || [];
+    if (!Array.isArray(allUsers)) allUsers = [];
+    const matches = await safeGet('db_matches') || OFFICIAL_SCHEDULE;
+    const official = await safeGet('official_outcomes') || {};
+    
     if (allUsers.length === 0) return [];
     
     const predKeys = allUsers.map(u => `preds:${u.uid}`);
@@ -137,7 +148,7 @@ module.exports = async (req, res) => {
     const action = urlObj.searchParams.get('action') || '';
     const matchIdParam = urlObj.searchParams.get('id') || '';
 
-    // حماية وفك شفرة البيانات المستقبلة (Body Parser Protection) لمنع الـ 500 نهائياً
+    // حماية وفك شفرة البيانات المستقبلة لمنع خطأ 500
     let body = req.body;
     if (body && typeof body === 'string') { try { body = JSON.parse(body); } catch (e) {} }
     if (!body) body = {};
@@ -147,33 +158,43 @@ module.exports = async (req, res) => {
     if (authHeader && authHeader.startsWith('Bearer ')) {
         try {
             const token = authHeader.split(' ')[1]; const decoded = jwt.verify(token, JWT_SECRET);
-            if (decoded && decoded.username) userSession = await kv.get(`user:${decoded.username.toLowerCase().trim()}`);
+            if (decoded && decoded.username) {
+                userSession = await safeGet(`user:${String(decoded.username).toLowerCase().trim()}`);
+            }
         } catch (e) {}
     }
 
     try {
         if (route === 'auth') {
             const { username, password } = body;
+            if (!username || !password) return res.status(400).json({ error: 'الرجاء إدخال اسم المستخدم وكلمة المرور' });
+            
+            const cleanUser = String(username).trim().toLowerCase();
+            
             if (action === 'register') {
-                const cleanUser = username.trim().toLowerCase();
-                if (await kv.get(`user:${cleanUser}`)) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
+                if (await safeGet(`user:${cleanUser}`)) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
                 const uid = 'u_' + Math.random().toString(36).substr(2, 9);
-                const userObj = { uid, username: cleanUser, password, isAdmin: ADMINS.includes(cleanUser) };
+                const userObj = { uid, username: cleanUser, password: String(password), isAdmin: ADMINS.includes(cleanUser) };
                 await kv.set(`user:${cleanUser}`, userObj); await kv.set(`uid:${uid}`, userObj);
-                let allUsers = await kv.get('all_users_list') || []; allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
+                let allUsers = await safeGet('all_users_list') || []; 
+                if (!Array.isArray(allUsers)) allUsers = [];
+                allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
                 await kv.set('all_users_list', allUsers); await refreshLeaderboardCache();
                 return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
             if (action === 'login') {
-                const cleanUser = username.trim().toLowerCase(); const userObj = await kv.get(`user:${cleanUser}`);
-                if (!userObj || userObj.password !== password) return res.status(400).json({ error: 'بيانات الدخول خاطئة' });
-                userObj.isAdmin = ADMINS.includes(cleanUser); return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
+                const userObj = await safeGet(`user:${cleanUser}`);
+                if (!userObj) return res.status(400).json({ error: 'المستخدم غير موجود' });
+                if (userObj.password !== String(password)) return res.status(400).json({ error: 'كلمة المرور خاطئة' });
+                
+                userObj.isAdmin = ADMINS.includes(cleanUser); 
+                return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
             if (action === 'me') return res.status(200).json(userSession);
         }
 
         if (route === 'matches') {
-            let matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE;
+            let matches = await safeGet('db_matches') || OFFICIAL_SCHEDULE;
             if (req.method === 'GET') { res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=60'); return res.status(200).json(matches); }
             if (req.method === 'POST') {
                 if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
@@ -198,19 +219,19 @@ module.exports = async (req, res) => {
 
         if (route === 'predictions') {
             if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
-            if (req.method === 'GET') return res.status(200).json(await kv.get(`preds:${userSession.uid}`) || {});
+            if (req.method === 'GET') return res.status(200).json(await safeGet(`preds:${userSession.uid}`) || {});
             if (req.method === 'POST') {
                 const { matchId, s1, s2, penW, ps1, ps2 } = body;
-                let matches = await kv.get('db_matches') || OFFICIAL_SCHEDULE; const cm = matches.find(m => m.id === matchId);
+                let matches = await safeGet('db_matches') || OFFICIAL_SCHEDULE; const cm = matches.find(m => m.id === matchId);
                 if (Date.now() >= (new Date(cm.dt).getTime() - 3600000)) return res.status(400).json({ error: 'أغلق التوقع' });
-                const cp = await kv.get(`preds:${userSession.uid}`) || {}; cp[matchId] = { s1, s2, penW, ps1, ps2 };
+                const cp = await safeGet(`preds:${userSession.uid}`) || {}; cp[matchId] = { s1, s2, penW, ps1, ps2 };
                 await kv.set(`preds:${userSession.uid}`, cp); return res.status(200).json({ success: true });
             }
         }
 
         if (route === 'bonus') {
             if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
-            if (req.method === 'GET') return res.status(200).json(await kv.get(`bonus:${userSession.uid}`) || {});
+            if (req.method === 'GET') return res.status(200).json(await safeGet(`bonus:${userSession.uid}`) || {});
             if (req.method === 'POST') {
                 if (Date.now() >= BONUS_LOCK_TIME) return res.status(400).json({ error: 'عذراً، تم إغلاق التوقعات الكبرى!' });
                 await kv.set(`bonus:${userSession.uid}`, body); return res.status(200).json({ success: true });
@@ -218,7 +239,7 @@ module.exports = async (req, res) => {
         }
 
         if (route === 'bonus_outcomes') {
-            if (req.method === 'GET') return res.status(200).json(await kv.get('official_outcomes') || {});
+            if (req.method === 'GET') return res.status(200).json(await safeGet('official_outcomes') || {});
             if (req.method === 'POST') {
                 if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
                 await kv.set('official_outcomes', body); await refreshLeaderboardCache();
@@ -228,14 +249,14 @@ module.exports = async (req, res) => {
 
         if (route === 'leaderboard') {
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-            let cachedLb = await kv.get('cache:leaderboard');
+            let cachedLb = await safeGet('cache:leaderboard');
             if (!cachedLb || !Array.isArray(cachedLb)) { cachedLb = await refreshLeaderboardCache(); }
             return res.status(200).json(cachedLb);
         }
 
         if (route === 'leagues') {
             if (!userSession) return res.status(401).json({ error: 'سجل دخولك أولاً' });
-            let allLeagues = await kv.get('global_leagues') || [];
+            let allLeagues = await safeGet('global_leagues') || [];
             if (req.method === 'GET') return res.status(200).json(allLeagues.filter(l => l.members.includes(userSession.uid)));
             const { name, code } = body;
             if (action === 'create') {
@@ -252,7 +273,7 @@ module.exports = async (req, res) => {
 
         if (route === 'users') {
             if (!userSession || !ADMINS.includes(userSession.username)) return res.status(403).json({ error: 'غير مصرح' });
-            const allUsers = await kv.get('all_users_list') || [];
+            const allUsers = await safeGet('all_users_list') || [];
             const bonusKeys = allUsers.map(u => `bonus:${u.uid}`); let allBonuses = [];
             for (let i = 0; i < bonusKeys.length; i += 100) { allBonuses.push(...(await kv.mget(...bonusKeys.slice(i, i + 100)))); }
             const usersWithBonus = allUsers.map((u, i) => {
@@ -263,5 +284,8 @@ module.exports = async (req, res) => {
             return res.status(200).json(usersWithBonus);
         }
         return res.status(200).json(OFFICIAL_SCHEDULE);
-    } catch (error) { return res.status(500).json({ error: 'خطأ داخلي' }); }
+    } catch (error) { 
+        // أرسلنا الخطأ للواجهة لتعرف المشكلة بالضبط إن حدثت
+        return res.status(500).json({ error: error.message || 'خطأ داخلي' }); 
+    }
 };
