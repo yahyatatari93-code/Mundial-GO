@@ -496,7 +496,7 @@ function mcHTML(m) {
       <div class="mt r" style="text-align: right; flex: 1;"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span></div>
     </div>
     <div class="mbot">
-      <div class="mpred ${pred ? 'y' : ''}" dir="ltr">
+      <div class="mpred ${pred ? 'y' : ''}" style="direction: ltr; text-align: center;">
         ${pred ? 'توقعي: ' + pred.s1 + ' - ' + pred.s2 : 'اضغط للتوقع'}
       </div>
       ${pts !== null ? `<span class="chip e">+${pts}</span>` : ''}
