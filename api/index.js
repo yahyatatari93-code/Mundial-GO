@@ -80,23 +80,26 @@ function calculatePtsServer(m, pred) {
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
     const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
     let pts = 0;
+
+    // الحالة 1: مباراة بين فريقين كبيرين (Big vs Big)
     if (t1b && t2b) {
-        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) pts = (ar === 'd') ? 3 : 5;
-        else if (pr === ar) pts = (ar === 'd') ? 2 : 3;
-    } else if (t1b || t2b) {
-        const bf = t1b; const bW = bf ? (r1 > r2) : (r2 > r1); const dr = (r1 === r2); const sW = bf ? (r2 > r1) : (r1 > r2);
-        const pbW = bf ? (s1 > s2) : (s2 > s1); const pd = (s1 === s2); const psW = bf ? (s2 > s1) : (s1 > s2);
-        if (s1 === r1 && s2 === r2) { if (bW) pts = 2; if (dr) pts = 3; if (sW) pts = 6; } 
-        else { if (pbW && bW) pts = 1; if (pd && dr) pts = 2; if (psW && sW) pts = 4; }
-    } else {
-        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) { const sr = r1 + r2; pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; } 
-        else if (pr === ar) pts = 1;
+        if (s1 === r1 && s2 === r2) pts = (r1 === r2) ? 3 : 5; // توقع النتيجة الصحيحة
+        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2; // توقع الفائز
+    } 
+    // الحالة 2: مباراة بين فريق كبير وفريق عادي (Big vs Small)
+    else if (t1b || t2b) {
+        if (s1 === r1 && s2 === r2) pts = 3; // النتيجة الصحيحة
+        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 1; // توقع الفائز
+    } 
+    // الحالة 3: مباراة بين فريقين عاديين (Small vs Small)
+    else {
+        if (s1 === r1 && s2 === r2) pts = 4; // مكافأة أكبر لتوقع مباراة الفرق المتكافئة
+        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2)) pts = 2; // توقع الفائز
     }
-    if (KO_STAGES.includes(m.stg) && m.res) {
-        if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
-        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
+
+    // منطق ضربات الجزاء (KO Stages)
+    if (KO_STAGES.includes(m.stg) && r1 === r2) {
+        if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 2;
     }
     return pts;
 }
