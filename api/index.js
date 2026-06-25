@@ -81,31 +81,31 @@ function calculatePtsServer(m, pred) {
     const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
     let pts = 0;
 
-    // 1. حساب نقاط الوقت الأصلي
-    if (t1b && t2b) {
-        if (s1 === r1 && s2 === r2) pts = (r1 === r2) ? 3 : 5;
-        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2;
-    } 
-    else if (t1b || t2b) {
-        if (s1 === r1 && s2 === r2) pts = 3;
+    // 1. عادي ضد عادي
+    if (!t1b && !t2b) {
+        if (s1 === r1 && s2 === r2) pts = (r1 + r2 >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3;
         else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 1;
     } 
+    // 2. كبير ضد عادي
+    else if (t1b || t2b) {
+        const isBigT1 = t1b, predWinBig = isBigT1 ? (s1 > s2) : (s2 > s1), resWinBig = isBigT1 ? (r1 > r2) : (r2 > r1), isDraw = (s1 === s2), resDraw = (r1 === r2);
+        if (s1 === r1 && s2 === r2) pts = isDraw ? 3 : (resWinBig ? 2 : 6);
+        else if (isDraw && resDraw) pts = 2;
+        else if (predWinBig && resWinBig) pts = 1;
+        else if (!isBigT1 && !isDraw && !resWinBig && (s1 < s2)) pts = 4;
+    } 
+    // 3. كبير ضد كبير
     else {
-        if (s1 === r1 && s2 === r2) pts = 4;
-        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2;
+        const isDraw = (s1 === s2), resDraw = (r1 === r2);
+        if (s1 === r1 && s2 === r2) pts = resDraw ? 3 : 5;
+        else if (isDraw && resDraw) pts = 2;
+        else if (!isDraw && !resDraw) pts = 3;
     }
 
-    // 2. منطق ضربات الجزاء الجديد والمطور
+    // 4. الأدوار الإقصائية (إضافة)
     if (KO_STAGES.includes(m.stg) && r1 === r2 && m.res.penW) {
-        // نقطة لتوقع الفائز بضربات الجزاء
-        if (pred.penW && pred.penW === m.res.penW) {
-            pts += 1; 
-        }
-        // 5 نقاط إضافية لتوقع النتيجة الرقمية للجزاء
-        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && 
-            +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) {
-            pts += 5;
-        }
+        if (pred.penW === m.res.penW) pts += 1;
+        if (+pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
     }
     return pts;
 }
