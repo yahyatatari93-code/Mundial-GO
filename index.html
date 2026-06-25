@@ -495,12 +495,15 @@ function mcHTML(m) {
       
       <div class="mt r" style="text-align: right; flex: 1;"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span></div>
     </div>
-    <div class="mbot">
-      <div class="mpred ${pred ? 'y' : ''}" style="direction: ltr; text-align: center;">
-        ${pred ? 'توقعي: ' + pred.s1 + ' - ' + pred.s2 : 'اضغط للتوقع'}
-      </div>
-      ${pts !== null ? `<span class="chip e">+${pts}</span>` : ''}
-    </div>
+    <div class="mbot" style="width: 100%; margin-top: 5px;">
+  <div class="mpred ${pred ? 'y' : ''}" style="display: flex; justify-content: center; direction: ltr; unicode-bidi: isolate;">
+    <span style="direction: rtl;">توقعي: &nbsp;</span>
+    <span style="display: inline-block;">${pred ? pred.s1 : '0'}</span>
+    <span style="display: inline-block;">&nbsp;-&nbsp;</span>
+    <span style="display: inline-block;">${pred ? pred.s2 : '0'}</span>
+  </div>
+  ${pts !== null ? `<div style="text-align:center;"><span class="chip e">+${pts}</span></div>` : ''}
+</div>
   </div>`;
 }
 
