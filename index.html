@@ -427,11 +427,24 @@ function rMatches() {
 }
 
 function mcHTML(m) {
-  const pred=myPreds[m.id], locked=isLocked(m); const pts = pred&&m.res ? calcPts(m,pred) : null;
-  return`<div class="mc ${pred?'hp':''}" onclick="openM('${m.id}')">
-    <div class="mtags"><span class="tag tg">${SLBL[m.stg]||m.stg}</span><span class="tag td">⏰ ${fmtTime(m.dt)}</span></div>
-    <div class="mteams"><div class="mt"><span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span></div><div class="vsc">${m.res?`<span class="vs-r">${m.res.s2} - ${m.res.s1}</span>`:`<span class="vs-v">VS</span>`}</div><div class="mt r"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span></div></div>
-    <div class="mbot"><div class="mpred ${pred?'y':''}">${pred?`توقعي: <span dir="ltr">${pred.s1} - ${pred.s2}</span>`:`اضغط للتوقع`}</div>${pts!==null?`<span class="chip e">+${pts}</span>`:''}</div>
+  const pred = myPreds[m.id];
+  const pts = pred && m.res ? calcPts(m, pred) : null;
+  const time = m.dt ? new Date(m.dt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TZ }) : '';
+  
+  // التعديل هنا: استخدام dir="ltr" لتثبيت اتجاه النتيجة
+  return `<div class="mc ${pred ? 'hp' : ''}" onclick="openM('${m.id}')">
+    <div class="mtags"><span class="tag tg">${SLBL[m.stg] || m.stg}</span><span class="tag td">⏰ ${time}</span></div>
+    <div class="mteams">
+      <div class="mt"><span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span></div>
+      <div class="vsc">${m.res ? `<span class="vs-r" dir="ltr">${m.res.s1} - ${m.res.s2}</span>` : `<span class="vs-v">VS</span>`}</div>
+      <div class="mt r"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span></div>
+    </div>
+    <div class="mbot">
+      <div class="mpred ${pred ? 'y' : ''}" dir="ltr">
+        ${pred ? 'توقعي: ' + pred.s1 + ' - ' + pred.s2 : 'اضغط للتوقع'}
+      </div>
+      ${pts !== null ? `<span class="chip e">+${pts}</span>` : ''}
+    </div>
   </div>`;
 }
 
