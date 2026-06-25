@@ -192,27 +192,51 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
   <div id="pg-leagues" class="pg"><div class="pi"><div id="lglist"><div class="sec"><i class="ti ti-plus-circle"></i> إنشاء دوري</div><div class="box"><input class="inp" id="lgnm" type="text" placeholder="اسم الدوري..."/><button class="btn gold" onclick="createLg()">إنشاء</button></div><div class="sec"><i class="ti ti-door-enter"></i> انضمام بكود</div><div class="joinrow"><input class="inp" id="jcode" type="text" placeholder="XXXXXX" maxlength="6"/><button class="jbtn" onclick="joinLg()"><i class="ti ti-arrow-right"></i></button></div><div class="sec"><i class="ti ti-list"></i> دورياتي</div><div id="mylgs"></div></div><div id="lgdet" style="display:none"></div></div></div>
   <div id="pg-lb" class="pg"><div class="pi" style="position:relative"><div id="glb"></div></div></div>
 <div id="pg-rules" class="pg">
-  <div class="pi">
-    <div class="rb">
-      <h3>👑 مباريات الكبار (Big vs Big)</h3>
-      <div class="rr"><span>توقع الفائز / التعادل</span><span class="rpts">2 نقطة</span></div>
-      <div class="rr"><span>توقع النتيجة الصحيحة</span><span class="rpts">5 نقاط</span></div>
+    <div class="pi" style="padding: 20px; line-height: 1.6; color: #fff;">
+        <h2 style="color: var(--gold); border-bottom: 2px solid var(--gold); padding-bottom: 10px;">قوانين مسابقة توقعات كأس العالم</h2>
+        
+        <p><strong>الفرق الكبيرة:</strong> البرازيل، الأرجنتين، إنكلترا، ألمانيا، إسبانيا، البرتغال، هولندا، فرنسا، بلجيكا.</p>
+
+        <div class="rb" style="margin-top: 20px;">
+            <h3 style="color: var(--blue);">⚽ مباريات الفرق العادية (عادي ضد عادي)</h3>
+            <ul>
+                <li>توقع النتيجة (فوز أو تعادل): <strong>1 نقطة</strong></li>
+                <li>توقع النتيجة الرقمية (فوز أو تعادل): <strong>3 نقاط</strong></li>
+                <li>توقع النتيجة بمجموع 5 أهداف فأكثر أو تعادل 0-0: <strong>4 نقاط</strong></li>
+            </ul>
+        </div>
+
+        <div class="rb" style="margin-top: 15px;">
+            <h3 style="color: var(--blue);">🌟 مباريات الكبار ضد العاديين</h3>
+            <ul>
+                <li>توقع فوز الكبير: <strong>1 نقطة</strong> | توقع النتيجة الرقمية: <strong>2 نقطة</strong></li>
+                <li>توقع التعادل: <strong>2 نقطة</strong> | توقع النتيجة الرقمية: <strong>3 نقاط</strong></li>
+                <li>توقع خسارة الكبير: <strong>4 نقاط</strong> | توقع النتيجة الرقمية: <strong>6 نقاط</strong></li>
+            </ul>
+        </div>
+
+        <div class="rb" style="margin-top: 15px;">
+            <h3 style="color: var(--blue);">👑 مباريات الكبار ضد بعضهم</h3>
+            <ul>
+                <li>توقع التعادل: <strong>2 نقطة</strong> | توقع النتيجة الرقمية: <strong>3 نقاط</strong></li>
+                <li>توقع فوز أحد الفريقين: <strong>3 نقاط</strong> | توقع النتيجة الرقمية: <strong>5 نقاط</strong></li>
+            </ul>
+        </div>
+
+        <div class="rb" style="margin-top: 15px;">
+            <h3 style="color: var(--gold);">⚠️ الأدوار الإقصائية (إضافية)</h3>
+            <ul>
+                <li>توقع الفائز بضربات الجزاء: <strong>+1 نقطة</strong></li>
+                <li>توقع نتيجة ضربات الجزاء الرقمية: <strong>+5 نقاط</strong></li>
+            </ul>
+        </div>
+
+        <div class="rb" style="margin-top: 15px; border-top: 1px solid #444; padding-top: 10px;">
+            <h3 style="color: var(--green);">⏳ قاعدة التجميد</h3>
+            <p>يغلق التوقع قبل ساعة من بداية كل مباراة.</p>
+        </div>
     </div>
-    <div class="rb">
-      <h3>🌟 كبير ضد عادي (Big vs Small)</h3>
-      <div class="rr"><span>توقع الفائز</span><span class="rpts">1 نقطة</span></div>
-      <div class="rr"><span>توقع النتيجة الصحيحة</span><span class="rpts">3 نقاط</span></div>
-    </div>
-    <div class="rb">
-      <h3>⚽ عادي ضد عادي (Small vs Small)</h3>
-      <div class="rr"><span>توقع الفائز</span><span class="rpts">2 نقطة</span></div>
-      <div class="rr"><span>توقع النتيجة الصحيحة</span><span class="rpts">4 نقاط</span></div>
-    </div>
-    <div class="rb">
-      <h3>⚠️ الأدوار الإقصائية (KO)</h3>
-      <div class="rr"><span>توقع الفائز بركلات الترجيح</span><span class="rpts">+2 نقطة</span></div>
-    </div>
-  </div>
+</div>
 </div>  <div id="pg-profile" class="pg"><div class="pi">
       <div class="pcard"><div class="pav" id="pav"></div><div class="pnm" id="pnm"></div><div class="psb" id="psb"></div><div class="pst" id="pst"></div></div>
       <div class="sec">تغيير كلمة المرور</div><div class="box"><label class="lbl">كلمة المرور الجديدة</label><input class="inp" id="pw-new" type="password" placeholder="4 أحرف على الأقل"/><button class="btn blue" onclick="chpw()">تحديث</button><div class="err" id="pw-err"></div></div>
