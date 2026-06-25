@@ -244,7 +244,7 @@ function hideLoader() { const loader = document.getElementById('loader'); if(loa
 const BIG=['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
 const KO=['r32','r16','qf','sf','final'];
 const SLBL={group:'مجموعات',r32:'دور 32',r16:'دور 16',qf:'ربع نهائي',sf:'نصف نهائي',final:'النهائي'};
-const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴󠁧󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨دود','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥النج󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
+const FL={'المكسيك':'🇲🇽','جنوب أفريقيا':'🇿🇦','كوريا الجنوبية':'🇰🇷','التشيك':'🇨🇿','كندا':'🇨🇦','البوسنة':'🇧🇦','أمريكا':'🇺🇸','الباراغواي':'🇵🇾','قطر':'🇶🇦','سويسرا':'🇨🇭','البرازيل':'🇧🇷','المغرب':'🇲🇦','هايتي':'🇭🇹','إسكتلندا':'🏴 \n󠁢󠁳󠁣󠁴󠁿','أستراليا':'🇦🇺','تركيا':'🇹🇷','ألمانيا':'🇩🇪','كوراساو':'🇨🇼','هولندا':'🇳🇱','اليابان':'🇯🇵','كوت ديفوار':'🇨🇮','الإكوادور':'🇪🇨','السويد':'🇸🇪','تونس':'🇹🇳','إسبانيا':'🇪🇸','الرأس الأخضر':'🇨🇻','بلجيكا':'🇧🇪','مصر':'🇪🇬','إيران':'🇮🇷','نيوزيلندا':'🇳🇿','السعودية':'🇸🇦','الأوروغواي':'🇺🇾','فرنسا':'🇫🇷','السنغال':'🇸🇳','العراق':'🇮🇶','النرويج':'🇳🇴','الأرجنتين':'🇦🇷','الجزائر':'🇩🇿','النمسا':'🇦🇹','الأردن':'🇯🇴','البرتغال':'🇵🇹','الكونغو':'🇨🇩','أوزبكستان':'🇺🇿','كولومبيا':'🇨🇴','إنكلترا':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','كرواتيا':'🇭🇷','غانا':'🇬🇭','بنما':'🇵🇦'};
 const TZ='Asia/Damascus'; const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 const TOP_SCORERS_LIST = ['كيليان مبابي', 'هاري كين', 'إيرلينغ هالاند', 'ليونيل ميسي', 'فينيسيوس جونيور', 'كريستيانو رونالدو', 'جود بيلينغهام', 'لامين يامال', 'محمد صلاح'];
 
@@ -311,7 +311,6 @@ const fmtTime = dt => dt ? new Date(dt).toLocaleTimeString('en-GB', { hour:'2-di
 const fmtDT = dt => { if (!dt) return ''; const d = new Date(dt); return d.toLocaleDateString('ar-SY',{weekday:'short',month:'short',day:'numeric',timeZone:TZ}) + ' · ' + d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:TZ,hour12:false}); };
 const getDayHeader = dk => { const d=new Date(dk+'T12:00:00'); return DAYS[d.getDay()]+' '+d.getDate()+' '+d.toLocaleDateString('ar-SY',{month:'long'}); };
 
-// إصلاح عداد التوقعات المتبقية: تصفية وقراءة المباريات القائمة والحية فقط لمنع التضارب والسالب (-1)
 const getTotalPts = () => {
   let s = matches.reduce((sum, m) => { const p = myPreds[m.id]; return sum + (p && m.res ? calcPts(m, p) : 0); }, 0);
   if (myBonus && officialOutcomes) {
@@ -334,13 +333,10 @@ function updCD() {
 }
 
 function goTab(t, btn) { document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on')); document.querySelectorAll('.nt').forEach(n=>n.classList.remove('on')); document.getElementById('pg-'+t)?.classList.add('on'); if (btn) btn.classList.add('on'); const fn={home:rHome,matches:rMatches,leagues:rLeagues,lb:rLb,profile:rProf,admin:rAdmin}; if (t === 'lb') lbLimit = 50; fn[t]?.(); }
-
 function flt(type, btn) { mflt = type; document.querySelectorAll('.fb').forEach(b => b.classList.remove('on')); if (btn) btn.classList.add('on'); rMatches(); }
 
 function rHome() {
-  if (!me) return; const pts=getTotalPts(); 
-  // حماية العداد: فلترة التوقعات المحفوظة للمباريات المتواجدة حالياً فقط
-  const pc=matches.filter(m => myPreds[m.id]).length;
+  if (!me) return; const pts=getTotalPts(); const pc=matches.filter(m => myPreds[m.id]).length;
   document.getElementById('tpts').textContent = pts+' نقطة';
   document.getElementById('hst').innerHTML = `<div class="sc"><div class="sc-n">${pts}</div><div class="sc-l">نقاطي</div></div><div class="sc"><div class="sc-n">#${getMyRank()}</div><div class="sc-l">ترتيبي</div></div><div class="sc"><div class="sc-n">${pc}</div><div class="sc-l">توقعاتي</div></div><div class="sc"><div class="sc-n">${matches.length-pc}</div><div class="sc-l">متبقية</div></div>`;
   
@@ -404,10 +400,7 @@ function mcHTML(m) {
   </div>`;
 }
 
-function openM(id) {
-  const m=matches.find(x=>x.id===id); if(!m) return; curMid=id; const isKo = KO.includes(m.stg);
-  document.getElementById('mtitle').textContent=`${m.t1} vs ${m.t2}`; document.getElementById('mwrap').classList.add('open');
-}
+function openM(id) { const m=matches.find(x=>x.id===id); if(!m) return; curMid=id; document.getElementById('mtitle').textContent=`${m.t1} vs ${m.t2}`; document.getElementById('mwrap').classList.add('open'); }
 function closeM(){document.getElementById('mwrap').classList.remove('open');}
 
 async function rLb() {
@@ -420,13 +413,10 @@ async function rLb() {
 }
 
 function rProf(){ if(!me) return; rLb(); }
-
 function rAdmin(){
   const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
-  // تفعيل بناء عناصر الخيارات تلقائياً داخل القوائم لمنع أخطاء الكتابة اليدوية تماماً
   document.getElementById('at1').innerHTML = '<option value="">-- اختر الفريق الأول --</option>' + tOpts;
   document.getElementById('at2').innerHTML = '<option value="">-- اختر الفريق الثاني --</option>' + tOpts;
-  
   document.getElementById('admlist').innerHTML=matches.map(m=>`<div class="arow"><div>${gf(m.t1)} ${m.t1} vs ${m.t2} ${gf(m.t2)}</div><div class="ri"><input type="number" id="r1-${m.id}" value="${m.res?m.res.s1:''}"/><input type="number" id="r2-${m.id}" value="${m.res?m.res.s2:''}"/><button class="sbtn" onclick="setR('${m.id}')">تثبيت</button><button class="dbtn" onclick="delM('${m.id}')">حذف</button></div></div>`).join('');
 }
 
@@ -435,15 +425,13 @@ async function addMatch(){
   const d=document.getElementById('adate').value, ti=document.getElementById('atime').value;
   if(!t1 || !t2 || !d || !ti) return toast('الرجاء اختيار كافة الحقول المطلوبة');
   let dt = new Date(`${d}T${ti}:00Z`).toISOString();
-  try {
-    const m = await api('POST','matches',{t1, t2, grp:document.getElementById('agrp').value.trim(), stg:document.getElementById('astg').value, dt});
-    matches.push(m); toast('تمت إضافة المباراة بنجاح وعرضها تلقائياً ✓'); rAdmin(); rHome();
-  } catch(e) { toast(e.message); }
+  try { const m = await api('POST','matches',{t1, t2, grp:document.getElementById('agrp').value.trim(), stg:document.getElementById('astg').value, dt}); matches.push(m); toast('تمت إضافة المباراة وعرضها بنجاح ✓'); rAdmin(); rHome(); } 
+  catch(e) { toast(e.message); }
 }
 
 async function setR(id){
   const s1=document.getElementById('r1-'+id).value, s2=document.getElementById('r2-'+id).value;
-  try{ const upd=await api('PUT','matches?id='+id,{res:{s1:+s1,s2:+s2}}); matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم التسجيل وبث النقاط ✓');}catch(e){toast(e.message);}
+  try{ const upd=await api('PUT','matches?id='+id,{res:{s1:+s1,s2:+s2}}); matches=matches.map(m=>m.id===id?upd:m); rAdmin(); rHome(); toast('تم تسجيل النتيجة وبث النقاط ✓');}catch(e){toast(e.message);}
 }
 async function delM(id){
   if(!confirm('هل تريد حذف المباراة؟')) return;
