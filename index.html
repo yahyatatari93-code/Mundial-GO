@@ -373,11 +373,9 @@ function flt(type, btn) { mflt = type; document.querySelectorAll('.fb').forEach(
 function rHome() {
   if (isLockedBonus) {
     html += `<div style="font-size:11px; color:var(--t2); line-height:1.8;">
-      <div class="rr"><span>🥇 المركز الأول:</span> <span style="font-weight:600; color:#fff">${myBonus.first ? gf(myBonus.first)+' '+myBonus.first : '---'}</span></div>
-      <div class="rr"><span>🥈 المركز الثاني:</span> <span style="font-weight:600; color:#fff">${myBonus.second ? gf(myBonus.second)+' '+myBonus.second : '---'}</span></div>
-      <div class="rr"><span>🥉 المركز الثالث:</span> <span style="font-weight:600; color:#fff">${myBonus.third ? gf(myBonus.third)+' '+myBonus.third : '---'}</span></div>
-      <div class="rr"><span>🏅 المركز الرابع:</span> <span style="font-weight:600; color:#fff">${myBonus.fourth ? gf(myBonus.fourth)+' '+myBonus.fourth : '---'}</span></div>
-      <div class="rr"><span>⚽ هداف البطولة:</span> <span style="font-weight:600; color:var(--blue)">${myBonus.topScorer || '---'}</span></div>
+      <div class="rr"><span>🥇 المركز الأول:</span> <span style="font-weight:600; color:#fff">${myBonus.first ? gf(myBonus.first)+' '+myBonus.first : 'لم يتوقع'}</span></div>
+      <div class="rr"><span>🥈 المركز الثاني:</span> <span style="font-weight:600; color:#fff">${myBonus.second ? gf(myBonus.second)+' '+myBonus.second : 'لم يتوقع'}</span></div>
+      <div class="rr"><span>⚽ هداف البطولة:</span> <span style="font-weight:600; color:var(--blue)">${myBonus.topScorer || 'لم يتوقع'}</span></div>
     </div>`;
   }
   
