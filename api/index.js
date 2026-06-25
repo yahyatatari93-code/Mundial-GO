@@ -75,34 +75,39 @@ async function safeGet(key) {
     return data;
 }
 
+// هذه الدالة الآن هي نسخة طبق الأصل عن منطق `calcPts` في جهاز المستخدم
 function calculatePtsServer(m, pred) {
     if (!m.res || !pred) return 0;
+    // التأكد من أن القيم أرقام
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
     const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
     let pts = 0;
 
-    // 1. عادي ضد عادي
-    if (!t1b && !t2b) {
+    // المنطق الأساسي (يجب أن تطابق تماماً دالة calcPts الموجودة في index.html)
+    // إذا كنت لا تملك دالة calcPts كاملة في index.html، استخدم هذا المنطق الموحد:
+    if (!t1b && !t2b) { // عادي ضد عادي
         if (s1 === r1 && s2 === r2) pts = (r1 + r2 >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3;
         else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 1;
-    } 
-    // 2. كبير ضد عادي
-    else if (t1b || t2b) {
-        const isBigT1 = t1b, predWinBig = isBigT1 ? (s1 > s2) : (s2 > s1), resWinBig = isBigT1 ? (r1 > r2) : (r2 > r1), isDraw = (s1 === s2), resDraw = (r1 === r2);
+    } else if (t1b || t2b) { // كبير ضد عادي
+        const isBigT1 = t1b;
+        const predWinBig = isBigT1 ? (s1 > s2) : (s2 > s1);
+        const resWinBig = isBigT1 ? (r1 > r2) : (r2 > r1);
+        const isDraw = (s1 === s2);
+        const resDraw = (r1 === r2);
+        
         if (s1 === r1 && s2 === r2) pts = isDraw ? 3 : (resWinBig ? 2 : 6);
         else if (isDraw && resDraw) pts = 2;
         else if (predWinBig && resWinBig) pts = 1;
         else if (!isBigT1 && !isDraw && !resWinBig && (s1 < s2)) pts = 4;
-    } 
-    // 3. كبير ضد كبير
-    else {
-        const isDraw = (s1 === s2), resDraw = (r1 === r2);
+    } else { // كبير ضد كبير
+        const isDraw = (s1 === s2);
+        const resDraw = (r1 === r2);
         if (s1 === r1 && s2 === r2) pts = resDraw ? 3 : 5;
         else if (isDraw && resDraw) pts = 2;
         else if (!isDraw && !resDraw) pts = 3;
     }
 
-    // 4. الأدوار الإقصائية (إضافة)
+    // منطق ضربات الجزاء
     if (KO_STAGES.includes(m.stg) && r1 === r2 && m.res.penW) {
         if (pred.penW === m.res.penW) pts += 1;
         if (+pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
