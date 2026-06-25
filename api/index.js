@@ -83,11 +83,11 @@ function calculatePtsServer(m, pred) {
 
     // 1. حساب نقاط الوقت الأصلي
     if (t1b && t2b) {
-        if (s1 === r1 && s2 === r2) pts = (r1 === r2) ? 3 : 5;
+        if (s1 === r1 && s2 === r2) pts = (r1 === r2) ? 3 : 5; 
         else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2;
     } 
     else if (t1b || t2b) {
-        if (s1 === r1 && s2 === r2) pts = 3;
+        if (s1 === r1 && s2 === r2) pts = 3; 
         else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 1;
     } 
     else {
@@ -95,13 +95,13 @@ function calculatePtsServer(m, pred) {
         else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2;
     }
 
-    // 2. منطق ضربات الجزاء الجديد والمطور
+    // 2. منطق ضربات الجزاء المطور (الطلب الجديد)
     if (KO_STAGES.includes(m.stg) && r1 === r2 && m.res.penW) {
         // نقطة لتوقع الفائز بضربات الجزاء
         if (pred.penW && pred.penW === m.res.penW) {
             pts += 1; 
         }
-        // 5 نقاط إضافية لتوقع النتيجة الرقمية للجزاء
+        // 5 نقاط إضافية لتوقع النتيجة الرقمية للجزاء (ps1 و ps2)
         if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && 
             +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) {
             pts += 5;
