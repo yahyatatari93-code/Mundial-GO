@@ -81,25 +81,31 @@ function calculatePtsServer(m, pred) {
     const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
     let pts = 0;
 
-    // الحالة 1: مباراة بين فريقين كبيرين (Big vs Big)
+    // 1. حساب نقاط الوقت الأصلي
     if (t1b && t2b) {
-        if (s1 === r1 && s2 === r2) pts = (r1 === r2) ? 3 : 5; // توقع النتيجة الصحيحة
-        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2; // توقع الفائز
+        if (s1 === r1 && s2 === r2) pts = (r1 === r2) ? 3 : 5; 
+        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2;
     } 
-    // الحالة 2: مباراة بين فريق كبير وفريق عادي (Big vs Small)
     else if (t1b || t2b) {
-        if (s1 === r1 && s2 === r2) pts = 3; // النتيجة الصحيحة
-        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 1; // توقع الفائز
+        if (s1 === r1 && s2 === r2) pts = 3; 
+        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 1;
     } 
-    // الحالة 3: مباراة بين فريقين عاديين (Small vs Small)
     else {
-        if (s1 === r1 && s2 === r2) pts = 4; // مكافأة أكبر لتوقع مباراة الفرق المتكافئة
-        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2)) pts = 2; // توقع الفائز
+        if (s1 === r1 && s2 === r2) pts = 4;
+        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 2;
     }
 
-    // منطق ضربات الجزاء (KO Stages)
-    if (KO_STAGES.includes(m.stg) && r1 === r2) {
-        if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 2;
+    // 2. منطق ضربات الجزاء المطور (الطلب الجديد)
+    if (KO_STAGES.includes(m.stg) && r1 === r2 && m.res.penW) {
+        // نقطة لتوقع الفائز بضربات الجزاء
+        if (pred.penW && pred.penW === m.res.penW) {
+            pts += 1; 
+        }
+        // 5 نقاط إضافية لتوقع النتيجة الرقمية للجزاء (ps1 و ps2)
+        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && 
+            +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) {
+            pts += 5;
+        }
     }
     return pts;
 }
