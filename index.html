@@ -483,13 +483,17 @@ function mcHTML(m) {
   const pts = pred && m.res ? calcPts(m, pred) : null;
   const time = m.dt ? new Date(m.dt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TZ }) : '';
   
-  // التعديل هنا: استخدام dir="ltr" لتثبيت اتجاه النتيجة
+  // قمت بإضافة style="display: flex; direction: ltr;" للحاوية لضمان ثبات ترتيب الفرق
   return `<div class="mc ${pred ? 'hp' : ''}" onclick="openM('${m.id}')">
     <div class="mtags"><span class="tag tg">${SLBL[m.stg] || m.stg}</span><span class="tag td">⏰ ${time}</span></div>
-    <div class="mteams">
-      <div class="mt"><span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span></div>
-      <div class="vsc">${m.res ? `<span class="vs-r" dir="ltr">${m.res.s1} - ${m.res.s2}</span>` : `<span class="vs-v">VS</span>`}</div>
-      <div class="mt r"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span></div>
+    <div class="mteams" style="display: flex; justify-content: space-between; align-items: center; direction: ltr;">
+      <div class="mt" style="text-align: left; flex: 1;"><span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span></div>
+      
+      <div class="vsc" style="margin: 0 10px;">
+        ${m.res ? `<span class="vs-r" style="font-weight:bold; font-size:16px;">${m.res.s1} - ${m.res.s2}</span>` : `<span class="vs-v" style="font-weight:bold; color:#777;">VS</span>`}
+      </div>
+      
+      <div class="mt r" style="text-align: right; flex: 1;"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span></div>
     </div>
     <div class="mbot">
       <div class="mpred ${pred ? 'y' : ''}" dir="ltr">
