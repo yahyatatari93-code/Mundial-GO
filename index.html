@@ -828,9 +828,21 @@ async function rAdmin() {
     }
 
     try {
-        const usersData = await api('GET', 'users');
-        document.getElementById('adm-users').innerHTML = usersData.map(u => `<div class="arow"><div style="font-weight:700;color:var(--blue)">${u.username}</div><div style="font-size:10px;color:var(--t2)">🥇:${u.bonus?.first||'--'} | 🥈:${u.bonus?.second||'--'} | ⚽:${u.bonus?.topScorer||'--'}</div></div>`).join('') || '<div class="empty">لا يوجد مستخدمين</div>';
-    } catch(e) {}
+    const usersData = await api('GET', 'users');
+    document.getElementById('adm-users').innerHTML = usersData.map(u => {
+        const b = u.bonus || {};
+        return `<div class="arow">
+            <div style="font-weight:700;color:var(--blue);margin-bottom:5px">${u.username}</div>
+            <div style="font-size:10px;color:var(--t2);line-height:1.6; display:grid; grid-template-columns: 1fr 1fr;">
+                <div>🥇:${b.first || '--'}</div>
+                <div>🥈:${b.second || '--'}</div>
+                <div>🥉:${b.third || '--'}</div>
+                <div>🏅:${b.fourth || '--'}</div>
+                <div style="grid-column: span 2; margin-top:4px; color:var(--gold);">⚽ الهداف: ${b.topScorer || '--'}</div>
+            </div>
+        </div>`;
+    }).join('') || '<div class="empty">لا يوجد مستخدمين</div>';
+} catch(e) {}
 }
 
 async function setR(id, isKo) {
