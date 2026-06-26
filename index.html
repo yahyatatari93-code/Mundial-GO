@@ -156,7 +156,15 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .dbtn{background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--t3);font-size:11px;padding:6px 10px;cursor:pointer}
 .modal-bg{display:none;position:absolute;inset:0;background:rgba(0,0,0,.72);align-items:flex-end;z-index:50}
 .modal-bg.open{display:flex}
-.modal{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-height:92%;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom,16px)}
+.modal {
+    background: var(--card);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    max-height: 92%;
+    overflow-y: auto;
+    /* أضفنا مساحة سفلية كافية لمنع الشريط من تغطية الزر */
+    padding-bottom: 85px; 
+}
 .mhdr{background:var(--card2);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;border-radius:24px 24px 0 0;position:sticky;top:0}
 .mhtl{color:#fff;font-size:14px;font-weight:600}
 .mcls{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:7px;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;padding:3px 8px;line-height:1}
@@ -638,11 +646,26 @@ function closeM(){document.getElementById('mwrap').classList.remove('open');}
 
 function upPS() { document.getElementById('psrsec').style.display = document.getElementById('penw').value ? 'flex' : 'none'; }
 function upPrev() {
-    const m = matches.find(x=>x.id===curMid); if(!m) return;
-    const s1 = +document.getElementById('sc1').value, s2 = +document.getElementById('sc2').value;
-    const pts = calcPts({...m, res:{s1,s2}}, {s1,s2});
+    const m = matches.find(x => x.id === curMid); 
+    if(!m) return;
+    
+    // جلب نتيجة المباراة الأساسية
+    const s1 = +document.getElementById('sc1').value;
+    const s2 = +document.getElementById('sc2').value;
+    
+    // جلب قيم ضربات الجزاء (إن وجدت)
+    const penW = document.getElementById('penw') ? document.getElementById('penw').value : null;
+    const ps1 = document.getElementById('ps1') ? document.getElementById('ps1').value : null;
+    const ps2 = document.getElementById('ps2') ? document.getElementById('ps2').value : null;
+
+    // دمج القيم لحساب النقاط في حال التطابق التام (المباراة + الجزاء)
+    const mockRes = { s1, s2, penW, ps1, ps2 };
+    const mockPred = { s1, s2, penW, ps1, ps2 };
+    
+    const pts = calcPts({...m, res: mockRes}, mockPred);
+    
     document.getElementById('ppn').textContent = pts;
-    document.getElementById('ppd').textContent = "النقاط المتوقعة في حال تطابق النتيجة";
+    document.getElementById('ppd').textContent = "النقاط المتوقعة في حال التطابق التام";
 }
 
 async function savePred() {
