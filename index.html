@@ -691,6 +691,25 @@ async function savePred() {
     } catch(e) { toast(e.message); }
 }
 
+async function cancelResult(id) {
+    if(!confirm('هل أنت متأكد من إلغاء نتيجة هذه المباراة؟ ستتوقف النقاط المرتبطة بها.')) return;
+    
+    try {
+        // نرسل null للنتيجة لتصفيرها في السيرفر
+        const upd = await api('PUT', 'matches?id=' + id, { res: null });
+        
+        // تحديث القائمة محلياً
+        matches = matches.map(m => m.id === id ? upd : m);
+        
+        // تحديث الواجهة
+        rAdmin();
+        rHome();
+        toast('تم إلغاء النتيجة بنجاح ✓');
+    } catch(e) {
+        toast(e.message);
+    }
+}
+    
 async function saveBonus() {
     const first = document.getElementById('b-first').value, second = document.getElementById('b-second').value;
     const third = document.getElementById('b-third').value, fourth = document.getElementById('b-fourth').value;
@@ -758,41 +777,49 @@ async function rAdmin(){
     const ps1 = m.res && m.res.ps1 != null ? m.res.ps1 : '';
     const ps2 = m.res && m.res.ps2 != null ? m.res.ps2 : '';
     
-    let html = `<div class="arow" style="direction: rtl;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
-            <div style="font-weight:bold; color:var(--gold);">${gf(m.t1)} ${m.t1} <span style="color:var(--t3);">ضد</span> ${m.t2} ${gf(m.t2)}</div>
-            <div style="font-size:10px; color:var(--t3); background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px;">${SLBL[m.stg]||m.stg}</div>
+    // داخل دالة rAdmin في قسم الـ map الخاص بالمباريات:
+let html = `<div class="arow" style="direction: rtl;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+        <div style="font-weight:bold; color:var(--gold);">${gf(m.t1)} ${m.t1} <span style="color:var(--t3);">ضد</span> ${m.t2} ${gf(m.t2)}</div>
+    </div>
+    <div class="ri" style="justify-content: center; direction: ltr; display: flex; align-items: center; gap: 10px;">
+        <span style="font-size:12px;">${m.t1}:</span>
+        <input type="number" id="r1-${m.id}" value="${r1}" oninput="admPenToggle('${m.id}', ${isKo})" style="width:50px; text-align:center;"/>
+        <span style="color:var(--t3);">—</span>
+        <input type="number" id="r2-${m.id}" value="${r2}" oninput="admPenToggle('${m.id}', ${isKo})" style="width:50px; text-align:center;"/>
+        <span style="font-size:12px;">:${m.t2}</span>
+    </div>`;
+
+// وفي قسم ضربات الجزاء (داخل نفس الـ map):
+if (isKo) {
+    html += `<div id="adm-pen-${m.id}" style="display:${showPen}; flex-direction:column; align-items:center; margin-top:12px; direction: rtl;">
+        <div style="font-size:12px; margin-bottom:8px;">الفائز بالجزاء:</div>
+        <select id="rpenw-${m.id}" class="kosel" style="width:80%; margin-bottom:10px;">
+            <option value="">-- اختر الفائز --</option>
+            <option value="t1" ${penW==='t1'?'selected':''}>${m.t1}</option>
+            <option value="t2" ${penW==='t2'?'selected':''}>${m.t2}</option>
+        </select>
+        <div style="font-size:12px; margin-bottom:8px;">نتيجة ضربات الجزاء:</div>
+        <div style="display:flex; align-items:center; gap:10px; direction: ltr;">
+            <span style="font-size:12px;">${m.t1}:</span>
+            <input type="number" id="rps1-${m.id}" value="${ps1}" style="width:50px; text-align:center;"/>
+            <span style="color:var(--t3);">—</span>
+            <input type="number" id="rps2-${m.id}" value="${ps2}" style="width:50px; text-align:center;"/>
+            <span style="font-size:12px;">:${m.t2}</span>
         </div>
-        <div class="ri" style="justify-content: center; direction:ltr;">
-            <input type="number" id="r1-${m.id}" value="${r1}" oninput="admPenToggle('${m.id}', ${isKo})" placeholder="0" style="width:50px; text-align:center; font-size:18px;"/>
-            <span style="padding: 0 10px; color:var(--t3);">—</span>
-            <input type="number" id="r2-${m.id}" value="${r2}" oninput="admPenToggle('${m.id}', ${isKo})" placeholder="0" style="width:50px; text-align:center; font-size:18px;"/>
-        </div>`;
-    
-    // خانات ضربات الجزاء (مخفية افتراضياً)
-    if (isKo) {
-        const showPen = (r1 !== '' && r2 !== '' && r1 == r2) ? 'flex' : 'none';
-        html += `<div id="adm-pen-${m.id}" style="display:${showPen}; flex-direction:column; align-items:center; margin-top:12px; padding-top:12px; border-top:1px dashed rgba(255,255,255,0.1);">
-            <div style="font-size:12px; margin-bottom:8px; color:var(--blue);">الفائز بضربات الجزاء:</div>
-            <select id="rpenw-${m.id}" class="kosel" style="margin-bottom:12px; width:80%;">
-                <option value="">-- اختر الفائز --</option>
-                <option value="t1" ${penW==='t1'?'selected':''}>${m.t1}</option>
-                <option value="t2" ${penW==='t2'?'selected':''}>${m.t2}</option>
-            </select>
-            <div style="font-size:12px; margin-bottom:8px; color:var(--blue);">النتيجة الرقمية لضربات الجزاء:</div>
-            <div style="display:flex; align-items:center; gap:8px; direction:ltr;">
-                <input type="number" id="rps1-${m.id}" value="${ps1}" style="width:50px; text-align:center;" placeholder="0"/>
-                <span style="color:var(--t3);">—</span>
-                <input type="number" id="rps2-${m.id}" value="${ps2}" style="width:50px; text-align:center;" placeholder="0"/>
-            </div>
-        </div>`;
-    }
+    </div>`;
+}
     
     html += `<div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
-        <button class="sbtn" style="flex:1;" onclick="setR('${m.id}', ${isKo})"><i class="ti ti-check"></i> تثبيت النتيجة وبث النقاط</button>
-        <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash"></i> حذف</button>
-    </div>
-    </div>`;
+    <button class="sbtn" style="flex:1;" onclick="setR('${m.id}', ${isKo})">
+        <i class="ti ti-check"></i> تثبيت النتيجة
+    </button>
+    <button class="dbtn" style="background:rgba(231,76,60,0.1); border-color:var(--red); color:var(--red);" 
+            onclick="cancelResult('${m.id}')">
+        <i class="ti ti-x"></i> إلغاء
+    </button>
+    <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash"></i> حذف</button>
+</div>`;
     return html;
   }).join('');
   
@@ -847,25 +874,25 @@ function admPenToggle(id, isKo) {
 
 // دالة تثبيت نتيجة المباريات المحدثة
 async function setR(id, isKo){
-  const s1 = document.getElementById('r1-'+id).value, s2 = document.getElementById('r2-'+id).value;
-  if(s1 === '' || s2 === '') return toast('أدخل النتيجة أولاً');
+  const s1 = document.getElementById('r1-'+id).value;
+  const s2 = document.getElementById('r2-'+id).value;
   
-  let penW = null, ps1 = null, ps2 = null;
+  if(s1 === '' || s2 === '') return toast('أدخل النتيجة الأساسية أولاً');
+  
+  let resObj = { s1: +s1, s2: +s2, penW: null, ps1: null, ps2: null };
+  
   if(isKo && s1 === s2) {
-      penW = document.getElementById('rpenw-'+id).value;
-      ps1 = document.getElementById('rps1-'+id).value;
-      ps2 = document.getElementById('rps2-'+id).value;
-      if(!penW) return toast('الرجاء اختيار الفائز بضربات الجزاء');
+      const penW = document.getElementById('rpenw-'+id).value;
+      const ps1 = document.getElementById('rps1-'+id).value;
+      const ps2 = document.getElementById('rps2-'+id).value;
+      
+      if(!penW || ps1 === '' || ps2 === '') return toast('الرجاء إكمال بيانات ضربات الجزاء');
+      
+      resObj.penW = penW;
+      resObj.ps1 = +ps1;
+      resObj.ps2 = +ps2;
   }
   
-  const resObj = { 
-      s1: +s1, 
-      s2: +s2, 
-      penW: penW || null, 
-      ps1: ps1 !== '' && ps1 !== null ? +ps1 : null, 
-      ps2: ps2 !== '' && ps2 !== null ? +ps2 : null 
-  };
-
   try { 
       const upd = await api('PUT','matches?id='+id, {res: resObj}); 
       matches = matches.map(m => m.id === id ? upd : m); 
