@@ -78,40 +78,56 @@ async function safeGet(key) {
 // هذه الدالة الآن هي نسخة طبق الأصل عن منطق `calcPts` في جهاز المستخدم
 function calculatePtsServer(m, pred) {
     if (!m.res || !pred) return 0;
-    // التأكد من أن القيم أرقام
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
     const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
     let pts = 0;
 
-    // المنطق الأساسي (يجب أن تطابق تماماً دالة calcPts الموجودة في index.html)
-    // إذا كنت لا تملك دالة calcPts كاملة في index.html، استخدم هذا المنطق الموحد:
-    if (!t1b && !t2b) { // عادي ضد عادي
-        if (s1 === r1 && s2 === r2) pts = (r1 + r2 >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3;
-        else if ((s1 > s2 && r1 > r2) || (s1 < s2 && r1 < r2) || (s1 === s2 && r1 === r2)) pts = 1;
-    } else if (t1b || t2b) { // كبير ضد عادي
-        const isBigT1 = t1b;
-        const predWinBig = isBigT1 ? (s1 > s2) : (s2 > s1);
-        const resWinBig = isBigT1 ? (r1 > r2) : (r2 > r1);
-        const isDraw = (s1 === s2);
-        const resDraw = (r1 === r2);
-        
-        if (s1 === r1 && s2 === r2) pts = isDraw ? 3 : (resWinBig ? 2 : 6);
-        else if (isDraw && resDraw) pts = 2;
-        else if (predWinBig && resWinBig) pts = 1;
-        else if (!isBigT1 && !isDraw && !resWinBig && (s1 < s2)) pts = 4;
-    } else { // كبير ضد كبير
-        const isDraw = (s1 === s2);
-        const resDraw = (r1 === r2);
-        if (s1 === r1 && s2 === r2) pts = resDraw ? 3 : 5;
-        else if (isDraw && resDraw) pts = 2;
-        else if (!isDraw && !resDraw) pts = 3;
+    // 1. مباراة كبير ضد كبير
+    if (t1b && t2b) {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd';
+        const ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) pts = (ar === 'd') ? 3 : 5;
+        else if (pr === ar) pts = (ar === 'd') ? 2 : 3;
+    } 
+    // 2. مباراة كبير ضد عادي
+    else if (t1b || t2b) {
+        const bf = t1b;
+        const bW = bf ? (r1 > r2) : (r2 > r1); 
+        const dr = (r1 === r2);
+        const sW = bf ? (r2 > r1) : (r1 > r2);
+
+        const pbW = bf ? (s1 > s2) : (s2 > s1); 
+        const pd = (s1 === s2); 
+        const psW = bf ? (s2 > s1) : (s1 > s2);
+
+        if (s1 === r1 && s2 === r2) { 
+            if (bW) pts = 2; 
+            if (dr) pts = 3; 
+            if (sW) pts = 6; 
+        } else { 
+            if (pbW && bW) pts = 1; 
+            if (pd && dr) pts = 2; 
+            if (psW && sW) pts = 4; 
+        }
+    } 
+    // 3. مباراة عادي ضد عادي
+    else {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd';
+        const ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) { 
+            const sr = r1 + r2; 
+            pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; 
+        } else if (pr === ar) {
+            pts = 1;
+        }
     }
 
-    // منطق ضربات الجزاء
-    if (KO_STAGES.includes(m.stg) && r1 === r2 && m.res.penW) {
-        if (pred.penW === m.res.penW) pts += 1;
-        if (+pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
+    // 4. منطق ضربات الجزاء (لإضافة نقاط الإقصائيات)
+    if (KO_STAGES.includes(m.stg) && m.res) {
+        if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
+        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
     }
+
     return pts;
 }
 
@@ -121,6 +137,9 @@ async function refreshLeaderboardCache() {
     const matches = await safeGet('db_matches') || OFFICIAL_SCHEDULE;
     const official = await safeGet('official_outcomes') || {};
     if (allUsers.length === 0) return [];
+    
+    // استخراج قائمة معرفات المباريات الحالية لفلترة التوقعات الزائدة
+    const currentMatchIds = matches.map(m => m.id);
     
     const predKeys = allUsers.map(u => `preds:${u.uid}`);
     const bonusKeys = allUsers.map(u => `bonus:${u.uid}`);
@@ -146,13 +165,22 @@ async function refreshLeaderboardCache() {
         if (bonus.fourth && official.fourth && bonus.fourth === official.fourth) score += 5;
         if (bonus.topScorer && official.topScorer && bonus.topScorer === official.topScorer) score += 5;
         
-        return { uid: u.uid, username: u.username, isAdmin: ADMINS.includes(u.username), pts: score, predCount: Object.keys(preds).length };
+        // التعديل الجذري هنا: فلترة التوقعات بناءً على معرفات المباريات الحالية فقط
+        const validPredCount = Object.keys(preds).filter(pid => currentMatchIds.includes(pid)).length;
+        
+        return { 
+            uid: u.uid, 
+            username: u.username, 
+            isAdmin: ADMINS.includes(u.username), 
+            pts: score, 
+            predCount: validPredCount 
+        };
     });
+    
     leaderboard.sort((a, b) => b.pts - a.pts);
     await kv.set('cache:leaderboard', leaderboard);
     return leaderboard;
 }
-
 module.exports = async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
