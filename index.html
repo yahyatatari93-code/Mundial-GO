@@ -269,15 +269,42 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 <div class="modal">
   <div class="mhdr"><span class="mhtl" id="mtitle">توقع</span><button class="mcls" onclick="closeM()"><i class="ti ti-x"></i></button></div>
   <div class="mbdy">
-    <div class="mteams-d"><div class="mtd"><span class="m-fl" id="mfl1"></span><div class="m-nm" id="mtn1"></div><div id="mtt1"></div></div><div class="m-vs">مقابل</div><div class="mtd"><span class="m-fl" id="mfl2"></span><div class="m-nm" id="mtn2"></div><div id="mtt2"></div></div></div>
+    <div class="mteams-d" style="display: flex; direction: rtl; align-items: center; justify-content: space-between;">
+      <div class="mtd" style="flex:1;"><span class="m-fl" id="mfl1"></span><div class="m-nm" id="mtn1"></div></div>
+      <div class="m-vs" style="width: 50px;">VS</div>
+      <div class="mtd" style="flex:1;"><span class="m-fl" id="mfl2"></span><div class="m-nm" id="mtn2"></div></div>
+    </div>
+    
     <div id="lkMsg" class="lock-msg" style="display:none"><i class="ti ti-lock"></i> مغلق للتوقع — أقل من ساعة على الانطلاق</div>
+    
     <div id="predForm">
       <div class="plbl" id="m-main-lbl">توقع النتيجة:</div>
-      <div class="srow"><span class="stl" id="stl1"></span><input class="sinp" id="sc1" type="number" min="0" max="20" value="0" oninput="upPrev()"/><span class="sdsh">—</span><input class="sinp" id="sc2" type="number" min="0" max="20" value="0" oninput="upPrev()"/><span class="stl" id="stl2"></span></div>
-      <div class="kobox" id="kobox">
-        <div class="plbl">في حال التعادل — الفائز بضربات الجزاء:</div><select class="kosel" id="penw" onchange="upPS();upPrev()"><option value="">— بدون ضربات جزاء —</option><option value="t1" id="pt1o"></option><option value="t2" id="pt2o"></option></select>
-        <div class="psr" id="psrsec"><div class="plbl" style="margin:0;font-size:11px">نتيجة الجزاء:</div><div style="display:flex;align-items:center;gap:7px;margin-top:6px"><input type="number" id="ps1" min="0" max="10" placeholder="–" oninput="upPrev()"/><span class="sdsh">—</span><input type="number" id="ps2" min="0" max="10" placeholder="–" oninput="upPrev()"/></div></div>
+      
+      <div class="srow" style="display: flex; direction: rtl; justify-content: center; align-items: center; gap: 12px;">
+        <span class="stl" id="stl1" style="flex:1; text-align:left;"></span>
+        <input class="sinp" id="sc1" type="number" min="0" max="20" value="0" oninput="upPrev()"/>
+        <span class="sdsh">—</span>
+        <input class="sinp" id="sc2" type="number" min="0" max="20" value="0" oninput="upPrev()"/>
+        <span class="stl" id="stl2" style="flex:1; text-align:right;"></span>
       </div>
+
+      <div class="kobox" id="kobox">
+        <div class="plbl">في حال التعادل — الفائز بضربات الجزاء:</div>
+        <select class="kosel" id="penw" onchange="upPS();upPrev()">
+           <option value="">— بدون ضربات جزاء —</option>
+           <option value="t1" id="pt1o"></option>
+           <option value="t2" id="pt2o"></option>
+        </select>
+        <div class="psr" id="psrsec" style="display: none; direction: rtl; flex-direction: column; align-items: center;">
+            <div class="plbl" style="margin:0;font-size:11px">نتيجة الجزاء:</div>
+            <div style="display:flex;align-items:center;gap:7px;margin-top:6px; direction: rtl;">
+                <input type="number" id="ps1" min="0" max="10" placeholder="–" oninput="upPrev()"/>
+                <span class="sdsh">—</span>
+                <input type="number" id="ps2" min="0" max="10" placeholder="–" oninput="upPrev()"/>
+            </div>
+        </div>
+      </div>
+
       <div class="pprev"><div style="font-size:10px;color:var(--t2);margin-bottom:3px">النقاط المحتملة</div><div class="ppn" id="ppn">—</div><div class="ppd" id="ppd"></div></div>
       <button class="btn blue" onclick="savePred()">حفظ التوقع</button>
     </div>
@@ -483,27 +510,39 @@ function mcHTML(m) {
   const pts = pred && m.res ? calcPts(m, pred) : null;
   const time = m.dt ? new Date(m.dt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: TZ }) : '';
   
-  // قمت بإضافة style="display: flex; direction: ltr;" للحاوية لضمان ثبات ترتيب الفرق
-  return `<div class="mc ${pred ? 'hp' : ''}" onclick="openM('${m.id}')">
+  return `<div class="mc ${pred ? 'hp' : ''}" onclick="openM('${m.id}')" style="direction: rtl;">
     <div class="mtags"><span class="tag tg">${SLBL[m.stg] || m.stg}</span><span class="tag td">⏰ ${time}</span></div>
-    <div class="mteams" style="display: flex; justify-content: space-between; align-items: center; direction: ltr;">
-      <div class="mt" style="text-align: left; flex: 1;"><span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span></div>
+    
+    <div class="mteams" style="display: flex; align-items: center; justify-content: space-between;">
       
-      <div class="vsc" style="margin: 0 10px;">
-        ${m.res ? `<span class="vs-r" style="font-weight:bold; font-size:16px;">${m.res.s1} - ${m.res.s2}</span>` : `<span class="vs-v" style="font-weight:bold; color:#777;">VS</span>`}
+      <div class="mt" style="flex: 1; display: flex; align-items: center; justify-content: flex-start; gap: 6px;">
+        <span class="mfl">${gf(m.t1)}</span><span class="mnm">${m.t1}</span>
       </div>
       
-      <div class="mt r" style="text-align: right; flex: 1;"><span class="mnm r">${m.t2}</span><span class="mfl">${gf(m.t2)}</span></div>
+      <div class="vsc" style="flex: 0 0 80px; text-align: center;">
+        ${m.res ? 
+          `<div class="vs-r" style="display: flex; justify-content: center; align-items: center; gap: 6px; direction: rtl; font-weight: bold; font-size: 16px;">
+             <span>${m.res.s1}</span> <span>-</span> <span>${m.res.s2}</span>
+           </div>` 
+          : `<span class="vs-v">VS</span>`}
+      </div>
+      
+      <div class="mt r" style="flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 6px; flex-direction: row-reverse;">
+        <span class="mfl">${gf(m.t2)}</span><span class="mnm r">${m.t2}</span>
+      </div>
     </div>
-    <div class="mbot" style="width: 100%; margin-top: 5px;">
-  <div class="mpred ${pred ? 'y' : ''}" style="display: flex; justify-content: center; direction: ltr; unicode-bidi: isolate;">
-    <span style="direction: rtl;">توقعي: &nbsp;</span>
-    <span style="display: inline-block;">${pred ? pred.s1 : '0'}</span>
-    <span style="display: inline-block;">&nbsp;-&nbsp;</span>
-    <span style="display: inline-block;">${pred ? pred.s2 : '0'}</span>
-  </div>
-  ${pts !== null ? `<div style="text-align:center;"><span class="chip e">+${pts}</span></div>` : ''}
-</div>
+
+    <div class="mbot" style="margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
+      
+      <div class="mpred ${pred ? 'y' : ''}" style="display: flex; align-items: center; gap: 5px; direction: rtl;">
+        <span>توقعي:</span>
+        <span style="font-weight:bold; font-size:12px;">${pred ? pred.s1 : '-'}</span>
+        <span>-</span>
+        <span style="font-weight:bold; font-size:12px;">${pred ? pred.s2 : '-'}</span>
+      </div>
+      
+      ${pts !== null ? `<span class="chip e" style="direction:ltr;">+${pts}</span>` : ''}
+    </div>
   </div>`;
 }
 
