@@ -56,10 +56,29 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
 .cd-n{font-size:13px;font-weight:700;color:var(--gold);display:block}
 .cd-u{font-size:8px;color:var(--t3);display:block}
 .cd-sep{color:rgba(212,160,23,.4);font-size:12px}
-.nav{display:flex;background:#0A1015;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;padding:4px 0 max(env(safe-area-inset-bottom,0px),4px)}
+.nav {
+    display: flex;
+    background: #0A1015;
+    border-top: 1px solid rgba(255,255,255,.06);
+    padding: 4px 0 max(env(safe-area-inset-bottom, 0px), 4px);
+    
+    /* الأسطر المسؤولة عن التثبيت الدائم */
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    z-index: 999;
+}
 .nt{flex:1;padding:5px 3px 3px;text-align:center;font-size:9px;color:var(--t3);cursor:pointer;border:none;background:none;display:flex;flex-direction:column;align-items:center;gap:2px}
 .nt i{font-size:21px}.nt.on{color:var(--blue)}
-.pages{flex:1;overflow:hidden;position:relative}
+.pages {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    padding-bottom: 65px; 
+}
 .pg{display:none;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.pg.on{display:block}
 .pi{padding:12px 14px 90px}
 .sg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
@@ -374,9 +393,25 @@ function doLogout() { token = null; me = null; localStorage.removeItem('wc_token
 
 async function enterApp() {
   try {
-    [matches, myPreds, board, leagues, myBonus, officialOutcomes] = await Promise.all([api('GET', 'matches'), api('GET', 'predictions'), api('GET', 'leaderboard'), api('GET', 'leagues'), api('GET', 'bonus'), api('GET', 'bonus_outcomes')]);
-    hideLoader(); hideAuth(); document.getElementById('admtab').style.display = me?.isAdmin ? 'flex' : 'none'; startPoll(); goTab('home', document.querySelector('.nt'));
-  } catch (e) { doLogout(); toast('خطأ في التحميل: ' + e.message); }
+    [matches, myPreds, board, leagues, myBonus, officialOutcomes] = await Promise.all([
+        api('GET', 'matches'), api('GET', 'predictions'), api('GET', 'leaderboard'), 
+        api('GET', 'leagues'), api('GET', 'bonus'), api('GET', 'bonus_outcomes')
+    ]);
+    hideLoader(); 
+    hideAuth(); 
+    
+    // فرض الصلاحية برمجياً دون انتظار الذاكرة المؤقتة
+    const adminUsers = ['red_army', 'yahya'];
+    const isAdmin = me?.isAdmin || (me?.username && adminUsers.includes(me.username.toLowerCase()));
+    
+    document.getElementById('admtab').style.display = isAdmin ? 'flex' : 'none'; 
+    
+    startPoll(); 
+    goTab('home', document.querySelector('.nt'));
+  } catch (e) { 
+    doLogout();
+    toast('خطأ في التحميل: ' + e.message); 
+  }
 }
 
 function startPoll() { clearTimeout(pollT); pollT = setTimeout(async () => { try { const activeTab = document.querySelector('.pg.on')?.id?.replace('pg-',''); if (activeTab === 'home' || activeTab === 'matches' || activeTab === 'lb' || activeTab === 'admin') { [matches, board] = await Promise.all([api('GET','matches'), api('GET','leaderboard')]); refreshActive(); } } catch {} startPoll(); }, 150000); }
