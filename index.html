@@ -653,10 +653,13 @@ function upPrev() {
     const s1 = +document.getElementById('sc1').value;
     const s2 = +document.getElementById('sc2').value;
     
-    // جلب قيم ضربات الجزاء (إن وجدت)
-    const penW = document.getElementById('penw') ? document.getElementById('penw').value : null;
-    const ps1 = document.getElementById('ps1') ? document.getElementById('ps1').value : null;
-    const ps2 = document.getElementById('ps2') ? document.getElementById('ps2').value : null;
+    // جلب قيم ضربات الجزاء "فقط" إذا كانت المباراة إقصائية والنتيجة الحالية تعادل
+    let penW = null, ps1 = null, ps2 = null;
+    if (KO.includes(m.stg) && s1 === s2) {
+        penW = document.getElementById('penw') ? document.getElementById('penw').value : null;
+        ps1 = document.getElementById('ps1') ? document.getElementById('ps1').value : null;
+        ps2 = document.getElementById('ps2') ? document.getElementById('ps2').value : null;
+    }
 
     // دمج القيم لحساب النقاط في حال التطابق التام (المباراة + الجزاء)
     const mockRes = { s1, s2, penW, ps1, ps2 };
