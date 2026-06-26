@@ -449,20 +449,24 @@ function calcPts(m, pred) {
     if (!m.res || !pred) return 0;
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
     const t1b = BIG.includes(m.t1), t2b = BIG.includes(m.t2); let pts = 0;
-    if (t1b && t2b) {
+    
+    // معادلة الفريقين العاديين
+    if (!t1b && !t2b) {
         const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) pts = (ar === 'd') ? 3 : 5; else if (pr === ar) pts = (ar === 'd') ? 2 : 3;
-    } else if (t1b || t2b) {
-        const bf = t1b; const bW = bf ? (r1 > r2) : (r2 > r1); const dr = (r1 === r2); const sW = bf ? (r2 > r1) : (r1 > r2);
-        const pbW = bf ? (s1 > s2) : (s2 > s1); const pd = (s1 === s2); const psW = bf ? (s2 > s1) : (s1 > s2);
-        if (s1 === r1 && s2 === r2) { if (bW) pts = 2; if (dr) pts = 3; if (sW) pts = 6; } else { if (pbW && bW) pts = 1; if (pd && dr) pts = 2; if (psW && sW) pts = 4; }
-    } else {
-        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) { const sr = r1 + r2; pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; } else if (pr === ar) pts = 1;
+        if (s1 === r1 && s2 === r2) pts = ((r1+r2) >= 5 || (r1===0 && r2===0)) ? 4 : 3;
+        else if (pr === ar) pts = 1;
     }
+    // معادلة الكبار
+    else {
+        const bf = t1b, pbW = bf ? (s1 > s2) : (s2 > s1), psW = bf ? (s2 > s1) : (s1 > s2), pd = (s1 === s2);
+        const bW = bf ? (r1 > r2) : (r2 > r1), sW = bf ? (r2 > r1) : (r1 > r2), dr = (r1 === r2);
+        if (s1 === r1 && s2 === r2) { if (bW) pts = 2; else if (dr) pts = 3; else pts = 6; }
+        else { if (pbW && bW) pts = 1; else if (pd && dr) pts = 2; else if (psW && sW) pts = 4; }
+    }
+    // نقاط الإقصائي
     if (KO.includes(m.stg) && m.res) {
         if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
-        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
+        if (pred.ps1 != null && pred.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
     }
     return pts;
 }
@@ -745,14 +749,18 @@ function openLg(code) {
 }
 
 async function rLb() {
-  try { board=await api('GET','leaderboard'); } catch {}
+  try { 
+      // طلب الترتيب المحدث مباشرة من السيرفر وتجاهل أي شيء قديم
+      const freshBoard = await api('GET', 'leaderboard'); 
+      board = freshBoard;
+  } catch(e) { toast('خطأ في جلب الترتيب'); }
+  
   const myUid=me?.uid, rks=['🥇','🥈','🥉'];
-  const prizesCard = `<div style="background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(27,43,94,0.6)); border: 1px solid rgba(212,160,23,0.4); border-radius: 16px; padding: 16px; margin-bottom: 20px; text-align: center;"><div style="font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 14px;">🎁 الجوائز المالية الكبرى للمتصدرين</div><div style="display: flex; justify-content: space-around; align-items: flex-end;"><div>🥈 الثاني<br><b>$75</b></div><div>🥇 الأول<br><b style="color:var(--gold);font-size:18px">$100</b></div><div>🥉 الثالث<br><b>$50</b></div></div></div>`;
-  let html = prizesCard + `<div class="sec"><i class="ti ti-world"></i> الترتيب المباشر</div>`;
-  html += board.slice(0, lbLimit).map((u,i)=>`<div class="lb-r ${u.uid===myUid?'me':''}"><div class="lbr">${rks[i]||`#${i+1}`}</div><div class="lbn">${u.username}<small>${u.predCount} توقع</small></div><div><b class="lbp">${u.pts} ن</b></div></div>`).join('');
+  let html = `<div class="sec"><i class="ti ti-world"></i> الترتيب المباشر</div>`;
+  html += board.slice(0, 50).map((u,i)=>`<div class="lb-r ${u.uid===myUid?'me':''}"><div class="lbr">${rks[i]||`#${i+1}`}</div><div class="lbn">${u.username}<small>${u.predCount} توقع</small></div><div><b class="lbp">${u.pts} ن</b></div></div>`).join('');
   document.getElementById('glb').innerHTML=html;
 }
-
+    
 function rProf(){ 
     if(!me) return; 
     document.getElementById('pav').textContent = me.username.charAt(0).toUpperCase();
