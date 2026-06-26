@@ -270,7 +270,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <button class="btn outline" style="margin-top:20px; color:var(--red); border-color:rgba(231,76,60,0.3);" onclick="doLogout()"><i class="ti ti-logout"></i> تسجيل الخروج بأمان</button>
   </div></div>
   <div id="pg-admin" class="pg"><div class="pi">
-    <div class="sec"><i class="ti ti-users"></i> المشتركون وتوقعاتهم الكبرى الحية</div><div id="adm-users"></div>
+    
     <div class="sec"><i class="ti ti-plus"></i> إضافة مباراة جديدة</div>
     <div class="af">
       <div class="fg"><select id="at1"></select><select id="at2"></select></div>
@@ -278,8 +278,16 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <div class="fg"><input id="agrp" type="text" placeholder="المجموعة (رقم)"/><select id="astg"><option value="group">مجموعات</option><option value="r32">دور 32</option><option value="r16">دور 16</option><option value="qf">ربع النهائي</option><option value="sf">نصف النهائي</option><option value="final">النهائي</option></select></div>
       <button class="btn blue" onclick="addMatch()"><i class="ti ti-plus"></i> اعتماد وإضافة المباراة الحية</button>
     </div>
-    <div class="sec"><i class="ti ti-edit"></i> إدخال النتائج الحقيقية</div><div id="admlist"></div>
-    <div class="sec"><i class="ti ti-trophy"></i> تثبيت بونص المربع الذهبي والهداف النهائي</div><div id="adm-bonus-panel" class="af"></div>
+
+    <div class="sec"><i class="ti ti-edit"></i> إدخال النتائج الحقيقية</div>
+    <div id="admlist"></div>
+
+    <div class="sec"><i class="ti ti-users"></i> المشتركون وتوقعاتهم الكبرى الحية</div>
+    <div id="adm-users"></div>
+    
+    <div class="sec"><i class="ti ti-trophy"></i> تثبيت بونص المربع الذهبي والهداف النهائي</div>
+    <div id="adm-bonus-panel" class="af"></div>
+    
   </div></div>
 </div>
 <div class="nav">
@@ -736,26 +744,151 @@ function rProf(){
 
 async function rAdmin(){
   const tOpts = Object.keys(FL).sort().map(t => `<option value="${t}">${FL[t]} ${t}</option>`).join('');
+  const pOpts = TOP_SCORERS_LIST.map(p => `<option value="${p}">${p}</option>`).join('');
+  
   document.getElementById('at1').innerHTML = '<option value="">-- اختر الفريق الأول --</option>' + tOpts;
   document.getElementById('at2').innerHTML = '<option value="">-- اختر الفريق الثاني --</option>' + tOpts;
   
-  document.getElementById('admlist').innerHTML=matches.map(m=>`<div class="arow"><div>${gf(m.t1)} ${m.t1} vs ${m.t2} ${gf(m.t2)}</div><div class="ri"><input type="number" id="r1-${m.id}" value="${m.res?m.res.s1:''}"/><input type="number" id="r2-${m.id}" value="${m.res?m.res.s2:''}"/><button class="sbtn" onclick="setR('${m.id}')">تثبيت</button><button class="dbtn" onclick="delM('${m.id}')">حذف</button></div></div>`).join('');
+  // 1. قسم النتائج الحقيقية الذكي (يفرّق بين المجموعات والإقصائي)
+  document.getElementById('admlist').innerHTML = matches.map(m => {
+    const isKo = KO.includes(m.stg);
+    const r1 = m.res ? m.res.s1 : '';
+    const r2 = m.res ? m.res.s2 : '';
+    const penW = m.res && m.res.penW ? m.res.penW : '';
+    const ps1 = m.res && m.res.ps1 != null ? m.res.ps1 : '';
+    const ps2 = m.res && m.res.ps2 != null ? m.res.ps2 : '';
+    
+    let html = `<div class="arow" style="direction: rtl;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+            <div style="font-weight:bold; color:var(--gold);">${gf(m.t1)} ${m.t1} <span style="color:var(--t3);">ضد</span> ${m.t2} ${gf(m.t2)}</div>
+            <div style="font-size:10px; color:var(--t3); background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px;">${SLBL[m.stg]||m.stg}</div>
+        </div>
+        <div class="ri" style="justify-content: center; direction:ltr;">
+            <input type="number" id="r1-${m.id}" value="${r1}" oninput="admPenToggle('${m.id}', ${isKo})" placeholder="0" style="width:50px; text-align:center; font-size:18px;"/>
+            <span style="padding: 0 10px; color:var(--t3);">—</span>
+            <input type="number" id="r2-${m.id}" value="${r2}" oninput="admPenToggle('${m.id}', ${isKo})" placeholder="0" style="width:50px; text-align:center; font-size:18px;"/>
+        </div>`;
+    
+    // خانات ضربات الجزاء (مخفية افتراضياً)
+    if (isKo) {
+        const showPen = (r1 !== '' && r2 !== '' && r1 == r2) ? 'flex' : 'none';
+        html += `<div id="adm-pen-${m.id}" style="display:${showPen}; flex-direction:column; align-items:center; margin-top:12px; padding-top:12px; border-top:1px dashed rgba(255,255,255,0.1);">
+            <div style="font-size:12px; margin-bottom:8px; color:var(--blue);">الفائز بضربات الجزاء:</div>
+            <select id="rpenw-${m.id}" class="kosel" style="margin-bottom:12px; width:80%;">
+                <option value="">-- اختر الفائز --</option>
+                <option value="t1" ${penW==='t1'?'selected':''}>${m.t1}</option>
+                <option value="t2" ${penW==='t2'?'selected':''}>${m.t2}</option>
+            </select>
+            <div style="font-size:12px; margin-bottom:8px; color:var(--blue);">النتيجة الرقمية لضربات الجزاء:</div>
+            <div style="display:flex; align-items:center; gap:8px; direction:ltr;">
+                <input type="number" id="rps1-${m.id}" value="${ps1}" style="width:50px; text-align:center;" placeholder="0"/>
+                <span style="color:var(--t3);">—</span>
+                <input type="number" id="rps2-${m.id}" value="${ps2}" style="width:50px; text-align:center;" placeholder="0"/>
+            </div>
+        </div>`;
+    }
+    
+    html += `<div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
+        <button class="sbtn" style="flex:1;" onclick="setR('${m.id}', ${isKo})"><i class="ti ti-check"></i> تثبيت النتيجة وبث النقاط</button>
+        <button class="dbtn" onclick="delM('${m.id}')"><i class="ti ti-trash"></i> حذف</button>
+    </div>
+    </div>`;
+    return html;
+  }).join('');
+  
+  // 2. تعبئة قائمة البونص
+  document.getElementById('adm-bonus-panel').innerHTML = `
+      <label class="lbl">🥇 المركز الأول</label><select id="adm-b-first" class="nav_sel"><option value="">-- اختر --</option>${tOpts}</select>
+      <label class="lbl">🥈 المركز الثاني</label><select id="adm-b-second" class="nav_sel"><option value="">-- اختر --</option>${tOpts}</select>
+      <label class="lbl">🥉 المركز الثالث</label><select id="adm-b-third" class="nav_sel"><option value="">-- اختر --</option>${tOpts}</select>
+      <label class="lbl">🏅 المركز الرابع</label><select id="adm-b-fourth" class="nav_sel"><option value="">-- اختر --</option>${tOpts}</select>
+      <label class="lbl">⚽ هداف البطولة</label><select id="adm-b-scorer" class="nav_sel"><option value="">-- اختر --</option>${pOpts}</select>
+      <button class="btn gold" style="margin-top:10px;" onclick="saveOfficialBonus()"><i class="ti ti-trophy"></i> تثبيت النتائج الكبرى للمشتركين</button>
+  `;
+  
+  if (officialOutcomes) {
+      if(officialOutcomes.first) document.getElementById('adm-b-first').value = officialOutcomes.first;
+      if(officialOutcomes.second) document.getElementById('adm-b-second').value = officialOutcomes.second;
+      if(officialOutcomes.third) document.getElementById('adm-b-third').value = officialOutcomes.third;
+      if(officialOutcomes.fourth) document.getElementById('adm-b-fourth').value = officialOutcomes.fourth;
+      if(officialOutcomes.topScorer) document.getElementById('adm-b-scorer').value = officialOutcomes.topScorer;
+  }
 
+  // 3. قائمة المستخدمين (توقعاتهم)
   try {
       const usersData = await api('GET', 'users');
       const uHtml = usersData.map(u => {
           const b = u.bonus || {};
           return `<div class="arow"><div style="font-weight:700;color:var(--blue);margin-bottom:5px">${u.username}</div>
           <div style="font-size:10px;color:var(--t2);line-height:1.5">
-            <div>المركز الأول: ${b.first||'لم يختر'}</div>
-            <div>المركز الثاني: ${b.second||'لم يختر'}</div>
-            <div>المركز الثالث: ${b.third||'لم يختر'}</div>
-            <div>المركز الرابع: ${b.fourth||'لم يختر'}</div>
-            <div>الهداف: ${b.topScorer||'لم يختر'}</div>
+            <div>🥇 الأول: <span style="color:#fff">${b.first||'لم يختر'}</span></div>
+            <div>🥈 الثاني: <span style="color:#fff">${b.second||'لم يختر'}</span></div>
+            <div>🥉 الثالث: <span style="color:#fff">${b.third||'لم يختر'}</span></div>
+            <div>🏅 الرابع: <span style="color:#fff">${b.fourth||'لم يختر'}</span></div>
+            <div>⚽ الهداف: <span style="color:var(--gold)">${b.topScorer||'لم يختر'}</span></div>
           </div></div>`;
       }).join('');
       document.getElementById('adm-users').innerHTML = uHtml || '<div class="empty">لا يوجد مستخدمين</div>';
   } catch(e) {}
+}
+
+// دالة ذكية لإظهار/إخفاء الجزاء في لوحة الإدارة
+function admPenToggle(id, isKo) {
+    if(!isKo) return;
+    const r1 = document.getElementById('r1-'+id).value;
+    const r2 = document.getElementById('r2-'+id).value;
+    const penDiv = document.getElementById('adm-pen-'+id);
+    if(r1 !== '' && r2 !== '' && r1 === r2) {
+        penDiv.style.display = 'flex';
+    } else {
+        penDiv.style.display = 'none';
+    }
+}
+
+// دالة تثبيت نتيجة المباريات المحدثة
+async function setR(id, isKo){
+  const s1 = document.getElementById('r1-'+id).value, s2 = document.getElementById('r2-'+id).value;
+  if(s1 === '' || s2 === '') return toast('أدخل النتيجة أولاً');
+  
+  let penW = null, ps1 = null, ps2 = null;
+  if(isKo && s1 === s2) {
+      penW = document.getElementById('rpenw-'+id).value;
+      ps1 = document.getElementById('rps1-'+id).value;
+      ps2 = document.getElementById('rps2-'+id).value;
+      if(!penW) return toast('الرجاء اختيار الفائز بضربات الجزاء');
+  }
+  
+  const resObj = { 
+      s1: +s1, 
+      s2: +s2, 
+      penW: penW || null, 
+      ps1: ps1 !== '' && ps1 !== null ? +ps1 : null, 
+      ps2: ps2 !== '' && ps2 !== null ? +ps2 : null 
+  };
+
+  try { 
+      const upd = await api('PUT','matches?id='+id, {res: resObj}); 
+      matches = matches.map(m => m.id === id ? upd : m); 
+      rAdmin(); 
+      rHome(); 
+      toast('تم تثبيت النتيجة وبث النقاط بنجاح ✓');
+  } catch(e) { toast(e.message); }
+}
+
+// دالة تثبيت جوائز البونص الرسمية
+async function saveOfficialBonus() {
+    const first = document.getElementById('adm-b-first').value;
+    const second = document.getElementById('adm-b-second').value;
+    const third = document.getElementById('adm-b-third').value;
+    const fourth = document.getElementById('adm-b-fourth').value;
+    const topScorer = document.getElementById('adm-b-scorer').value;
+    
+    try {
+        await api('POST', 'bonus_outcomes', { first, second, third, fourth, topScorer });
+        officialOutcomes = { first, second, third, fourth, topScorer };
+        toast('تم تثبيت النتائج الكبرى وتحديث نقاط المشتركين ✓');
+        rHome();
+    } catch(e) { toast(e.message); }
 }
 
 async function addMatch(){
