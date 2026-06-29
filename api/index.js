@@ -123,9 +123,12 @@ function calculatePtsServer(m, pred) {
     }
 
     // 4. منطق ضربات الجزاء (لإضافة نقاط الإقصائيات)
-    if (KO_STAGES.includes(m.stg) && m.res) {
-        if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
-        if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
+    if (KO.includes(m.stg) && m.res) {
+        // الشرط الذهبي: التوقع الأساسي يجب أن يكون تعادلاً، والنتيجة الحقيقية يجب أن تكون تعادلاً
+        if (pred.s1 === pred.s2 && m.res.s1 === m.res.s2) {
+            if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
+            if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
+        }
     }
 
     return pts;
