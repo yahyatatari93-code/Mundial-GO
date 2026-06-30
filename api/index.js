@@ -79,58 +79,29 @@ async function safeGet(key) {
 function calculatePtsServer(m, pred) {
     if (!m.res || !pred) return 0;
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
-    const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2);
+    // لاحظ هنا استخدمنا BIG_TEAMS الخاصة بالسيرفر
+    const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2); 
     let pts = 0;
-
-    // 1. مباراة كبير ضد كبير
-    if (t1b && t2b) {
-        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd';
-        const ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) pts = (ar === 'd') ? 3 : 5;
-        else if (pr === ar) pts = (ar === 'd') ? 2 : 3;
-    } 
-    // 2. مباراة كبير ضد عادي
-    else if (t1b || t2b) {
-        const bf = t1b;
-        const bW = bf ? (r1 > r2) : (r2 > r1); 
-        const dr = (r1 === r2);
-        const sW = bf ? (r2 > r1) : (r1 > r2);
-
-        const pbW = bf ? (s1 > s2) : (s2 > s1); 
-        const pd = (s1 === s2); 
-        const psW = bf ? (s2 > s1) : (s1 > s2);
-
-        if (s1 === r1 && s2 === r2) { 
-            if (bW) pts = 2; 
-            if (dr) pts = 3; 
-            if (sW) pts = 6; 
-        } else { 
-            if (pbW && bW) pts = 1; 
-            if (pd && dr) pts = 2; 
-            if (psW && sW) pts = 4; 
-        }
-    } 
-    // 3. مباراة عادي ضد عادي
-    else {
-        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd';
-        const ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) { 
-            const sr = r1 + r2; 
-            pts = (sr >= 5 || (r1 === 0 && r2 === 0)) ? 4 : 3; 
-        } else if (pr === ar) {
-            pts = 1;
-        }
+    
+    if (!t1b && !t2b) {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) pts = ((r1+r2) >= 5 || (r1===0 && r2===0)) ? 4 : 3;
+        else if (pr === ar) pts = 1;
     }
-
-    // 4. منطق ضربات الجزاء (لإضافة نقاط الإقصائيات)
-    if (KO.includes(m.stg) && m.res) {
-        // الشرط الذهبي: التوقع الأساسي يجب أن يكون تعادلاً، والنتيجة الحقيقية يجب أن تكون تعادلاً
+    else {
+        const bf = t1b, pbW = bf ? (s1 > s2) : (s2 > s1), psW = bf ? (s2 > s1) : (s1 > s2), pd = (s1 === s2);
+        const bW = bf ? (r1 > r2) : (r2 > r1), sW = bf ? (r2 > r1) : (r1 > r2), dr = (r1 === r2);
+        if (s1 === r1 && s2 === r2) { if (bW) pts = 2; else if (dr) pts = 3; else pts = 6; }
+        else { if (pbW && bW) pts = 1; else if (pd && dr) pts = 2; else if (psW && sW) pts = 4; }
+    }
+    
+    // لاحظ هنا استخدمنا KO_STAGES الخاصة بالسيرفر
+    if (KO_STAGES.includes(m.stg) && m.res) {
         if (pred.s1 === pred.s2 && m.res.s1 === m.res.s2) {
             if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
             if (pred.ps1 != null && pred.ps2 != null && m.res.ps1 != null && m.res.ps2 != null && +pred.ps1 === +m.res.ps1 && +pred.ps2 === +m.res.ps2) pts += 5;
         }
     }
-
     return pts;
 }
 
