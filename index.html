@@ -326,7 +326,7 @@ input[type=number]{-moz-appearance:textfield;direction:ltr;font-family:-apple-sy
       <div class="kobox" id="kobox">
         <div class="plbl">في حال التعادل — الفائز بضربات الجزاء:</div>
         <select class="kosel" id="penw" onchange="upPS();upPrev()">
-           <option value="">— بدون ضربات جزاء —</option>
+           <option value="" disabled selected>— اختر الفريق الفائز بالجزاء —</option>
            <option value="t1" id="pt1o"></option>
            <option value="t2" id="pt2o"></option>
         </select>
@@ -664,22 +664,26 @@ function upPrev() {
     const m = matches.find(x => x.id === curMid); 
     if(!m) return;
     
-    // جلب نتيجة المباراة الأساسية
     const s1 = +document.getElementById('sc1').value;
     const s2 = +document.getElementById('sc2').value;
     
-    // جلب قيم ضربات الجزاء "فقط" إذا كانت المباراة إقصائية والنتيجة الحالية تعادل
     let penW = null, ps1 = null, ps2 = null;
+    
     if (KO.includes(m.stg) && s1 === s2) {
         penW = document.getElementById('penw') ? document.getElementById('penw').value : null;
-        ps1 = document.getElementById('ps1') ? document.getElementById('ps1').value : null;
-        ps2 = document.getElementById('ps2') ? document.getElementById('ps2').value : null;
+        
+        // التحقق من أن خانات الجزاء ليست فارغة قبل عرض النقاط الإضافية
+        const p1v = document.getElementById('ps1').value;
+        const p2v = document.getElementById('ps2').value;
+        ps1 = p1v !== '' ? +p1v : null;
+        ps2 = p2v !== '' ? +p2v : null;
     }
 
-    // دمج القيم لحساب النقاط في حال التطابق التام (المباراة + الجزاء)
+    // تجهيز نتيجة وهمية مطابقة تماماً لتوقع المشترك
     const mockRes = { s1, s2, penW, ps1, ps2 };
     const mockPred = { s1, s2, penW, ps1, ps2 };
     
+    // حساب النقاط بناءً على التطابق التام
     const pts = calcPts({...m, res: mockRes}, mockPred);
     
     document.getElementById('ppn').textContent = pts;
@@ -687,15 +691,35 @@ function upPrev() {
 }
 
 async function savePred() {
-    if(!curMid) return; const m = matches.find(x=>x.id===curMid); if(isLocked(m)) return toast('المباراة مغلقة');
-    const s1 = document.getElementById('sc1').value, s2 = document.getElementById('sc2').value;
-    const penW = KO.includes(m.stg) ? document.getElementById('penw').value : null;
-    const ps1 = document.getElementById('ps1').value, ps2 = document.getElementById('ps2').value;
+    if(!curMid) return; 
+    const m = matches.find(x=>x.id===curMid); 
+    if(isLocked(m)) return toast('المباراة مغلقة للتوقع');
+    
+    const s1 = document.getElementById('sc1').value;
+    const s2 = document.getElementById('sc2').value;
+    const isKo = KO.includes(m.stg);
+    
+    let penW = null, ps1 = null, ps2 = null;
+
+    // تفعيل الإلزام فقط إذا كانت المباراة إقصائية والنتيجة الأساسية تعادل
+    if (isKo && s1 === s2) {
+        penW = document.getElementById('penw').value;
+        ps1 = document.getElementById('ps1').value;
+        ps2 = document.getElementById('ps2').value;
+        
+        if (!penW) return toast('الرجاء اختيار الفريق الفائز بضربات الجزاء');
+        if (ps1 === '' || ps2 === '') return toast('الرجاء إدخال نتيجة ضربات الجزاء الرقمية');
+    }
+
     try {
         await api('POST','predictions',{matchId:curMid, s1, s2, penW, ps1, ps2});
         myPreds[curMid] = {s1, s2, penW, ps1, ps2};
-        toast('تم حفظ التوقع ✓'); closeM(); refreshActive();
-    } catch(e) { toast(e.message); }
+        toast('تم حفظ التوقع بنجاح ✓'); 
+        closeM(); 
+        refreshActive();
+    } catch(e) { 
+        toast(e.message); 
+    }
 }
 
 async function cancelResult(id) {
