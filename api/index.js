@@ -76,14 +76,13 @@ async function safeGet(key) {
 }
 
 // هذه الدالة الآن هي نسخة طبق الأصل عن منطق `calcPts` في جهاز المستخدم
+
 function calculatePtsServer(m, pred) {
     if (!m.res || !pred) return 0;
     
-    // هذه المصفوفة يجب أن تكون داخل الدالة وتأكد من وجود كل الفرق فيها
     const BIG_TEAMS = ['البرازيل','الأرجنتين','الارجنتين','إنكلترا','انكلترا','إنجلترا','انجلترا','ألمانيا','المانيا','إسبانيا','اسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
     const KO_STAGES = ['r32','r16','qf','sf','final'];
 
-    // التنظيف من المسافات المخفية
     const t1Name = (m.t1 || '').trim();
     const t2Name = (m.t2 || '').trim();
 
@@ -91,21 +90,28 @@ function calculatePtsServer(m, pred) {
     const t1b = BIG_TEAMS.includes(t1Name), t2b = BIG_TEAMS.includes(t2Name); 
     let pts = 0;
     
-    // 1. مباراة عادي ضد عادي
-    if (!t1b && !t2b) {
-        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
-        if (s1 === r1 && s2 === r2) pts = ((r1+r2) >= 5 || (r1===0 && r2===0)) ? 4 : 3;
-        else if (pr === ar) pts = 1;
+    // الحالة الأولى: كبير ضد كبير (هذا هو الجزء الذي سقط مني سهواً)
+    if (t1b && t2b) {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd';
+        const ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) pts = (ar === 'd') ? 3 : 5;
+        else if (pr === ar) pts = (ar === 'd') ? 2 : 3;
     }
-    // 2. مباراة فيها أحد الكبار أو كلاهما
-    else {
+    // الحالة الثانية: كبير ضد عادي
+    else if (t1b || t2b) {
         const bf = t1b, pbW = bf ? (s1 > s2) : (s2 > s1), psW = bf ? (s2 > s1) : (s1 > s2), pd = (s1 === s2);
         const bW = bf ? (r1 > r2) : (r2 > r1), sW = bf ? (r2 > r1) : (r1 > r2), dr = (r1 === r2);
         if (s1 === r1 && s2 === r2) { if (bW) pts = 2; else if (dr) pts = 3; else pts = 6; }
         else { if (pbW && bW) pts = 1; else if (pd && dr) pts = 2; else if (psW && sW) pts = 4; }
     }
+    // الحالة الثالثة: عادي ضد عادي
+    else {
+        const pr = s1 > s2 ? 'w1' : s1 < s2 ? 'w2' : 'd', ar = r1 > r2 ? 'w1' : r1 < r2 ? 'w2' : 'd';
+        if (s1 === r1 && s2 === r2) pts = ((r1+r2) >= 5 || (r1===0 && r2===0)) ? 4 : 3;
+        else if (pr === ar) pts = 1;
+    }
     
-    // 3. نقاط الإقصائي (مع الشرط الذهبي للجزاء)
+    // نقاط الإقصائي
     if (KO_STAGES.includes(m.stg) && m.res) {
         if (pred.s1 === pred.s2 && m.res.s1 === m.res.s2) {
             if (pred.penW && m.res.penW && pred.penW === m.res.penW) pts += 1;
