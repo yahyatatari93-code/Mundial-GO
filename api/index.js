@@ -79,12 +79,16 @@ async function safeGet(key) {
 function calculatePtsServer(m, pred) {
     if (!m.res || !pred) return 0;
     
-    // تعريف الفرق الكبيرة والأدوار الإقصائية داخل الدالة لضمان عدم حدوث أي خطأ في السيرفر
-    const BIG_TEAMS = ['البرازيل','الأرجنتين','إنكلترا','ألمانيا','إسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
+    // القائمة الشاملة داخل السيرفر
+    const BIG_TEAMS = ['البرازيل','الأرجنتين','الارجنتين','إنكلترا','انكلترا','إنجلترا','انجلترا','ألمانيا','المانيا','إسبانيا','اسبانيا','البرتغال','هولندا','فرنسا','بلجيكا'];
     const KO_STAGES = ['r32','r16','qf','sf','final'];
 
+    // تنظيف الأسماء من المسافات
+    const t1Name = (m.t1 || '').trim();
+    const t2Name = (m.t2 || '').trim();
+
     const s1 = +pred.s1, s2 = +pred.s2, r1 = +m.res.s1, r2 = +m.res.s2;
-    const t1b = BIG_TEAMS.includes(m.t1), t2b = BIG_TEAMS.includes(m.t2); 
+    const t1b = BIG_TEAMS.includes(t1Name), t2b = BIG_TEAMS.includes(t2Name); 
     let pts = 0;
     
     // 1. مباراة عادي ضد عادي
